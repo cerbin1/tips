@@ -13,7 +13,7 @@ const Content = () => {
                     <Image className={"img-fluid"} src={tipImage} fluid/>
                 </Col>
             </Row>
-            <Row className={"text-center"}>
+            <Row>
                 <Col sm={9}>
                     <TipContent/>
                 </Col>
