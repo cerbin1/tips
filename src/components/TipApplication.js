@@ -1,11 +1,9 @@
 import React from "react";
-import Navbar from "./Navbar";
-import Content from "./Content";
+import Menu from "./Menu";
 
 const TipApplication = () => (
     <div>
-        <Navbar/>
-        <Content/>
+        <Menu/>
     </div>
 );
 

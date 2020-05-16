@@ -1,19 +1,24 @@
+import React from "react";
+import {BrowserRouter as Router, Link, Route, Switch} from 'react-router-dom';
+import {Navbar as BootstrapNavbar} from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import React from "react";
-import {Navbar as BootstrapNavbar} from "react-bootstrap";
+import Content from "./Content";
+import TestComponent from "./TestComponent";
 
-const Navbar = () => {
+const Menu = () => {
     return (
-        <div>
+        <Router>
             <BootstrapNavbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                <BootstrapNavbar.Brand href="#home">[home icon] Afterady</BootstrapNavbar.Brand>
+                <Link to={"/"}>
+                    <BootstrapNavbar.Brand>[home icon] Afterady</BootstrapNavbar.Brand>
+                </Link>
                 <BootstrapNavbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <BootstrapNavbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="#categories">Kategorie</Nav.Link>
-                        <Nav.Link href="#ranking">Ranking</Nav.Link>
-                        <Nav.Link href="#suggest">Zaproponuj</Nav.Link>
+                        <Nav.Link as={Link} to={"/test"}>Kategorie</Nav.Link>
+                        <Nav.Link as={Link} to={"/test"}>Ranking</Nav.Link>
+                        <Nav.Link as={Link} to={"/test"}>Zaproponuj</Nav.Link>
                     </Nav>
                     <Nav>
                         <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
@@ -30,6 +35,13 @@ const Navbar = () => {
                     </Nav>
                 </BootstrapNavbar.Collapse>
             </BootstrapNavbar>
-        </div>)
+
+            <Switch>
+                <Route default exact path={"/"} component={Content}/>
+                <Route default exact path={"/test"} component={TestComponent}/>
+            </Switch>
+        </Router>
+    )
 };
-export default Navbar;
+
+export default Menu;
