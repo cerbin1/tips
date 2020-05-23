@@ -1,11 +1,10 @@
 import React from 'react';
 import './App.css';
-import Tip from "./components/Tip";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import TipApplication from "./components/TipApplication";
+import Application from "./components/Application";
 
 const App = () => (
-    <TipApplication/>
+    <Application/>
 );
 
 export default App;

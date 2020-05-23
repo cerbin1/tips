@@ -1,24 +1,24 @@
 import React from "react";
-import tipImage from "../resources/tips.jpg"
+import advicesLogo from "../resources/advices.jpg"
 import {Container, Image, Row} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
-import TipContent from "./TipContent";
-import PopularTips from "./PopularTips";
+import AdviceContent from "./AdviceContent";
+import PopularAdvices from "./PopularAdvices";
 
 const Content = () => {
     return (
         <Container>
             <Row>
                 <Col sm={"auto"}>
-                    <Image className={"img-fluid"} src={tipImage} fluid/>
+                    <Image className={"img-fluid"} src={advicesLogo} fluid/>
                 </Col>
             </Row>
             <Row>
                 <Col sm={9}>
-                    <TipContent/>
+                    <AdviceContent/>
                 </Col>
                 <Col sm={"auto"}>
-                    <PopularTips/>
+                    <PopularAdvices/>
                 </Col>
             </Row>
         </Container>

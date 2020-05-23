@@ -3,7 +3,7 @@ import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 
-class Tip extends Component {
+class Advice extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -11,7 +11,7 @@ class Tip extends Component {
         }
     }
 
-    changeTip = () => {
+    changeAdvice = () => {
         this.setState({
             content: 'Lorem Ipsum has been the industrys standard dummy text ever since the 1500s'
         })
@@ -22,11 +22,11 @@ class Tip extends Component {
             <div>
                 <Container fixed>
                     <Paper>{this.state.content}</Paper>
-                    <Button onClick={this.changeTip}>Klikinj</Button>
+                    <Button onClick={this.changeAdvice}>Klikinj</Button>
                 </Container>
             </div>
         )
     }
 }
 
-export default Tip;
+export default Advice;

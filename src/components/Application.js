@@ -1,10 +1,10 @@
 import React from "react";
 import Menu from "./Menu";
 
-const TipApplication = () => (
+const Application = () => (
     <div>
         <Menu/>
     </div>
 );
 
-export default TipApplication;
+export default Application;
