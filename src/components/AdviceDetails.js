@@ -1,8 +1,8 @@
 import React from "react";
 import AdviceService from '../service/advice-service';
-import {Button, Container, Image, Row} from "react-bootstrap";
+import {Button, Container, Row} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
-import advicesLogo from "../resources/advices.jpg";
+import Logo from "./Logo";
 
 class AdviceDetails extends React.Component {
     adviceId;
@@ -25,8 +25,7 @@ class AdviceDetails extends React.Component {
             <Container>
                 <Row>
                     <Col>
-                        <Image className={"img-fluid"} src={advicesLogo}
-                               fluid/>
+                        <Logo/>
                     </Col>
                 </Row>
                 <Row>

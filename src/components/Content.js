@@ -1,16 +1,16 @@
 import React from "react";
-import advicesLogo from "../resources/advices.jpg"
-import {Container, Image, Row} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import AdviceContent from "./AdviceContent";
 import PopularAdvices from "./PopularAdvices";
+import Logo from "./Logo";
 
 const Content = () => {
     return (
         <Container>
             <Row>
                 <Col sm={"auto"}>
-                    <Image className={"img-fluid"} src={advicesLogo} fluid/>
+                    <Logo/>
                 </Col>
             </Row>
             <Row>
