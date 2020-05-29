@@ -6,6 +6,8 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Content from "./Content";
 import TestComponent from "./TestComponent";
 import AdviceDetails from "./AdviceDetails";
+import TipCategories from "./TipCategories";
+import TipCategory from "./TipCategory";
 
 const Menu = () => {
     return (
@@ -17,7 +19,7 @@ const Menu = () => {
                 <BootstrapNavbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <BootstrapNavbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link as={Link} to={"/test"}>Kategorie</Nav.Link>
+                        <Nav.Link as={Link} to={"/categories"}>Kategorie</Nav.Link>
                         <Nav.Link as={Link} to={"/test"}>Ranking</Nav.Link>
                         <Nav.Link as={Link} to={"/test"}>Zaproponuj</Nav.Link>
                     </Nav>
@@ -41,6 +43,8 @@ const Menu = () => {
                 <Route default exact path={"/"} component={Content}/>
                 <Route exact path={"/test"} component={TestComponent}/>
                 <Route exact path="/advices/:adviceId" component={AdviceDetails}/>
+                <Route exact path={"/categories"} component={TipCategories}/>
+                <Route exact path="/categories/:categoryId" component={TipCategory}/>
             </Switch>
         </Router>
     )
