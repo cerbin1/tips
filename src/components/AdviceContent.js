@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Button} from "react-bootstrap";
+import {Link} from "react-router-dom";
 
 class AdviceContent extends Component {
     advices = [
@@ -15,25 +16,31 @@ class AdviceContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            advice: 'Żyj lepiej z tymi poradami',
+            advice: {content: 'Żyj lepiej z tymi poradami'},
+            adviceDrawn: false,
         }
     }
 
     drawTheAdvice = () => {
         let randomAdviceIndex = Math.floor(Math.random() * this.advices.length);
         this.setState({
-            advice: this.advices[randomAdviceIndex].content
+            advice: this.advices[randomAdviceIndex],
+            adviceDrawn: true,
         })
     };
 
     render() {
         return (
             <div>
-                <h1>{this.state.advice}</h1>
-                {}
-                <Button onClick={this.drawTheAdvice} variant={"primary"} size="lg">
+                <h1>{this.state.advice.content}</h1>
+                <Button onClick={this.drawTheAdvice} variant={"primary"}>
                     Losuj poradę
                 </Button>
+                {this.state.adviceDrawn &&
+                <Link className="btn btn-success" to={{
+                    pathname: '/advices/' + this.state.advice.id
+                }}>Szczegóły</Link>
+                }
             </div>)
     }
 }

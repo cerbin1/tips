@@ -5,6 +5,7 @@ import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Content from "./Content";
 import TestComponent from "./TestComponent";
+import AdviceDetails from "./AdviceDetails";
 
 const Menu = () => {
     return (
@@ -38,7 +39,8 @@ const Menu = () => {
 
             <Switch>
                 <Route default exact path={"/"} component={Content}/>
-                <Route default exact path={"/test"} component={TestComponent}/>
+                <Route exact path={"/test"} component={TestComponent}/>
+                <Route exact path="/advices/:adviceId" component={AdviceDetails}/>
             </Switch>
         </Router>
     )
