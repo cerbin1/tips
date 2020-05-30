@@ -6,22 +6,22 @@ import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
 import {Link} from "react-router-dom";
 
-const TipCategories = () => {
+const AdviceCategories = () => {
 
     const categories = [
         {
             id: 1,
-            tipsCount: 15,
+            advicesCount: 15,
             name: "Rozwój osobisty",
         },
         {
             id: 2,
-            tipsCount: 102,
+            advicesCount: 102,
             name: "Dom",
         },
         {
             id: 3,
-            tipsCount: 52,
+            advicesCount: 52,
             name: "Praca",
         },
     ];
@@ -51,7 +51,7 @@ const TipCategories = () => {
                             return (
                                 <tr key={category.id}>
                                     <td>{category.name}</td>
-                                    <td>{category.tipsCount}</td>
+                                    <td>{category.advicesCount}</td>
                                     <td>
                                         <Link className="btn btn-primary" to={{
                                             pathname: '/categories/' + category.id
@@ -68,4 +68,4 @@ const TipCategories = () => {
     )
 };
 
-export default TipCategories;
+export default AdviceCategories;

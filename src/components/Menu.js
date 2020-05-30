@@ -6,8 +6,8 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Content from "./Content";
 import TestComponent from "./TestComponent";
 import AdviceDetails from "./AdviceDetails";
-import TipCategories from "./TipCategories";
-import TipCategory from "./TipCategory";
+import AdviceCategories from "./AdviceCategories";
+import AdviceCategory from "./AdviceCategory";
 
 const Menu = () => {
     return (
@@ -43,8 +43,8 @@ const Menu = () => {
                 <Route default exact path={"/"} component={Content}/>
                 <Route exact path={"/test"} component={TestComponent}/>
                 <Route exact path="/advices/:adviceId" component={AdviceDetails}/>
-                <Route exact path={"/categories"} component={TipCategories}/>
-                <Route exact path="/categories/:categoryId" component={TipCategory}/>
+                <Route exact path={"/categories"} component={AdviceCategories}/>
+                <Route exact path="/categories/:categoryId" component={AdviceCategory}/>
             </Switch>
         </Router>
     )
