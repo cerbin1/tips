@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Logo from "./Logo";
 import PopularAdvices from "./PopularAdvices";
 import Table from "react-bootstrap/Table";
+import {Link} from "react-router-dom";
 
 class AdviceCategory extends React.Component {
     categoryId;
@@ -56,9 +57,9 @@ class AdviceCategory extends React.Component {
                                         <td>{advice.name}</td>
                                         <td>{advice.ranking}</td>
                                         <td>
-                                            <Button variant={"outline-success"}>
-                                                Wyświetl szczegóły
-                                            </Button>
+                                            <Link className="btn btn-outline-success" to={{
+                                                pathname: '/advices/' + advice.id
+                                            }}>Wyświetl szczegóły</Link>
                                         </td>
                                     </tr>
                                 )
