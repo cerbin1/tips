@@ -8,6 +8,31 @@ export default class AdviceService {
         };
     }
 
+    static getAllCategories() {
+        return [
+            {
+                id: 1,
+                advicesCount: 15,
+                name: "Rozwój osobisty",
+            },
+            {
+                id: 2,
+                advicesCount: 102,
+                name: "Dom",
+            },
+            {
+                id: 3,
+                advicesCount: 52,
+                name: "Praca",
+            },
+            {
+                id: 4,
+                advicesCount: 0,
+                name: "Zwierzęta",
+            },
+        ];
+    }
+
     static getAdvicesByCategory(categoryId) {
         const advicesByCategory = [
             {
