@@ -24,6 +24,11 @@ const AdviceCategories = () => {
             advicesCount: 52,
             name: "Praca",
         },
+        {
+            id: 4,
+            advicesCount: 0,
+            name: "Zwierzęta",
+        },
     ];
 
     return (

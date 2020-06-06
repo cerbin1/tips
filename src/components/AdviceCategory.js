@@ -1,17 +1,96 @@
 import React from "react";
 
-class AdviceCategory extends React.Component {
-    componentDidMount() {
+import AdviceService from '../service/advice-service';
+import {Button, Container} from "react-bootstrap";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import Logo from "./Logo";
+import PopularAdvices from "./PopularAdvices";
+import Table from "react-bootstrap/Table";
 
+class AdviceCategory extends React.Component {
+    categoryId;
+
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+            advicesByCategory: null
+        }
+    }
+
+    componentDidMount() {
+        let advicesByCategory = AdviceService.getAdvicesByCategory(this.props.match.params.categoryId);
+        this.setState({advicesByCategory: advicesByCategory})
     }
 
     render() {
-
+        let advicesByCategory = this.state.advicesByCategory;
+        let advicesContent = null;
+        if (advicesByCategory !== null) {
+            if (advicesByCategory.advices.length === 0) {
+                advicesContent = <div>
+                    <p>Brak porad z tej kategorii</p>
+                    <Button variant="warning" onClick={() => {
+                        this.props.history.goBack()
+                    }}>
+                        Cofnij do listy kategorii
+                    </Button>
+                </div>
+            } else {
+                advicesContent =
+                    <div>
+                        <h1>{advicesByCategory.name}</h1>
+                        <Table striped bordered hover variant="dark">
+                            <thead>
+                            <tr>
+                                <th>Nazwa porady</th>
+                                <th>Ocena</th>
+                                <th>Nawigacja</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {advicesByCategory.advices.map(advice => {
+                                return (
+                                    <tr key={advice.id}>
+                                        <td>{advice.name}</td>
+                                        <td>{advice.ranking}</td>
+                                        <td>
+                                            <Button variant={"outline-success"}>
+                                                Wyświetl szczegóły
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                            </tbody>
+                        </Table>
+                        <Button variant="warning" onClick={() => {
+                            this.props.history.goBack()
+                        }}>
+                            Cofnij do listy kategorii
+                        </Button>
+                    </div>
+            }
+        }
 
         return (
-            <div>
-                Category id: {this.props.match.params.categoryId}
-            </div>
+            <Container>
+                <Row>
+                    <Col>
+                        <Logo/>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col sm={9}>
+                        {advicesContent}
+                    </Col>
+
+                    <Col sm={"auto"}>
+                        <PopularAdvices/>
+                    </Col>
+                </Row>
+            </Container>
         )
     }
 }
