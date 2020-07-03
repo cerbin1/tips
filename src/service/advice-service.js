@@ -135,4 +135,62 @@ export default class AdviceService {
         ];
         return advicesByCategory.find(advicesByCategory => advicesByCategory.categoryId.toString() === categoryId.toString())
     }
+
+    static getTop10Advices() {
+        const top10Advices =
+            [
+                {
+                    id: 1,
+                    name: "Porada 1",
+                    ranking: 89234,
+                },
+                {
+                    id: 2,
+                    name: "Porada 2",
+                    ranking: 1242,
+                },
+                {
+                    id: 3,
+                    name: "Porada 3",
+                    ranking: 523,
+                },
+                {
+                    id: 4,
+                    name: "Porada 4",
+                    ranking: 423,
+                },
+                {
+                    id: 5,
+                    name: "Porada 5",
+                    ranking: 231,
+                },
+                {
+                    id: 6,
+                    name: "Porada 6",
+                    ranking: 120,
+                },
+                {
+                    id: 7,
+                    name: "Porada 7",
+                    ranking: 112,
+                },
+                {
+                    id: 8,
+                    name: "Porada 8",
+                    ranking: 86,
+                },
+                {
+                    id: 9,
+                    name: "Porada 9",
+                    ranking: 74,
+                },
+                {
+                    id: 10,
+                    name: "Porada 10",
+                    ranking: 52,
+                },
+            ];
+
+        return top10Advices;
+    }
 }
