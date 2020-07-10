@@ -9,6 +9,7 @@ import AdviceDetails from "./AdviceDetails";
 import AdviceCategories from "./AdviceCategories";
 import AdviceCategory from "./AdviceCategory";
 import {Ranking} from "./Ranking";
+import SuggestAdvice from "./SuggestAdvice";
 
 const Menu = () => {
     return (
@@ -22,7 +23,7 @@ const Menu = () => {
                     <Nav className="mr-auto">
                         <Nav.Link as={Link} to={"/categories"}>Kategorie</Nav.Link>
                         <Nav.Link as={Link} to={"/ranking"}>Ranking</Nav.Link>
-                        <Nav.Link as={Link} to={"/test"}>Zaproponuj</Nav.Link>
+                        <Nav.Link as={Link} to={"/suggest"}>Zaproponuj</Nav.Link>
                     </Nav>
                     <Nav>
                         <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
@@ -47,6 +48,7 @@ const Menu = () => {
                 <Route exact path={"/categories"} component={AdviceCategories}/>
                 <Route exact path="/categories/:categoryId" component={AdviceCategory}/>
                 <Route exact path="/ranking" component={Ranking}/>
+                <Route exact path="/suggest" component={SuggestAdvice}/>
             </Switch>
         </Router>
     )
