@@ -13,8 +13,15 @@ export default class SuggestAdvice extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            categories: AdviceService.getAllCategories()
+            categories: AdviceService.getAllCategories(),
+            name: undefined,
+            category: undefined,
+            content: undefined
         }
+    }
+
+    handleChange = (e) => {
+        this.setState({ [e.target.name] : e.target.value });
     }
 
     render() {
@@ -33,14 +40,21 @@ export default class SuggestAdvice extends Component {
                         <Form.Label>
                             Nazwa porady
                         </Form.Label>
-                        <Form.Control placeholder="Nazwa"/>
+                        <Form.Control
+                            name="name"
+                            onChange={(e) => this.handleChange(e)}
+                            placeholder="Nazwa"/>
                     </Form.Group>
 
                     <Form.Group>
                         <Form.Label>
                             Kategoria
                         </Form.Label>
-                        <Form.Control as="select">
+                        <Form.Control
+                            name="category"
+                            value={this.state.categories[1]}
+                            onChange={(e) => this.handleChange(e)}
+                            as="select">
                             {this.state.categories.map(category => {
                                     return (
                                         <option key={category.id} value={category.id}>{category.name}</option>
@@ -54,10 +68,14 @@ export default class SuggestAdvice extends Component {
                         <Form.Label>
                             Treść
                         </Form.Label>
-                        <Form.Control as="textarea" rows="10"/>
+                        <Form.Control name="content" onChange={(e) => this.handleChange(e)} as="textarea" rows="10"/>
                     </Form.Group>
 
-                    <Button variant="success" onClick={() => alert("Wysłano")}>
+                    <Button variant="success" onClick={() => {
+                        alert("Wysłano")
+                        console.log(this.state.name + '\n' + this.state.category + '\n' + this.state.content + '\n')
+                    }}
+                    >
                         Wyślij propozycję
                     </Button>
                 </Form>

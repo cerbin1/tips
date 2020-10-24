@@ -10,6 +10,7 @@ export default class AdviceService {
 
     static getAllCategories() {
         return [
+            {},
             {
                 id: 1,
                 advicesCount: 15,
