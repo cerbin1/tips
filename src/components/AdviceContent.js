@@ -31,7 +31,7 @@ class AdviceContent extends Component {
 
     render() {
         return (
-            <div>
+            <div className="text-center">
                 <h1>{this.state.advice.content}</h1>
                 <Button onClick={this.drawTheAdvice} variant={"primary"}>
                     Losuj poradę
