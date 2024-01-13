@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import Form from "react-bootstrap/Form";
 import AdviceService from "../service/advice-service";
 import Button from "react-bootstrap/Button";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default class SuggestAdvice extends Component {
 
@@ -19,6 +20,10 @@ export default class SuggestAdvice extends Component {
             content: undefined
         }
     }
+
+    onChangeCaptcha = (value) => {
+        console.log("Captcha value:", value);
+      }
 
     handleChange = (e) => {
         this.setState({ [e.target.name] : e.target.value });
@@ -70,6 +75,12 @@ export default class SuggestAdvice extends Component {
                         </Form.Label>
                         <Form.Control name="content" onChange={(e) => this.handleChange(e)} as="textarea" rows="10"/>
                     </Form.Group>
+
+
+                    <ReCAPTCHA
+                        sitekey="6LfUyU8pAAAAAILsMrKnhxOO8G-yhmy7zRIE--R0"
+                        onChange={this.onChangeCaptcha}
+                    />
 
                     <Button variant="success" onClick={() => {
                         alert("Wysłano")
