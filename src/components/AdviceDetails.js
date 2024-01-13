@@ -1,6 +1,6 @@
 import React from "react";
 import AdviceService from '../service/advice-service';
-import {Button, Container, Row} from "react-bootstrap";
+import { Button, Container, Row } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Logo from "./Logo";
 
@@ -25,7 +25,7 @@ class AdviceDetails extends React.Component {
             <Container>
                 <Row>
                     <Col>
-                        <Logo/>
+                        <Logo />
                     </Col>
                 </Row>
                 <Row>
@@ -41,14 +41,14 @@ class AdviceDetails extends React.Component {
                         {this.state.content}
                     </Col>
                 </Row>
-                <hr/>
+                <hr />
                 <Row>
                     <Col sm={"6"}>
                         Ocena przydatności: {this.state.ranking}
                     </Col>
                     <Col sm={"Auto"} className={"float-right"}>
                         <Button variant={"success"} className="float-left"
-                                onClick={() => this.setState({ranking: this.state.ranking + 1})}>Przydatne</Button>
+                            onClick={() => this.setState({ ranking: this.state.ranking + 1 })}>Przydatne</Button>
                     </Col>
                 </Row>
 

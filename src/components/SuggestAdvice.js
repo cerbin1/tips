@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -23,10 +23,10 @@ export default class SuggestAdvice extends Component {
 
     onChangeCaptcha = (value) => {
         console.log("Captcha value:", value);
-      }
+    }
 
     handleChange = (e) => {
-        this.setState({ [e.target.name] : e.target.value });
+        this.setState({ [e.target.name]: e.target.value });
     }
 
     render() {
@@ -34,7 +34,7 @@ export default class SuggestAdvice extends Component {
             <Container>
                 <Row>
                     <Col>
-                        <Logo/>
+                        <Logo />
                     </Col>
                 </Row>
                 <Row>
@@ -48,7 +48,7 @@ export default class SuggestAdvice extends Component {
                         <Form.Control
                             name="name"
                             onChange={(e) => this.handleChange(e)}
-                            placeholder="Nazwa"/>
+                            placeholder="Nazwa" />
                     </Form.Group>
 
                     <Form.Group>
@@ -61,10 +61,10 @@ export default class SuggestAdvice extends Component {
                             onChange={(e) => this.handleChange(e)}
                             as="select">
                             {this.state.categories.map(category => {
-                                    return (
-                                        <option key={category.id} value={category.id}>{category.name}</option>
-                                    )
-                                }
+                                return (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                )
+                            }
                             )}
                         </Form.Control>
                     </Form.Group>
@@ -73,7 +73,7 @@ export default class SuggestAdvice extends Component {
                         <Form.Label>
                             Treść
                         </Form.Label>
-                        <Form.Control name="content" onChange={(e) => this.handleChange(e)} as="textarea" rows="10"/>
+                        <Form.Control name="content" onChange={(e) => this.handleChange(e)} as="textarea" rows="10" />
                     </Form.Group>
 
 

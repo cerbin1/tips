@@ -9,8 +9,8 @@ function PopularAdvices() {
             <h4>Najpopularniejsze</h4>
             <ListGroup>
                 {mostPopularAdvices.map((advice, index) => {
-                        return <ListGroup.Item key={index}>{advice}</ListGroup.Item>
-                    }
+                    return <ListGroup.Item key={index}>{advice}</ListGroup.Item>
+                }
                 )}
             </ListGroup>
         </div>)

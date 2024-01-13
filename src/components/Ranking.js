@@ -1,12 +1,12 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import AdviceService from '../service/advice-service';
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Logo from "./Logo";
 import Table from "react-bootstrap/Table";
-import {Link} from "react-router-dom";
-import {Alert} from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Alert } from "react-bootstrap";
 
 export class Ranking extends Component {
 
@@ -20,7 +20,7 @@ export class Ranking extends Component {
     }
 
     componentDidMount() {
-        this.setState({topAdvices: AdviceService.getTop10Advices()});
+        this.setState({ topAdvices: AdviceService.getTop10Advices() });
     }
 
     render() {
@@ -39,26 +39,26 @@ export class Ranking extends Component {
                     <Row>
                         <Table striped bordered hover variant="dark">
                             <thead>
-                            <tr>
-                                <th>Nazwa</th>
-                                <th>Ocena</th>
-                                <th>Nawigacja</th>
-                            </tr>
+                                <tr>
+                                    <th>Nazwa</th>
+                                    <th>Ocena</th>
+                                    <th>Nawigacja</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {this.state.topAdvices.map(advice => {
-                                return (
-                                    <tr key={advice.id}>
-                                        <td>{advice.name}</td>
-                                        <td>{advice.ranking}</td>
-                                        <td>
-                                            <Link className="btn btn-outline-success" to={{
-                                                pathname: '/advices/' + advice.id
-                                            }}>Wyświetl szczegóły</Link>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                                {this.state.topAdvices.map(advice => {
+                                    return (
+                                        <tr key={advice.id}>
+                                            <td>{advice.name}</td>
+                                            <td>{advice.ranking}</td>
+                                            <td>
+                                                <Link className="btn btn-outline-success" to={{
+                                                    pathname: '/advices/' + advice.id
+                                                }}>Wyświetl szczegóły</Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </Table>
                     </Row>
@@ -69,7 +69,7 @@ export class Ranking extends Component {
             <Container>
                 <Row>
                     <Col>
-                        <Logo/>
+                        <Logo />
                     </Col>
                 </Row>
                 {ranking}

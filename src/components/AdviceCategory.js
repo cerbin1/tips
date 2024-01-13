@@ -1,13 +1,13 @@
 import React from "react";
 
 import AdviceService from '../service/advice-service';
-import {Button, Container} from "react-bootstrap";
+import { Button, Container } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Logo from "./Logo";
 import PopularAdvices from "./PopularAdvices";
 import Table from "react-bootstrap/Table";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 class AdviceCategory extends React.Component {
     categoryId;
@@ -22,7 +22,7 @@ class AdviceCategory extends React.Component {
 
     componentDidMount() {
         let advicesByCategory = AdviceService.getAdvicesByCategory(this.props.match.params.categoryId);
-        this.setState({advicesByCategory: advicesByCategory})
+        this.setState({ advicesByCategory: advicesByCategory })
     }
 
     render() {
@@ -44,26 +44,26 @@ class AdviceCategory extends React.Component {
                         <h1>{advicesByCategory.name}</h1>
                         <Table striped bordered hover variant="dark">
                             <thead>
-                            <tr>
-                                <th>Nazwa porady</th>
-                                <th>Ocena</th>
-                                <th>Nawigacja</th>
-                            </tr>
+                                <tr>
+                                    <th>Nazwa porady</th>
+                                    <th>Ocena</th>
+                                    <th>Nawigacja</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {advicesByCategory.advices.map(advice => {
-                                return (
-                                    <tr key={advice.id}>
-                                        <td>{advice.name}</td>
-                                        <td>{advice.ranking}</td>
-                                        <td>
-                                            <Link className="btn btn-outline-success" to={{
-                                                pathname: '/advices/' + advice.id
-                                            }}>Wyświetl szczegóły</Link>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                                {advicesByCategory.advices.map(advice => {
+                                    return (
+                                        <tr key={advice.id}>
+                                            <td>{advice.name}</td>
+                                            <td>{advice.ranking}</td>
+                                            <td>
+                                                <Link className="btn btn-outline-success" to={{
+                                                    pathname: '/advices/' + advice.id
+                                                }}>Wyświetl szczegóły</Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </Table>
                         <Button variant="warning" onClick={() => {
@@ -79,7 +79,7 @@ class AdviceCategory extends React.Component {
             <Container>
                 <Row>
                     <Col>
-                        <Logo/>
+                        <Logo />
                     </Col>
                 </Row>
                 <Row>
@@ -88,7 +88,7 @@ class AdviceCategory extends React.Component {
                     </Col>
 
                     <Col sm={"auto"}>
-                        <PopularAdvices/>
+                        <PopularAdvices />
                     </Col>
                 </Row>
             </Container>

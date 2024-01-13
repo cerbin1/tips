@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Table from "react-bootstrap/Table";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AdviceService from "../service/advice-service";
 
 class AdviceCategories extends React.Component {
@@ -22,7 +22,7 @@ class AdviceCategories extends React.Component {
                 <Container>
                     <Row>
                         <Col>
-                            <Logo/>
+                            <Logo />
                         </Col>
                     </Row>
                     <Row>
@@ -31,26 +31,26 @@ class AdviceCategories extends React.Component {
                     <Row>
                         <Table striped bordered hover variant="dark">
                             <thead>
-                            <tr>
-                                <th>Kategoria</th>
-                                <th>Liczba porad</th>
-                                <th>Nawigacja</th>
-                            </tr>
+                                <tr>
+                                    <th>Kategoria</th>
+                                    <th>Liczba porad</th>
+                                    <th>Nawigacja</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {this.state.categories.map(category => {
-                                return (
-                                    <tr key={category.id}>
-                                        <td>{category.name}</td>
-                                        <td>{category.advicesCount}</td>
-                                        <td>
-                                            <Link className="btn btn-primary" to={{
-                                                pathname: '/categories/' + category.id
-                                            }}>Wyświetl porady</Link>
-                                        </td>
-                                    </tr>
-                                )
-                            })}
+                                {this.state.categories.map(category => {
+                                    return (
+                                        <tr key={category.id}>
+                                            <td>{category.name}</td>
+                                            <td>{category.advicesCount}</td>
+                                            <td>
+                                                <Link className="btn btn-primary" to={{
+                                                    pathname: '/categories/' + category.id
+                                                }}>Wyświetl porady</Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
                             </tbody>
                         </Table>
                     </Row>

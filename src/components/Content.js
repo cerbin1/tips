@@ -1,5 +1,5 @@
 import React from "react";
-import {Container, Row} from "react-bootstrap";
+import { Container, Row } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import AdviceContent from "./AdviceContent";
 import PopularAdvices from "./PopularAdvices";
@@ -10,15 +10,15 @@ const Content = () => {
         <Container>
             <Row>
                 <Col sm={"auto"}>
-                    <Logo/>
+                    <Logo />
                 </Col>
             </Row>
             <Row>
                 <Col sm={9}>
-                    <AdviceContent/>
+                    <AdviceContent />
                 </Col>
                 <Col sm={"auto"}>
-                    <PopularAdvices/>
+                    <PopularAdvices />
                 </Col>
             </Row>
         </Container>
