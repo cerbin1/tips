@@ -1,7 +1,8 @@
 export default function Header() {
   return (
     <header>
-      <span>Logo</span>
+      <div>Afterady</div>
+
       <nav>Navigation</nav>
       <span>Search</span>
     </header>
