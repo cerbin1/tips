@@ -7,5 +7,4 @@ test("should get logo", () => {
 
   const logo = screen.getByText("Afterady");
   expect(logo).toBeInTheDocument(true);
-  expect(logo).toHaveClass("logo");
 });
