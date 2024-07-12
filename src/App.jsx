@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import Header from "./components/Header";
 
 function App() {
   return (
     <>
-    Hello
+      <Header />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
