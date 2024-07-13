@@ -14,4 +14,10 @@ describe("Home", () => {
 
     expect(screen.getByText("Żyj lepiej z tymi poradami")).toBeInTheDocument();
   });
+
+  test("should display button for getting tip", () => {
+    render(<Home />);
+
+    expect(screen.getByRole("button")).toBeInTheDocument();
+  });
 });

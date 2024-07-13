@@ -3,6 +3,7 @@ export default function Home() {
     <section>
       <h1>HERO</h1>
       <h3>Żyj lepiej z tymi poradami</h3>
+      <button>Losuj poradę</button>
     </section>
   );
 }
