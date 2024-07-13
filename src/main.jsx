@@ -6,6 +6,7 @@ import RootLayout from "./components/router/RootLayout.jsx";
 import Home from "./components/home/Home.jsx";
 import AdviceDetails from "./components/advices/AdviceDetails.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
+import Categories from "./components/advices/Categories.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       { path: "/advices", element: <AdviceDetails /> },
+      { path: "/categories", element: <Categories /> },
       { path: "/ranking", element: <Ranking /> },
     ],
   },

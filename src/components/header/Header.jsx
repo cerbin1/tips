@@ -9,7 +9,7 @@ export default function Header() {
 
       <nav>
         <a href="#" className="nav-item">
-          Kategorie
+          <Link to="/categories">Kategorie</Link>
         </a>
         <a href="#" className="nav-item">
           <Link to="/ranking">Ranking</Link>
