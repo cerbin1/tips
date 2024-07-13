@@ -15,26 +15,26 @@ describe("Home", () => {
     expect(screen.getByText("Żyj lepiej z tymi poradami")).toBeInTheDocument();
   });
 
-  test("should display button for getting tip", () => {
+  test("should display button for getting advice", () => {
     render(<Home />);
 
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  test("should display tip, hide subtitle and change buttons after clicking to get random tip button", async () => {
+  test("should display advice, hide subtitle and change buttons after clicking to get random advice button", async () => {
     render(<Home />);
 
     const button = screen.getByRole("button");
     userEvent.click(button);
 
-    const tip = await screen.findByText("Porada");
-    expect(tip).toBeInTheDocument();
+    const advice = await screen.findByText("Porada");
+    expect(advice).toBeInTheDocument();
     expect(screen.getByText("Losuj poradę")).toBeInTheDocument();
     expect(screen.getByText("Szczegóły")).toBeInTheDocument();
     expect(screen.queryByText("Żyj lepiej z tymi poradami")).toBeNull();
   });
 
-  test("should display tips ranking", () => {
+  test("should display advices ranking", () => {
     render(<Home />);
 
     expect(screen.getByText("Najpopularniejsze")).toBeInTheDocument();
