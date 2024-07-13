@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export default function Header() {
   return (
     <header>
-      <div>
+      <div className="logo">
         <Link to="/">Afterady</Link>
       </div>
 

@@ -32,6 +32,13 @@ nav {
   color: #4d4d4d;
 }
 
+.logo a {
+  text-decoration: none;
+  color: #333333;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
 .home-container {
   display: flex;
   justify-content: end;
