@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import Ranking from "./Ranking";
 import { BrowserRouter } from "react-router-dom";
 
-describe("AdviceDetails", () => {
+describe("Ranking", () => {
   test("should display ranking", () => {
     render(<Ranking />, { wrapper: BrowserRouter });
 
