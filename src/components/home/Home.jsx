@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
   return (
     <>
@@ -8,9 +10,9 @@ export default function Home() {
             Odkryj najlepsze porady i wskazówki, które pomogą Ci w codziennym
             życiu.
           </p>
-          <a href="#" className="hero-button">
+          <Link className="hero-button" to="/random">
             Rozpocznij
-          </a>
+          </Link>
         </div>
       </section>
     </>

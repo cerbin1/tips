@@ -8,6 +8,9 @@ export default function Header() {
       </Link>
 
       <nav>
+        <Link className="nav-item" to="/random">
+          Losowa porada
+        </Link>
         <Link className="nav-item" to="/categories">
           Kategorie
         </Link>

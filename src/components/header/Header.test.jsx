@@ -29,6 +29,12 @@ describe("Header", () => {
     expect(suggestLink).toHaveAttribute("href", "/suggest");
   });
 
+  test("should get number of links", () => {
+    renderWithRouter(<Header />);
+
+    expect(screen.getAllByRole("link")).toHaveLength(5);
+  });
+
   test("renders the search text", () => {
     renderWithRouter(<Header />);
 

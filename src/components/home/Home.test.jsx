@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import Home from "./Home";
+import { renderWithRouter } from "../../test-utils";
 
 describe("Home", () => {
   test("should display hero section", () => {
-    render(<Home />);
+    renderWithRouter(<Home />);
 
     const hero = screen.getByTestId("hero-section");
     expect(hero).toBeInTheDocument();
@@ -24,18 +25,6 @@ describe("Home", () => {
     const button = screen.getByText(/Rozpocznij/);
     expect(button).toBeInTheDocument();
     expect(button).toHaveClass("hero-button");
-    expect(button).toHaveAttribute("href", "#");
+    expect(button).toHaveAttribute("href", "/random");
   });
 });
-
-<section data-testid="hero-section" className="hero">
-  <div className="hero-content">
-    <h1 className="hero-title">Witamy na naszej stronie!</h1>
-    <p className="hero-description">
-      Odkryj najlepsze porady i wskazówki, które pomogą Ci w codziennym życiu.
-    </p>
-    <a href="#" className="hero-button">
-      Rozpocznij
-    </a>
-  </div>
-</section>;
