@@ -17,6 +17,16 @@ export default function Home() {
           <button onClick={setRandomTip}>Losuj poradę</button>
           {tip && <button>Szczegóły</button>}
         </div>
+        <div>
+          <h2>Najpopularniejsze</h2>
+          <ul>
+            <li>Porada 1</li>
+            <li>Porada 2</li>
+            <li>Porada 3</li>
+            <li>Porada 4</li>
+            <li>Porada 5</li>
+          </ul>
+        </div>
       </div>
     </section>
   );
