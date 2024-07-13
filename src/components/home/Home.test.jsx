@@ -21,7 +21,7 @@ describe("Home", () => {
     expect(screen.getByRole("button")).toBeInTheDocument();
   });
 
-  test("should display tip and change buttons after clicking to get random tip button", async () => {
+  test("should display tip, hide subtitle and change buttons after clicking to get random tip button", async () => {
     render(<Home />);
 
     const button = screen.getByRole("button");
@@ -31,5 +31,6 @@ describe("Home", () => {
     expect(tip).toBeInTheDocument();
     expect(screen.getByText("Losuj poradę")).toBeInTheDocument();
     expect(screen.getByText("Szczegóły")).toBeInTheDocument();
+    expect(screen.queryByText("Żyj lepiej z tymi poradami")).toBeNull();
   });
 });
