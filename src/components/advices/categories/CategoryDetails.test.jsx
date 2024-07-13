@@ -1,9 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import CategoryDetails from "./CategoryDetails";
-import { BrowserRouter } from "react-router-dom";
+import { renderWithRouter } from "../../../test-utils";
+
 describe("CategoryDetails", () => {
   test("should display category details ", () => {
-    render(<CategoryDetails />, { wrapper: BrowserRouter });
+    renderWithRouter(<CategoryDetails />);
 
     expect(screen.getByText("Nazwa kategorii")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();

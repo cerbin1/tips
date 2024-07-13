@@ -1,17 +1,17 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import Header from "./Header";
-import { BrowserRouter } from "react-router-dom";
+import { renderWithRouter } from "../../test-utils";
 
 describe("Header", () => {
   test("should display logo", () => {
-    render(<Header />, { wrapper: BrowserRouter });
+    renderWithRouter(<Header />);
 
     const logo = screen.getByText("Afterady");
     expect(logo).toBeInTheDocument(true);
   });
 
   test("should display three navbar items", () => {
-    render(<Header />, { wrapper: BrowserRouter });
+    renderWithRouter(<Header />);
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument(true);

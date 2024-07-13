@@ -1,10 +1,10 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import Categories from "./Categories";
-import { BrowserRouter } from "react-router-dom";
+import { renderWithRouter } from "../../../test-utils";
 
 describe("Categories", () => {
   test("should display categories", () => {
-    render(<Categories />, { wrapper: BrowserRouter });
+    renderWithRouter(<Categories />);
 
     expect(screen.getByText("Kategorie")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();

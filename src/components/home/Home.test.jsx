@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Home from "./Home";
-import { BrowserRouter } from "react-router-dom";
+import { renderWithRouter } from "../../test-utils";
 
 describe("Home", () => {
   test("should display hero section", () => {
@@ -23,7 +23,7 @@ describe("Home", () => {
   });
 
   test("should display advice, hide subtitle and change buttons after clicking to get random advice button", async () => {
-    render(<Home />, { wrapper: BrowserRouter });
+    renderWithRouter(<Home />);
 
     const button = screen.getByRole("button");
     userEvent.click(button);
