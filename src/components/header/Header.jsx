@@ -14,9 +14,9 @@ export default function Header() {
         <Link className="nav-item" to="/ranking">
           Ranking
         </Link>
-        <a href="#" className="nav-item">
+        <Link className="nav-item" to="/suggest">
           Zaproponuj
-        </a>
+        </Link>
       </nav>
       <span>Search</span>
     </header>
