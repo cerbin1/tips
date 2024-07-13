@@ -10,8 +10,8 @@ export default function Home() {
   return (
     <section>
       <h1>HERO</h1>
+      {!tip && <h3>Żyj lepiej z tymi poradami</h3>}
       <div className="home-container">
-        {!tip && <h3>Żyj lepiej z tymi poradami</h3>}
         <div>
           {tip && <p>{tip}</p>}
           <button onClick={setRandomTip}>Losuj poradę</button>

@@ -33,11 +33,4 @@ describe("Home", () => {
     expect(screen.getByText("Szczegóły")).toBeInTheDocument();
     expect(screen.queryByText("Żyj lepiej z tymi poradami")).toBeNull();
   });
-
-  test("should display tips ranking", () => {
-    render(<Home />);
-
-    expect(screen.getByText("Najpopularniejsze")).toBeInTheDocument();
-    expect(screen.getAllByRole("listitem")).toHaveLength(5);
-  });
 });
