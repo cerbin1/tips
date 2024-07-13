@@ -64,18 +64,18 @@ export default function Ranking() {
             <th>Ocena</th>
             <th>Szczegóły</th>
           </tr>
-          <tbody>
-            {topAdvices.map((advice) => (
-              <tr key={advice.id}>
-                <td>{advice.name}</td>
-                <td>{advice.ranking}</td>
-                <td>
-                  <Link to="/advices">Wyświetl szczegóły</Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
         </thead>
+        <tbody>
+          {topAdvices.map((advice) => (
+            <tr key={advice.id}>
+              <td>{advice.name}</td>
+              <td>{advice.ranking}</td>
+              <td>
+                <Link to="/advices">Wyświetl szczegóły</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </>
   );
