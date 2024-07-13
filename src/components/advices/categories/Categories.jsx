@@ -40,7 +40,11 @@ export default function Categories() {
             <tr key={category.id}>
               <td>{category.name}</td>
               <td>{category.advicesCount}</td>
-              <Link>Wyświetl szczegóły</Link>
+              <td>
+                <Link to={"/categories/" + category.id}>
+                  Wyświetl szczegóły
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

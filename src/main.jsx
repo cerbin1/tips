@@ -7,6 +7,7 @@ import Home from "./components/home/Home.jsx";
 import AdviceDetails from "./components/advices/AdviceDetails.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
 import Categories from "./components/advices/categories/Categories.jsx";
+import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,7 +19,11 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       { path: "/advices", element: <AdviceDetails /> },
-      { path: "/categories", element: <Categories /> },
+      {
+        path: "/categories",
+        element: <Categories />,
+      },
+      { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
     ],
   },
