@@ -1,3 +1,11 @@
+const categories = [
+  { id: 0, name: "Wybierz kategorię" },
+  { id: 1, name: "Rozwój osobisty" },
+  { id: 2, name: "Dom" },
+  { id: 3, name: "Praca" },
+  { id: 4, name: "Zwierzęta" },
+];
+
 export default function SuggestAdvice() {
   return (
     <>
@@ -8,11 +16,11 @@ export default function SuggestAdvice() {
 
         <label htmlFor="name">Kategoria</label>
         <select name="category" id="category">
-          <option value="">Wybierz kategorie</option>
-          <option value="1">Rozwój osobisty</option>
-          <option value="2">Dom</option>
-          <option value="3">Praca</option>
-          <option value="4">Zwierźta</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </select>
 
         <label htmlFor="content">Treść</label>
