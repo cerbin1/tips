@@ -1,56 +1,56 @@
 import { Link } from "react-router-dom";
 
-export default function Ranking() {
+export default function rating() {
   const topAdvices = [
     {
       id: 1,
       name: "Porada 1",
-      ranking: 89234,
+      rating: 89234,
     },
     {
       id: 2,
       name: "Porada 2",
-      ranking: 1242,
+      rating: 1242,
     },
     {
       id: 3,
       name: "Porada 3",
-      ranking: 523,
+      rating: 523,
     },
     {
       id: 4,
       name: "Porada 4",
-      ranking: 423,
+      rating: 423,
     },
     {
       id: 5,
       name: "Porada 5",
-      ranking: 231,
+      rating: 231,
     },
     {
       id: 6,
       name: "Porada 6",
-      ranking: 120,
+      rating: 120,
     },
     {
       id: 7,
       name: "Porada 7",
-      ranking: 112,
+      rating: 112,
     },
     {
       id: 8,
       name: "Porada 8",
-      ranking: 86,
+      rating: 86,
     },
     {
       id: 9,
       name: "Porada 9",
-      ranking: 74,
+      rating: 74,
     },
     {
       id: 10,
       name: "Porada 10",
-      ranking: 52,
+      rating: 52,
     },
   ];
 
@@ -69,7 +69,7 @@ export default function Ranking() {
           {topAdvices.map((advice) => (
             <tr key={advice.id}>
               <td>{advice.name}</td>
-              <td>{advice.ranking}</td>
+              <td>{advice.rating}</td>
               <td>
                 <Link to="/advices">Wyświetl szczegóły</Link>
               </td>
