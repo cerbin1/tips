@@ -6,7 +6,7 @@ describe("Header", () => {
   test("should display logo", () => {
     renderWithRouter(<Header />);
 
-    const logoElement = screen.getByText(/Afterady/i);
+    const logoElement = screen.getByText(/Afterady/);
     expect(logoElement).toBeInTheDocument();
     expect(logoElement).toHaveClass("logo");
     expect(logoElement).toHaveAttribute("href", "/");
@@ -15,9 +15,9 @@ describe("Header", () => {
   test("should display navigation links", () => {
     renderWithRouter(<Header />);
 
-    const categoriesLink = screen.getByText(/Kategorie/i);
-    const rankingLink = screen.getByText(/Ranking/i);
-    const suggestLink = screen.getByText(/Zaproponuj/i);
+    const categoriesLink = screen.getByText(/Kategorie/);
+    const rankingLink = screen.getByText(/Ranking/);
+    const suggestLink = screen.getByText(/Zaproponuj/);
     expect(categoriesLink).toBeInTheDocument();
     expect(categoriesLink).toHaveClass("nav-item");
     expect(categoriesLink).toHaveAttribute("href", "/categories");
@@ -32,7 +32,7 @@ describe("Header", () => {
   test("renders the search text", () => {
     renderWithRouter(<Header />);
 
-    const searchText = screen.getByText(/Search-TODO/i);
+    const searchText = screen.getByText(/Search-TODO/);
     expect(searchText).toBeInTheDocument();
   });
 });
