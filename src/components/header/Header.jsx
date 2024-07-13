@@ -12,7 +12,7 @@ export default function Header() {
           Kategorie
         </a>
         <a href="#" className="nav-item">
-          Ranking
+          <Link to="/ranking">Ranking</Link>
         </a>
         <a href="#" className="nav-item">
           Zaproponuj
