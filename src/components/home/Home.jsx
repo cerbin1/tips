@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Home() {
   const [advice, setAdvice] = useState();
@@ -15,7 +16,7 @@ export default function Home() {
         <div>
           {advice && <p>{advice}</p>}
           <button onClick={setRandomAdvice}>Losuj poradę</button>
-          {advice && <button>Szczegóły</button>}
+          {advice && <Link to="/advices">Szczegóły</Link>}
         </div>
         <div>
           <h2>Najpopularniejsze</h2>
