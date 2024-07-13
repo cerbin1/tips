@@ -3,13 +3,13 @@ import Home from "./Home";
 import "@testing-library/jest-dom";
 
 describe("Home", () => {
-  test("should get hero section", () => {
+  test("should display hero section", () => {
     render(<Home />);
 
     expect(screen.getByText("HERO")).toBeInTheDocument(true);
   });
 
-  test("should get subtext", () => {
+  test("should display subtext", () => {
     render(<Home />);
 
     expect(screen.getByText("Żyj lepiej z tymi poradami")).toBeInTheDocument(
