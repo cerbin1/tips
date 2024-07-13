@@ -8,12 +8,12 @@ export default function Header() {
       </div>
 
       <nav>
-        <a href="#" className="nav-item">
-          <Link to="/categories">Kategorie</Link>
-        </a>
-        <a href="#" className="nav-item">
-          <Link to="/ranking">Ranking</Link>
-        </a>
+        <Link className="nav-item" to="/categories">
+          Kategorie
+        </Link>
+        <Link className="nav-item" to="/ranking">
+          Ranking
+        </Link>
         <a href="#" className="nav-item">
           Zaproponuj
         </a>
