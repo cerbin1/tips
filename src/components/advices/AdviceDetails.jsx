@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 export default function AdviceDetails() {
-  const [ranking, setRanking] = useState(5);
+  const [rating, setRating] = useState(5);
 
-  function increaseRanking() {
-    setRanking((previousRanking) => previousRanking + 1);
+  function increaseRating() {
+    setRating((previousRating) => previousRating + 1);
   }
 
   return (
@@ -19,8 +19,8 @@ export default function AdviceDetails() {
         occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est laborum.
       </p>
-      <p>Ocena przydatności: {ranking}</p>
-      <button onClick={increaseRanking}>Oceń jako przydatne</button>
+      <p>Ocena przydatności: {rating}</p>
+      <button onClick={increaseRating}>Oceń jako przydatne</button>
     </>
   );
 }
