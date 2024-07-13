@@ -1,7 +1,11 @@
+import { Link } from "react-router-dom";
+
 export default function Header() {
   return (
     <header>
-      <div>Afterady</div>
+      <div>
+        <Link to="/">Afterady</Link>
+      </div>
 
       <nav>
         <a href="#" className="nav-item">
