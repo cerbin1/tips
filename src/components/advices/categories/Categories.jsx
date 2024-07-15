@@ -1,5 +1,9 @@
 import { Link } from "react-router-dom";
 import TableHeader from "../../common/table/TableHeader";
+import TableRow from "../../common/table/TableRow";
+import TableData from "../../common/table/TableData";
+import TableDataLink from "../../common/table/TableDataLink";
+import Table from "../../common/table/Table";
 
 const categories = [
   {
@@ -36,40 +40,22 @@ const categories = [
 ];
 
 const tableHeaders = ["Kategoria", "Opis", "Liczba porad", "Szczegóły"];
+const rows = categories.map((category) => (
+  <TableRow key={category.id}>
+    <TableData>{category.name}</TableData>
+    <TableData>{category.description}</TableData>
+    <TableData>{category.advicesCount}</TableData>
+    <TableDataLink href={"/categories/" + category.id}>
+      Wyświetl szczegóły
+    </TableDataLink>
+  </TableRow>
+));
 
 export default function Categories() {
   return (
     <section className="container" data-testid="categories-section">
       <h1>Kategorie Porad</h1>
-      <table className="mt-4">
-        <TableHeader headers={tableHeaders} />
-        <tbody>
-          {categories.map((category) => (
-            <tr
-              key={category.id}
-              className="hover:bg-slate-200 even:bg-slate-100"
-            >
-              <td className="py-3 px-6 border border-slate-400">
-                {category.name}
-              </td>
-              <td className="py-3 px-6 border border-slate-400">
-                {category.description}
-              </td>
-              <td className="py-3 px-6 border border-slate-400">
-                {category.advicesCount}
-              </td>
-              <td className="py-3 px-6 border border-slate-400">
-                <Link
-                  className="text-blue-to-dark text-lg"
-                  to={"/categories/" + category.id}
-                >
-                  Wyświetl szczegóły
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table head={<TableHeader headers={tableHeaders} />} body={rows} />
     </section>
   );
 }

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import Table from "../../common/table/Table";
+import TableHeader from "../../common/table/TableHeader";
 
 export default function rating() {
   const topAdvices = [
@@ -55,44 +57,22 @@ export default function rating() {
   ];
 
   const tableHeaders = ["Porada", "Ocena", "Szczegóły"];
+  const rows = topAdvices.map((topAdvice) => (
+    <tr key={topAdvice.id} className="hover:bg-slate-200 even:bg-slate-100">
+      <td className="py-3 px-6 border border-slate-400">{topAdvice.name}</td>
+      <td className="py-3 px-6 border border-slate-400">{topAdvice.rating}</td>
+      <td className="py-3 px-6 border border-slate-400">
+        <Link className="text-blue-to-dark text-lg" to="/advices">
+          Wyświetl szczegóły
+        </Link>
+      </td>
+    </tr>
+  ));
 
   return (
     <section className="container" data-testid="ranking-section">
       <h1>Top 10 porad</h1>
-      <table className="mt-4">
-        <thead className="cursor-default">
-          <tr>
-            {tableHeaders.map((header) => (
-              <th
-                key={header}
-                className="py-3 px-6 border border-slate-300 bg-slate-400"
-              >
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {topAdvices.map((topAdvice) => (
-            <tr
-              key={topAdvice.id}
-              className="hover:bg-slate-200 even:bg-slate-100"
-            >
-              <td className="py-3 px-6 border border-slate-400">
-                {topAdvice.name}
-              </td>
-              <td className="py-3 px-6 border border-slate-400">
-                {topAdvice.rating}
-              </td>
-              <td className="py-3 px-6 border border-slate-400">
-                <Link className="text-blue-to-dark text-lg" to="/advices">
-                  Wyświetl szczegóły
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table head={<TableHeader headers={tableHeaders} />} body={rows} />
     </section>
   );
 }
