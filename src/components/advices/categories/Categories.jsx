@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import TableHeader from "../../common/TableHeader";
+import TableHeader from "../../common/table/TableHeader";
 
 const categories = [
   {
