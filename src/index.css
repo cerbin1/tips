@@ -25,7 +25,10 @@ h1 {
 .container {
   display: flex;
   flex-direction: column;
+  text-align: center;
+  justify-content: center;
   align-items: center;
+  margin: 0 auto;
   padding: 4rem 0;
 }
 
@@ -45,32 +48,6 @@ h1 {
   color: #00abe4;
 }
 /* Commons end */
-
-/* Random Advice start */
-.advice {
-  text-align: center;
-  font-size: 2rem;
-  padding: 3rem;
-  color: #0d47a1;
-  cursor: default;
-}
-
-.random-advice-button {
-  padding: 0.7rem 1.2rem;
-  font-size: 1.2rem;
-  color: white;
-  background-color: #00abe4;
-  text-decoration: none;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-  border: none;
-  cursor: pointer;
-}
-
-.random-advice-button:hover {
-  background-color: #0292c2;
-}
-/* Random Advice end */
 
 /* Categories start */
 .categories-table {

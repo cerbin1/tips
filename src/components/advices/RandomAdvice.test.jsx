@@ -15,7 +15,7 @@ describe("RandomAdvice", () => {
       name: "Pij dużo wody każdego dnia.",
     });
     expect(advice).toBeInTheDocument();
-    expect(advice).toHaveClass("advice");
+    expect(advice).toHaveClass("text-center py-4");
     const button = screen.getByRole("button", { name: "Wylosuj nową poradę" });
     expect(button).toBeInTheDocument();
   });

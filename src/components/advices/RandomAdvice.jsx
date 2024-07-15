@@ -16,8 +16,8 @@ export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState(advices[0]);
 
   return (
-    <section data-testid="random-advice-section" className="container">
-      <h1 className="advice">{randomAdvice}</h1>
+    <section data-testid="random-advice-section" className="container ">
+      <h1 className="text-center py-4">{randomAdvice}</h1>
       <Button
         onClick={() =>
           setRandomAdvice(advices[Math.floor(Math.random() * advices.length)])
