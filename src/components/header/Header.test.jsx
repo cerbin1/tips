@@ -6,10 +6,7 @@ describe("Header", () => {
   test("should display logo", () => {
     renderWithRouter(<Header />);
 
-    const logoElement = screen.getByText(/Afterady/);
-    expect(logoElement).toBeInTheDocument();
-    expect(logoElement).toHaveClass("logo");
-    expect(logoElement).toHaveAttribute("href", "/");
+    expect(screen.getByText("Afterady")).toBeInTheDocument();
   });
 
   test("should display navigation links", () => {

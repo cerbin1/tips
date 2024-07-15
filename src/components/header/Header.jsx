@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
+import Logo from "./Logo";
 
 export default function Header() {
   return (
     <header>
       <Link className="logo" to="/">
-        Afterady
+        <Logo />
       </Link>
 
       <nav>
