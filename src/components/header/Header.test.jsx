@@ -3,6 +3,12 @@ import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
 
 describe("Header", () => {
+  test("should display header", () => {
+    renderWithRouter(<Header />);
+
+    expect(screen.getByRole("banner")).toBeInTheDocument();
+  });
+
   test("should display logo", () => {
     renderWithRouter(<Header />);
 
