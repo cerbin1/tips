@@ -54,29 +54,45 @@ export default function rating() {
     },
   ];
 
+  const tableHeaders = ["Porada", "Ocena", "Szczegóły"];
+
   return (
-    <>
-      <h2>Top 10 porad</h2>
-      <table>
-        <thead>
+    <section className="container" data-testid="ranking-section">
+      <h1>Top 10 porad</h1>
+      <table className="mt-4">
+        <thead className="cursor-default">
           <tr>
-            <th>Porada</th>
-            <th>Ocena</th>
-            <th>Szczegóły</th>
+            {tableHeaders.map((header) => (
+              <th
+                key={header}
+                className="py-3 px-6 border border-slate-300 bg-slate-400"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {topAdvices.map((advice) => (
-            <tr key={advice.id}>
-              <td>{advice.name}</td>
-              <td>{advice.rating}</td>
-              <td>
-                <Link to="/advices">Wyświetl szczegóły</Link>
+          {topAdvices.map((topAdvice) => (
+            <tr
+              key={topAdvice.id}
+              className="hover:bg-slate-200 even:bg-slate-100"
+            >
+              <td className="py-3 px-6 border border-slate-400">
+                {topAdvice.name}
+              </td>
+              <td className="py-3 px-6 border border-slate-400">
+                {topAdvice.rating}
+              </td>
+              <td className="py-3 px-6 border border-slate-400">
+                <Link className="text-blue-to-dark text-lg" to="/advices">
+                  Wyświetl szczegóły
+                </Link>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </>
+    </section>
   );
 }
