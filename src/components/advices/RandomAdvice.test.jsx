@@ -18,7 +18,6 @@ describe("RandomAdvice", () => {
     expect(advice).toHaveClass("advice");
     const button = screen.getByRole("button", { name: "Wylosuj nową poradę" });
     expect(button).toBeInTheDocument();
-    expect(button).toHaveClass("random-advice-button");
   });
 
   test("should display new random advice after button click", async () => {

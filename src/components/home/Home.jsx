@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Button from "../common/Button";
 
 export default function Home() {
   return (
@@ -13,9 +14,9 @@ export default function Home() {
             Odkryj najlepsze porady i wskazówki, które pomogą Ci w codziennym
             życiu.
           </p>
-          <button className="px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300">
+          <Button>
             <Link to="/random">Rozpocznij</Link>
-          </button>
+          </Button>
         </div>
       </section>
     </>

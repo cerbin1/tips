@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Button from "../common/Button";
 
 const advices = [
   "Pij dużo wody każdego dnia.",
@@ -17,14 +18,13 @@ export default function RandomAdvice() {
   return (
     <section data-testid="random-advice-section" className="container">
       <h1 className="advice">{randomAdvice}</h1>
-      <button
-        className="random-advice-button"
+      <Button
         onClick={() =>
           setRandomAdvice(advices[Math.floor(Math.random() * advices.length)])
         }
       >
         Wylosuj nową poradę
-      </button>
+      </Button>
     </section>
   );
 }
