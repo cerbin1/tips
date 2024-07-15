@@ -7,9 +7,9 @@ describe("Logo", () => {
 
     const content = screen.getByText("Afterady");
     expect(content).toBeInTheDocument();
-    expect(content).toHaveClass("text-blue");
     expect(content).toHaveClass("no-underline");
     expect(content).toHaveClass("text-2xl");
     expect(content).toHaveClass("font-bold");
+    expect(content).toHaveClass("text-blue-to-dark");
   });
 });

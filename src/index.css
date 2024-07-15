@@ -29,13 +29,20 @@ h1 {
   padding: 4rem 0;
 }
 
-.text-blue {
+.text-blue-to-dark {
   color: #00abe4;
 }
-/* Colors used: Light blue (#E9F1FA), bright blue (#00ABE4) */
 
-.text-blue:hover {
+.text-blue-to-dark:hover {
   color: #037ba3;
+}
+
+.text-blue-to-light {
+  color: #037ba3;
+}
+
+.text-blue-to-light:hover {
+  color: #00abe4;
 }
 /* Commons end */
 
