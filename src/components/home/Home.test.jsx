@@ -8,23 +8,21 @@ describe("Home", () => {
 
     const hero = screen.getByTestId("hero-section");
     expect(hero).toBeInTheDocument();
-    expect(hero).toHaveClass("hero");
+    expect(hero).toHaveClass("flex justify-center text-center");
     const title = screen.getByRole("heading", {
       name: "Witamy na naszej stronie!",
     });
-
     expect(title).toBeInTheDocument();
-    expect(title).toHaveClass("hero-title");
-
     const description = screen.getByText(
       "Odkryj najlepsze porady i wskazówki, które pomogą Ci w codziennym życiu."
     );
     expect(description).toBeInTheDocument();
-    expect(description).toHaveClass("hero-description");
-
-    const button = screen.getByText("Rozpocznij");
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveClass("hero-button");
-    expect(button).toHaveAttribute("href", "/random");
+    expect(description).toHaveClass("text-2xl mb-8");
+    const link = screen.getByText("Rozpocznij");
+    expect(link).toBeInTheDocument();
+    expect(link.parentNode).toHaveClass(
+      "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
+    );
+    expect(link).toHaveAttribute("href", "/random");
   });
 });
