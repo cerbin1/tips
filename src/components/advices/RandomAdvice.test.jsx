@@ -10,7 +10,6 @@ describe("RandomAdvice", () => {
 
     const section = screen.getByTestId("random-advice-section");
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass("container");
     const advice = screen.getByRole("heading", {
       name: "Pij dużo wody każdego dnia.",
     });

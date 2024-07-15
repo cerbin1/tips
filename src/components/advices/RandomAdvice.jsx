@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../common/Button";
+import ContainerSection from "../common/ContainerSection";
 
 const advices = [
   "Pij dużo wody każdego dnia.",
@@ -16,7 +17,7 @@ export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState(advices[0]);
 
   return (
-    <section data-testid="random-advice-section" className="container ">
+    <ContainerSection data-testid="random-advice-section">
       <h1 className="text-center py-4">{randomAdvice}</h1>
       <Button
         onClick={() =>
@@ -25,6 +26,6 @@ export default function RandomAdvice() {
       >
         Wylosuj nową poradę
       </Button>
-    </section>
+    </ContainerSection>
   );
 }

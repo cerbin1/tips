@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Table from "../../common/table/Table";
 import TableHeader from "../../common/table/TableHeader";
 import TableBody from "../../common/table/TableBody";
+import ContainerSection from "../../common/ContainerSection";
 
 export default function rating() {
   const topAdvices = [
@@ -71,12 +72,12 @@ export default function rating() {
   ));
 
   return (
-    <section className="container" data-testid="ranking-section">
+    <ContainerSection data-testid="ranking-section">
       <h1>Top 10 porad</h1>
       <Table
         head={<TableHeader headers={tableHeaders} />}
         body={<TableBody rows={rows} />}
       />
-    </section>
+    </ContainerSection>
   );
 }

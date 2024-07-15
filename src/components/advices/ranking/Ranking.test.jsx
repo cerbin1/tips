@@ -8,7 +8,6 @@ describe("Ranking", () => {
 
     const section = screen.getByTestId("ranking-section");
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass("container");
     expect(screen.getByText("Top 10 porad")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);

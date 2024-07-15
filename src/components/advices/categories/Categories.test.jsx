@@ -9,7 +9,6 @@ describe("Categories", () => {
 
     const section = screen.getByTestId("categories-section");
     expect(section).toBeInTheDocument();
-    expect(section).toHaveClass("container");
     expect(screen.getByText("Kategorie Porad")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);

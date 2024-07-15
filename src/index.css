@@ -22,16 +22,6 @@ h1 {
 /* Global end */
 
 /* Commons start */
-.container {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  padding: 4rem 0;
-}
-
 .text-blue-to-dark {
   color: #00abe4;
 }

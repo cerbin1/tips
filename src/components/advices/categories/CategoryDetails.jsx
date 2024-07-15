@@ -4,6 +4,7 @@ import TableBody from "../../common/table/TableBody";
 import TableRow from "../../common/table/TableRow";
 import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
+import ContainerSection from "../../common/ContainerSection";
 
 const advices = [
   {
@@ -43,12 +44,12 @@ const rows = advices.map((advice) => (
 
 export default function CategoryDetails() {
   return (
-    <section data-testid="category-details-section" className="container">
+    <ContainerSection data-testid="category-details-section">
       <h1>Nazwa kategorii</h1>
       <Table
         head={<TableHeader headers={["Porada", "Ocena", "Szczegóły"]} />}
         body={<TableBody rows={rows} />}
       />
-    </section>
+    </ContainerSection>
   );
 }

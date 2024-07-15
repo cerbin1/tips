@@ -5,6 +5,7 @@ import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
 import Table from "../../common/table/Table";
 import TableBody from "../../common/table/TableBody";
+import ContainerSection from "../../common/ContainerSection";
 
 const categories = [
   {
@@ -54,12 +55,12 @@ const rows = categories.map((category) => (
 
 export default function Categories() {
   return (
-    <section className="container" data-testid="categories-section">
+    <ContainerSection data-testid="categories-section">
       <h1>Kategorie Porad</h1>
       <Table
         head={<TableHeader headers={tableHeaders} />}
         body={<TableBody rows={rows} />}
       />
-    </section>
+    </ContainerSection>
   );
 }
