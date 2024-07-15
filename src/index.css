@@ -48,34 +48,3 @@ h1 {
   color: #00abe4;
 }
 /* Commons end */
-
-/* Categories start */
-.categories-table {
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-
-.categories-table thead {
-  cursor: default;
-}
-
-.categories-table th,
-.categories-table td {
-  border: 1px solid #ddd;
-  padding: 0.8rem 1rem;
-  text-align: left;
-}
-
-.categories-table th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-.categories-table tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.categories-table tr:hover {
-  background-color: #f1f1f1;
-}
-/* Categories end */

@@ -34,27 +34,45 @@ const categories = [
   },
 ];
 
+const tableHeaders = ["Kategoria", "Opis", "Liczba porad", "Szczegóły"];
+
 export default function Categories() {
   return (
     <section className="container" data-testid="categories-section">
-      <h1 className="categories-title">Kategorie Porad</h1>
-      <table className="categories-table">
-        <thead>
+      <h1>Kategorie Porad</h1>
+      <table className="mt-4">
+        <thead className="cursor-default">
           <tr>
-            <th>Kategoria</th>
-            <th>Opis</th>
-            <th>Liczba porad</th>
-            <th>Szczegóły</th>
+            {tableHeaders.map((header) => (
+              <th
+                key={header}
+                className="py-3 px-6 border border-slate-300 bg-slate-400"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {categories.map((category) => (
-            <tr key={category.id}>
-              <td>{category.name}</td>
-              <td>{category.description}</td>
-              <td>{category.advicesCount}</td>
-              <td>
-                <Link to={"/categories/" + category.id}>
+            <tr
+              key={category.id}
+              className="hover:bg-slate-200 even:bg-slate-100"
+            >
+              <td className="py-3 px-6 border border-slate-400">
+                {category.name}
+              </td>
+              <td className="py-3 px-6 border border-slate-400">
+                {category.description}
+              </td>
+              <td className="py-3 px-6 border border-slate-400">
+                {category.advicesCount}
+              </td>
+              <td className="py-3 px-6 border border-slate-400">
+                <Link
+                  className="text-blue-to-dark text-lg"
+                  to={"/categories/" + category.id}
+                >
                   Wyświetl szczegóły
                 </Link>
               </td>
