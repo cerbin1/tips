@@ -3,7 +3,15 @@ import TableData from "./TableData";
 
 describe("TableData", () => {
   test("should display table data", () => {
-    render(<TableData>test</TableData>);
+    render(
+      <table>
+        <tbody>
+          <tr>
+            <TableData>test</TableData>
+          </tr>
+        </tbody>
+      </table>
+    );
 
     const content = screen.getByText("test");
     expect(content).toBeInTheDocument();

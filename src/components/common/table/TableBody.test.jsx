@@ -6,15 +6,17 @@ import TableData from "./TableData";
 describe("TableBody", () => {
   test("should display table body", () => {
     render(
-      <TableBody
-        rows={
-          <TableRow rowKey={1}>
-            <TableData>test1</TableData>
-            <TableData>test2</TableData>
-            <TableData>test3</TableData>
-          </TableRow>
-        }
-      />
+      <table>
+        <TableBody
+          rows={
+            <TableRow rowKey="1">
+              <TableData>test1</TableData>
+              <TableData>test2</TableData>
+              <TableData>test3</TableData>
+            </TableRow>
+          }
+        />
+      </table>
     );
 
     const tableBody = screen.getByRole("rowgroup");

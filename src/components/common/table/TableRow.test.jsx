@@ -5,9 +5,16 @@ import { expect } from "vitest";
 describe("TableRow", () => {
   test("should display table row", () => {
     render(
-      <TableRow key="test">
-        <td>test1</td> <td>test2</td> <td>test3</td> <td>test4</td>
-      </TableRow>
+      <table>
+        <tbody>
+          <TableRow key="test">
+            <td>test1</td>
+            <td>test2</td>
+            <td>test3</td>
+            <td>test4</td>
+          </TableRow>
+        </tbody>
+      </table>
     );
 
     const row = screen.getByRole("row");

@@ -4,7 +4,11 @@ import TableHeader from "./TableHeader";
 describe("TableHeader", () => {
   test("should display table header", () => {
     const headers = ["header1", "header2", "header3", "header4"];
-    render(<TableHeader headers={headers} />);
+    render(
+      <table>
+        <TableHeader headers={headers} />
+      </table>
+    );
 
     const tableHeader = screen.getByRole("rowgroup");
     expect(tableHeader).toBeInTheDocument();

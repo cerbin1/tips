@@ -4,7 +4,15 @@ import TableDataLink from "./TableDataLink";
 
 describe("TableDataLink", () => {
   test("should display table data link", () => {
-    renderWithRouter(<TableDataLink href="/test">test</TableDataLink>);
+    renderWithRouter(
+      <table>
+        <tbody>
+          <tr>
+            <TableDataLink href="/test">test</TableDataLink>
+          </tr>
+        </tbody>
+      </table>
+    );
 
     const content = screen.getByRole("cell");
     expect(content).toBeInTheDocument();

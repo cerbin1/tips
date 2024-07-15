@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import RandomAdvice from "./RandomAdvice";
 import { vi } from "vitest";
 
@@ -31,7 +31,9 @@ describe("RandomAdvice", () => {
 
     const button = screen.getByRole("button", { name: "Wylosuj nową poradę" });
     expect(button).toBeInTheDocument();
-    button.click();
+    act(() => {
+      button.click();
+    });
 
     const newAdvice = await screen.findByRole("heading", {
       name: "Regularnie uprawiaj sport.",
