@@ -1,3 +1,4 @@
+/* Global start */
 * {
   margin: 0;
   padding: 0;
@@ -8,7 +9,13 @@ body {
   color: #333;
   font-family: "Roboto", sans-serif;
 }
+/* Global end */
 
+/* Commons start */
+
+/* Commons end */
+
+/* Header start */
 header {
   border-bottom: 1px solid #e1f5fe;
   display: flex;
@@ -42,6 +49,7 @@ nav {
   text-decoration: underline;
   color: #0d47a1;
 }
+/* Header stop */
 
 /* Home start */
 .hero {
