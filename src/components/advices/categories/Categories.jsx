@@ -4,6 +4,7 @@ import TableRow from "../../common/table/TableRow";
 import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
 import Table from "../../common/table/Table";
+import TableBody from "../../common/table/TableBody";
 
 const categories = [
   {
@@ -55,7 +56,10 @@ export default function Categories() {
   return (
     <section className="container" data-testid="categories-section">
       <h1>Kategorie Porad</h1>
-      <Table head={<TableHeader headers={tableHeaders} />} body={rows} />
+      <Table
+        head={<TableHeader headers={tableHeaders} />}
+        body={<TableBody rows={rows} />}
+      />
     </section>
   );
 }

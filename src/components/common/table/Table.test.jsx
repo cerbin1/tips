@@ -5,6 +5,7 @@ import TableRow from "./TableRow";
 import Table from "./Table";
 import TableData from "./TableData";
 import { renderWithRouter } from "../../../test-utils";
+import TableBody from "./TableBody";
 
 describe("Table", () => {
   test("should display table", () => {
@@ -22,7 +23,7 @@ describe("Table", () => {
         head={
           <TableHeader headers={["header1", "header2", "header3", "header4"]} />
         }
-        body={tableRows}
+        body={<TableBody rows={tableRows} />}
       ></Table>
     );
 
