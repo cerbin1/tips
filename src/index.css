@@ -46,16 +46,6 @@ h1 {
 }
 /* Commons end */
 
-/* Header start */
-header {
-  border-bottom: 1px solid #e1f5fe;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-}
-/* Header stop */
-
 /* Home start */
 .hero {
   display: flex;

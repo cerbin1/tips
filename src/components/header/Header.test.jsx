@@ -6,7 +6,11 @@ describe("Header", () => {
   test("should display header", () => {
     renderWithRouter(<Header />);
 
-    expect(screen.getByRole("banner")).toBeInTheDocument();
+    const header = screen.getByRole("banner");
+    expect(header).toBeInTheDocument();
+    expect(header).toHaveClass(
+      "flex justify-between items-center px-4 border-b border-cyan-100"
+    );
   });
 
   test("should display logo", () => {

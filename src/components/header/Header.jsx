@@ -4,7 +4,7 @@ import NavItem from "./NavItem";
 
 export default function Header() {
   return (
-    <header>
+    <header className="flex justify-between items-center px-4 border-b border-cyan-100">
       <Link className="logo" to="/">
         <Logo />
       </Link>
