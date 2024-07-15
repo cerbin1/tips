@@ -1,6 +1,6 @@
 export default function NavItem({ href, children }) {
   return (
-    <a className="nav-item" href={href}>
+    <a className="no-underline px-12 text-blue-to-light" href={href}>
       {children}
     </a>
   );

@@ -8,7 +8,9 @@ describe("NavItem", () => {
 
     const test = screen.getByText("Link");
     expect(test).toBeInTheDocument();
-    expect(test).toHaveClass("nav-item");
+    expect(test).toHaveClass("no-underline");
+    expect(test).toHaveClass("text-blue-to-light");
+    expect(test).toHaveClass("px-12");
     expect(test).toHaveAttribute("href", "/link");
   });
 });

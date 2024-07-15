@@ -54,21 +54,6 @@ header {
   justify-content: space-between;
   padding: 0 1rem;
 }
-
-nav {
-  padding: 1rem 0;
-}
-
-.nav-item {
-  text-decoration: none;
-  color: #037ba3;
-  padding: 0 4rem;
-}
-
-.nav-item:hover {
-  text-decoration: underline;
-  color: #00abe4;
-}
 /* Header stop */
 
 /* Home start */

@@ -9,20 +9,23 @@ describe("Header", () => {
     expect(screen.getByText("Afterady")).toBeInTheDocument();
   });
 
-  test("should display navigation links", () => {
+  test("should display navbar with links", () => {
     renderWithRouter(<Header />);
 
+    const navbar = screen.getByRole("navigation");
+    expect(navbar).toBeInTheDocument();
+    expect(navbar).tohaveclass("navbar");
+    const randomAdviceLink = screen.getByText("Losowa porada");
     const categoriesLink = screen.getByText("Kategorie");
     const rankingLink = screen.getByText("Ranking");
     const suggestLink = screen.getByText("Zaproponuj");
+    expect(randomAdviceLink).toBeInTheDocument();
+    expect(randomAdviceLink).toHaveAttribute("href", "/random");
     expect(categoriesLink).toBeInTheDocument();
-    expect(categoriesLink).toHaveClass("nav-item");
     expect(categoriesLink).toHaveAttribute("href", "/categories");
     expect(rankingLink).toBeInTheDocument();
-    expect(rankingLink).toHaveClass("nav-item");
     expect(rankingLink).toHaveAttribute("href", "/ranking");
     expect(suggestLink).toBeInTheDocument();
-    expect(suggestLink).toHaveClass("nav-item");
     expect(suggestLink).toHaveAttribute("href", "/suggest");
   });
 
@@ -32,7 +35,7 @@ describe("Header", () => {
     expect(screen.getAllByRole("link")).toHaveLength(5);
   });
 
-  test("renders the search text", () => {
+  test("should display search bar", () => {
     renderWithRouter(<Header />);
 
     const searchText = screen.getByText("Search-TODO");
