@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import TableHeader from "../../common/TableHeader";
 
 const categories = [
   {
@@ -41,18 +42,7 @@ export default function Categories() {
     <section className="container" data-testid="categories-section">
       <h1>Kategorie Porad</h1>
       <table className="mt-4">
-        <thead className="cursor-default">
-          <tr>
-            {tableHeaders.map((header) => (
-              <th
-                key={header}
-                className="py-3 px-6 border border-slate-300 bg-slate-400"
-              >
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
+        <TableHeader headers={tableHeaders} />
         <tbody>
           {categories.map((category) => (
             <tr

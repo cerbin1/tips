@@ -16,14 +16,7 @@ describe("Ranking", () => {
     expect(table).toBeInTheDocument();
     expect(table).toHaveClass("mt-4");
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
-    expect(screen.getAllByRole("rowgroup")[0]).toHaveClass("cursor-default");
-    const headers = screen.getAllByRole("columnheader");
-    expect(headers).toHaveLength(3);
-    headers.forEach((header) => {
-      expect(header).toHaveClass(
-        "py-3 px-6 border border-slate-300 bg-slate-400"
-      );
-    });
+    expect(screen.getAllByRole("columnheader")).toHaveLength(3);
     const rows = screen.getAllByRole("row");
     expect(rows).toHaveLength(11);
     rows.shift(); // first row is table header without className
