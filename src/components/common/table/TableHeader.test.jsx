@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import TableHeader from "./TableHeader";
 
 describe("TableHeader", () => {
-  test("should render component", () => {
+  test("should display table header", () => {
     const tableHeaders = ["header1", "header2", "header3", "header4"];
     render(<TableHeader headers={tableHeaders} />);
 
