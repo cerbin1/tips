@@ -14,7 +14,7 @@ describe("Header", () => {
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
-    expect(navbar).tohaveclass("navbar");
+    expect(navbar).toHaveClass("py-4");
     const randomAdviceLink = screen.getByText("Losowa porada");
     const categoriesLink = screen.getByText("Kategorie");
     const rankingLink = screen.getByText("Ranking");
