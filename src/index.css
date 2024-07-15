@@ -9,9 +9,21 @@ body {
   color: #333;
   font-family: "Roboto", sans-serif;
 }
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+  cursor: default;
+}
 /* Global end */
 
 /* Commons start */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 0;
+}
 
 /* Commons end */
 
@@ -61,13 +73,7 @@ nav {
 .hero-content {
   padding: 4rem 2rem;
   background-color: #e9f1fa;
-  color: #0d47a1;
   border-radius: 10px;
-}
-
-.hero-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
 }
 
 .hero-description {
@@ -91,13 +97,6 @@ nav {
 /* Home end */
 
 /* Random Advice start */
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 4rem 0;
-}
-
 .advice {
   text-align: center;
   font-size: 2rem;
@@ -122,3 +121,34 @@ nav {
   background-color: #0292c2;
 }
 /* Random Advice end */
+
+/* Categories start */
+.categories-table {
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.categories-table thead {
+  cursor: default;
+}
+
+.categories-table th,
+.categories-table td {
+  border: 1px solid #ddd;
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+
+.categories-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.categories-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.categories-table tr:hover {
+  background-color: #f1f1f1;
+}
+/* Categories end */
