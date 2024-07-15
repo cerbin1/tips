@@ -34,7 +34,6 @@ describe("Table", () => {
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
     const rows = screen.getAllByRole("row");
-
     expect(rows).toHaveLength(5);
     rows.shift(); // first row is table header without className
     rows.forEach((row) => {
@@ -45,7 +44,6 @@ describe("Table", () => {
     cells.forEach((cell) => {
       expect(cell).toHaveClass("py-3 px-6 border border-slate-400");
     });
-
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(4);
     links.forEach((link) => {
