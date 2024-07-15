@@ -1,4 +1,9 @@
-import { Link } from "react-router-dom";
+import Table from "../../common/table/Table";
+import TableHeader from "../../common/table/TableHeader";
+import TableBody from "../../common/table/TableBody";
+import TableRow from "../../common/table/TableRow";
+import TableData from "../../common/table/TableData";
+import TableDataLink from "../../common/table/TableDataLink";
 
 const advices = [
   {
@@ -28,30 +33,22 @@ const advices = [
   },
 ];
 
+const rows = advices.map((advice) => (
+  <TableRow key={advice.id}>
+    <TableData>{advice.name}</TableData>
+    <TableData>{advice.rating}</TableData>
+    <TableDataLink href={"/advices"}>Wyświetl szczegóły</TableDataLink>
+  </TableRow>
+));
+
 export default function CategoryDetails() {
   return (
-    <>
+    <section data-testid="category-details-section" className="container">
       <h1>Nazwa kategorii</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Porada</th>
-            <th>Ocena</th>
-            <th>Szczegóły</th>
-          </tr>
-        </thead>
-        <tbody>
-          {advices.map((advice) => (
-            <tr key={advice.id}>
-              <td>{advice.name}</td>
-              <td>{advice.rating}</td>
-              <td>
-                <Link to="/advices">Wyświetl szczegóły</Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+      <Table
+        head={<TableHeader headers={["Porada", "Ocena", "Szczegóły"]} />}
+        body={<TableBody rows={rows} />}
+      />
+    </section>
   );
 }

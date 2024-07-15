@@ -6,8 +6,12 @@ describe("CategoryDetails", () => {
   test("should display category details ", () => {
     renderWithRouter(<CategoryDetails />);
 
+    const section = screen.getByTestId("category-details-section");
+    expect(section).toBeInTheDocument();
+    expect(section).toHaveClass("container");
     expect(screen.getByText("Nazwa kategorii")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.queryAllByRole("row")).toHaveLength(6);
+    expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
+    expect(screen.queryAllByRole("columnheader")).toHaveLength(3);
   });
 });
