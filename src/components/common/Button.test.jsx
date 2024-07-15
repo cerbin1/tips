@@ -2,10 +2,6 @@ import { render, screen } from "@testing-library/react";
 import Button from "./Button";
 
 describe("Button", () => {
-  test("should render component", () => {
-    expect(true).toBeTruthy();
-  });
-
   test("should display button", () => {
     render(<Button onClick={() => {}}>test</Button>);
 
