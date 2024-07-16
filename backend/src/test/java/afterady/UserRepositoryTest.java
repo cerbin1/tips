@@ -80,23 +80,23 @@ public class UserRepositoryTest {
         User user = new User(1L, "username", "email", "password", emptySet());
         userRepository.save(user);
         assertEquals(1, userRepository.count());
-        User test1 = userRepository.findById(1L).orElseThrow();
-        assertEquals("username", test1.getUsername());
-        assertEquals("email", test1.getEmail());
-        assertEquals("password", test1.getPassword());
-        assertTrue(test1.getRoles().isEmpty());
+        User created = userRepository.findById(1L).orElseThrow();
+        assertEquals("username", created.getUsername());
+        assertEquals("email", created.getEmail());
+        assertEquals("password", created.getPassword());
+        assertTrue(created.getRoles().isEmpty());
 
         // when
-        User updatedUser = new User(1L, "username2", "email2", "password2", emptySet());
-        userRepository.save(updatedUser);
+        User userWithSameIdAndDifferentOtherData = new User(1L, "username2", "email2", "password2", emptySet());
+        userRepository.save(userWithSameIdAndDifferentOtherData);
 
         // then
         assertEquals(1, userRepository.count());
-        User foundUser = userRepository.findById(1L).orElseThrow();
-        assertEquals("username2", foundUser.getUsername());
-        assertEquals("email2", foundUser.getEmail());
-        assertEquals("password2", foundUser.getPassword());
-        assertTrue(foundUser.getRoles().isEmpty());
+        User updated = userRepository.findById(1L).orElseThrow();
+        assertEquals("username2", updated.getUsername());
+        assertEquals("email2", updated.getEmail());
+        assertEquals("password2", updated.getPassword());
+        assertTrue(updated.getRoles().isEmpty());
     }
 
 }
