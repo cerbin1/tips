@@ -115,4 +115,16 @@ public class UserRepositoryTest {
         // when & then
         assertTrue(userRepository.existsByUsername("username"));
     }
+
+
+    @Test
+    public void shouldReturnTrueIfUserByEmailExists() {
+        // given
+        assertFalse(userRepository.existsByEmail("email"));
+        User user = new User(1L, "username", "email", "password", emptySet());
+        userRepository.save(user);
+
+        // when & then
+        assertTrue(userRepository.existsByEmail("email"));
+    }
 }
