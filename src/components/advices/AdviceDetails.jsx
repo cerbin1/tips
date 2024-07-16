@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ContainerSection from "../common/ContainerSection";
+import Button from "../common/Button";
 
 export default function AdviceDetails() {
   const [rating, setRating] = useState(5);
@@ -8,8 +10,8 @@ export default function AdviceDetails() {
   }
 
   return (
-    <>
-      <h2>Nazwa porady</h2>
+    <ContainerSection data-testid="advice-details-section">
+      <h1>Nazwa porady</h1>
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
         tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -20,7 +22,9 @@ export default function AdviceDetails() {
         mollit anim id est laborum.
       </p>
       <p>Ocena przydatności: {rating}</p>
-      <button onClick={increaseRating}>Oceń jako przydatne</button>
-    </>
+      <Button>
+        <button onClick={increaseRating}>Oceń jako przydatne</button>
+      </Button>
+    </ContainerSection>
   );
 }

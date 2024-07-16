@@ -3,6 +3,12 @@ import AdviceDetails from "./AdviceDetails";
 import userEvent from "@testing-library/user-event";
 
 describe("AdviceDetails", () => {
+  test("should display container", () => {
+    render(<AdviceDetails />);
+
+    expect(screen.getByTestId("advice-details-section")).toBeInTheDocument();
+  });
+
   test("should display advice name and content", () => {
     render(<AdviceDetails />);
 
