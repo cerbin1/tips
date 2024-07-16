@@ -113,4 +113,20 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Username is already taken.")));
     }
+
+
+    @Test
+    public void shouldReturn400WhenEmailAlreadyExists() throws Exception {
+        // given
+        when(userRepository.existsByEmail("email")).thenReturn(true);
+
+        // when & then
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email", "username", "password", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Email is already in use.")));
+    }
 }
