@@ -4,6 +4,7 @@ import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +30,11 @@ public class UserRepositoryTest {
     @AfterAll
     static void afterAll() {
         postgres.stop();
+    }
+
+    @BeforeEach
+    void beforeEach() {
+        userRepository.deleteAll();
     }
 
     @DynamicPropertySource
