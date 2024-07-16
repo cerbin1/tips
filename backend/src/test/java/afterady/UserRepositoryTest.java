@@ -105,4 +105,14 @@ public class UserRepositoryTest {
         assertTrue(updated.getRoles().isEmpty());
     }
 
+    @Test
+    public void shouldReturnTrueIfUserByUsernameExists() {
+        // given
+        assertFalse(userRepository.existsByUsername("username"));
+        User user = new User(1L, "username", "email", "password", emptySet());
+        userRepository.save(user);
+
+        // when & then
+        assertTrue(userRepository.existsByUsername("username"));
+    }
 }
