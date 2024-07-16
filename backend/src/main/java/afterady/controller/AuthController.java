@@ -1,6 +1,8 @@
 package afterady.controller;
 
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,9 +38,8 @@ public class AuthController {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use."));
         }
-
-
-        return null;
+        userRepository.save(new User(username, email, request.getPassword()));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     record MessageResponse(String message) {
