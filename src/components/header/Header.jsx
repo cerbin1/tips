@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import NavItem from "./NavItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
   return (
@@ -15,7 +17,11 @@ export default function Header() {
         <NavItem href="/ranking">Ranking</NavItem>
         <NavItem href="/suggest">Zaproponuj</NavItem>
       </nav>
-      <span>Search-TODO</span>
+
+      <div>
+        <FontAwesomeIcon icon={faUser} title="User" />
+        Zaloguj | Zarejestruj się
+      </div>
     </header>
   );
 }

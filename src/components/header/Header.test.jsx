@@ -1,6 +1,7 @@
-import { screen } from "@testing-library/react";
+import { getAllByLabelText, screen } from "@testing-library/react";
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
+import { expect } from "vitest";
 
 describe("Header", () => {
   test("should display header", () => {
@@ -45,10 +46,10 @@ describe("Header", () => {
     expect(screen.getAllByRole("link")).toHaveLength(5);
   });
 
-  test("should display search bar", () => {
+  test("should display user buttons", () => {
     renderWithRouter(<Header />);
 
-    const searchText = screen.getByText("Search-TODO");
-    expect(searchText).toBeInTheDocument();
+    expect(screen.getByText("Zaloguj | Zarejestruj się")).toBeInTheDocument();
+    expect(screen.getByTitle("User")).toBeInTheDocument();
   });
 });
