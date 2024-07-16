@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
 import TableData from "../../common/table/TableData";
