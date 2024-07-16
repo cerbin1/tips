@@ -23,6 +23,7 @@ describe("AdviceDetails", () => {
     render(<AdviceDetails />);
 
     await userEvent.click(screen.getByText("Oceń jako przydatne"));
+    expect(screen.queryByText("Ocena przydatności: 5")).toBeNull();
     expect(screen.getByText("Ocena przydatności: 6")).toBeInTheDocument();
   });
 });
