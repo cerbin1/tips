@@ -1,5 +1,6 @@
-package afterady;
+package afterady.repository;
 
+import afterady.TestUtils;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
