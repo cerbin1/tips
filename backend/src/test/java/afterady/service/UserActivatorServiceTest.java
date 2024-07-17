@@ -1,9 +1,9 @@
 package afterady.service;
 
-import afterady.TestUtils;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
+import afterady.domain.user.UserActivationLink;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +14,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.UUID;
+
+import static afterady.TestUtils.testUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -54,16 +57,14 @@ public class UserActivatorServiceTest {
     @Autowired
     private UserActivatorService userActivatorService;
 
-
     @Test
     public void shouldCreateLink() {
         // given
-        User user = TestUtils.testUser();
-        User save = userRepository.save(user);
+        User user = userRepository.save(testUser());
         assertEquals(0, userActivationLinkRepository.count());
 
         // when
-        userActivatorService.createLinkFor(save);
+        userActivatorService.createLinkFor(user);
 
         // then
         assertEquals(1, userActivationLinkRepository.count());
@@ -72,12 +73,26 @@ public class UserActivatorServiceTest {
     @Test
     public void shouldThrowExceptionWhenTryingToCreateLinkWhenThereIsAlreadyActiveLink() {
         // given
-        User user = TestUtils.testUser();
-        userRepository.save(user);
+        User user = userRepository.save(testUser());
         assertEquals(0, userActivationLinkRepository.count());
         userActivatorService.createLinkFor(user);
 
         // when & then
         assertThrows(UserActivationLinkAlreadyExistsException.class, () -> userActivatorService.createLinkFor(user));
     }
+
+    @Test
+    public void shouldCreateSecondLinkWhenFirstIsExpired() {
+        // given
+        User user = userRepository.save(testUser());
+        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), testUser(), true));
+        assertEquals(1, userActivationLinkRepository.count());
+
+        // when
+        userActivatorService.createLinkFor(user);
+
+        // then
+        assertEquals(2, userActivationLinkRepository.count());
+    }
+
 }
