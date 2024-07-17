@@ -1,7 +1,9 @@
 package afterady.controller;
 
+import afterady.TestUtils;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
+import afterady.service.UserActivatorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,6 +38,8 @@ public class AuthControllerTest {
 
     @MockBean
     private UserRepository userRepository;
+    @MockBean
+    private UserActivatorService userActivatorService;
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
@@ -144,6 +148,8 @@ public class AuthControllerTest {
         // given
         when(userRepository.existsByUsername("username")).thenReturn(false);
         when(userRepository.existsByEmail("email")).thenReturn(false);
+        User createdUser = TestUtils.testUser();
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
 
         // when & then
         mvc.perform(post("/auth/register")
@@ -155,6 +161,7 @@ public class AuthControllerTest {
         verify(userRepository, times(1)).save(Mockito.any(User.class));
         verify(userRepository, times(1)).existsByUsername("username");
         verify(userRepository, times(1)).existsByEmail("email");
+        verify(userActivatorService, times(1)).createLinkFor(createdUser);
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 }

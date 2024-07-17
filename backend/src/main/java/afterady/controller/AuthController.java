@@ -2,6 +2,8 @@ package afterady.controller;
 
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
+import afterady.service.UserActivatorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserRepository userRepository;
+    private final UserActivatorService userActivatorService;
 
-    public AuthController(UserRepository userRepository) {
+    @Autowired
+    public AuthController(UserRepository userRepository, UserActivatorService userActivatorService) {
         this.userRepository = userRepository;
+        this.userActivatorService = userActivatorService;
     }
 
     @PostMapping("/register")
@@ -38,7 +43,8 @@ public class AuthController {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use."));
         }
-        userRepository.save(new User(username, email, request.getPassword()));
+        User createdUser = userRepository.save(new User(username, email, request.getPassword()));
+        userActivatorService.createLinkFor(createdUser);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
