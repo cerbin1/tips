@@ -84,7 +84,7 @@ public class UserRepositoryTest {
     @Transactional
     public void shouldUpdateUser() {
         // given
-        User user = testUser();
+        User user = TestUtils.testUser();
         userRepository.save(user);
         assertEquals(1, userRepository.count());
         User created = userRepository.findById(1L).orElseThrow();
@@ -112,7 +112,7 @@ public class UserRepositoryTest {
     public void shouldReturnTrueIfUserByUsernameExists() {
         // given
         assertFalse(userRepository.existsByUsername("username"));
-        User user = testUser();
+        User user = TestUtils.testUser();
         userRepository.save(user);
 
         // when & then
@@ -123,14 +123,11 @@ public class UserRepositoryTest {
     public void shouldReturnTrueIfUserByEmailExists() {
         // given
         assertFalse(userRepository.existsByEmail("email"));
-        User user = testUser();
+        User user = TestUtils.testUser();
         userRepository.save(user);
 
         // when & then
         assertTrue(userRepository.existsByEmail("email"));
     }
 
-    private User testUser() {
-        return new User(1L, "username", "email", "password", false, emptySet());
-    }
 }
