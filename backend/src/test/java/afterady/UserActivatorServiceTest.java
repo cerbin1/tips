@@ -1,10 +1,10 @@
-package afterady.repository;
+package afterady;
 
-import afterady.TestUtils;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
-import afterady.domain.user.UserActivationLink;
+import afterady.service.UserActivationLinkAlreadyExistsException;
+import afterady.service.UserActivatorService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,17 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.shaded.com.google.common.collect.Iterators;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
-public class UserActivationLinkRepositoryTest {
+public class UserActivatorServiceTest {
+
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:16-alpine"
     );
@@ -41,6 +38,7 @@ public class UserActivationLinkRepositoryTest {
     @BeforeEach
     void beforeEach() {
         userActivationLinkRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @DynamicPropertySource
@@ -51,46 +49,36 @@ public class UserActivationLinkRepositoryTest {
     }
 
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private UserActivationLinkRepository userActivationLinkRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserActivatorService userActivatorService;
+
 
     @Test
-    @Transactional
-    public void shouldSaveLink() {
+    public void shouldCreateLink() {
         // given
         User user = TestUtils.testUser();
-        userRepository.save(user);
+        User save = userRepository.save(user);
         assertEquals(0, userActivationLinkRepository.count());
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-        UserActivationLink userActivationLink = new UserActivationLink(linkId, user, false);
 
         // when
-        userActivationLinkRepository.save(userActivationLink);
+        userActivatorService.createLinkFor(save);
 
         // then
         assertEquals(1, userActivationLinkRepository.count());
-        UserActivationLink foundUserActivationLink = userActivationLinkRepository.findById(linkId).orElse(null);
-        assertNotNull(foundUserActivationLink);
-        assertEquals(linkId, foundUserActivationLink.getLinkId());
-        assertNotNull(foundUserActivationLink.getUser());
-        assertEquals(false, foundUserActivationLink.getExpired());
     }
 
     @Test
-    public void shouldFindLinksByUser() {
+    public void shouldThrowExceptionWhenTryingToCreateLinkWhenThereIsAlreadyActiveLink() {
         // given
         User user = TestUtils.testUser();
         userRepository.save(user);
         assertEquals(0, userActivationLinkRepository.count());
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, false));
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("aa6a13f4-c6e7-43ea-879d-29a7262dd03f"), user, false));
-        assertEquals(2, userActivationLinkRepository.count());
+        userActivatorService.createLinkFor(user);
 
-        // when
-        Iterable<UserActivationLink> allByUser = userActivationLinkRepository.findAllByUser(user);
-
-        // then
-        assertEquals(2, Iterators.size(allByUser.iterator()));
+        // when & then
+        assertThrows(UserActivationLinkAlreadyExistsException.class, () -> userActivatorService.createLinkFor(user));
     }
 }
