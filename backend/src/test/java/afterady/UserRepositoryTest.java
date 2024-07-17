@@ -62,6 +62,7 @@ public class UserRepositoryTest {
         assertEquals("username", foundUser.getUsername());
         assertEquals("email", foundUser.getEmail());
         assertEquals("password", foundUser.getPassword());
+        assertEquals(false, foundUser.getActive());
     }
 
     @Test
@@ -83,17 +84,18 @@ public class UserRepositoryTest {
     @Transactional
     public void shouldUpdateUser() {
         // given
-        User user = new User(1L, "username", "email", "password", emptySet());
+        User user = testUser();
         userRepository.save(user);
         assertEquals(1, userRepository.count());
         User created = userRepository.findById(1L).orElseThrow();
         assertEquals("username", created.getUsername());
         assertEquals("email", created.getEmail());
         assertEquals("password", created.getPassword());
+        assertFalse(created.getActive());
         assertTrue(created.getRoles().isEmpty());
 
         // when
-        User userWithSameIdAndDifferentOtherData = new User(1L, "username2", "email2", "password2", emptySet());
+        User userWithSameIdAndDifferentOtherData = new User(1L, "username2", "email2", "password2", true, emptySet());
         userRepository.save(userWithSameIdAndDifferentOtherData);
 
         // then
@@ -102,6 +104,7 @@ public class UserRepositoryTest {
         assertEquals("username2", updated.getUsername());
         assertEquals("email2", updated.getEmail());
         assertEquals("password2", updated.getPassword());
+        assertTrue(updated.getActive());
         assertTrue(updated.getRoles().isEmpty());
     }
 
@@ -109,22 +112,25 @@ public class UserRepositoryTest {
     public void shouldReturnTrueIfUserByUsernameExists() {
         // given
         assertFalse(userRepository.existsByUsername("username"));
-        User user = new User(1L, "username", "email", "password", emptySet());
+        User user = testUser();
         userRepository.save(user);
 
         // when & then
         assertTrue(userRepository.existsByUsername("username"));
     }
 
-
     @Test
     public void shouldReturnTrueIfUserByEmailExists() {
         // given
         assertFalse(userRepository.existsByEmail("email"));
-        User user = new User(1L, "username", "email", "password", emptySet());
+        User user = testUser();
         userRepository.save(user);
 
         // when & then
         assertTrue(userRepository.existsByEmail("email"));
+    }
+
+    private User testUser() {
+        return new User(1L, "username", "email", "password", false, emptySet());
     }
 }
