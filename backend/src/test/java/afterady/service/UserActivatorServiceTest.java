@@ -1,10 +1,9 @@
-package afterady;
+package afterady.service;
 
+import afterady.TestUtils;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
-import afterady.service.UserActivationLinkAlreadyExistsException;
-import afterady.service.UserActivatorService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
