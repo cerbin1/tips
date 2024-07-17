@@ -1,8 +1,10 @@
 package afterady.controller;
 
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -15,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -150,5 +152,9 @@ public class AuthControllerTest {
                                         new RegistrationRequest("email", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(userRepository, times(1)).save(Mockito.any(User.class));
+        verify(userRepository, times(1)).existsByUsername("username");
+        verify(userRepository, times(1)).existsByEmail("email");
+        Mockito.verifyNoMoreInteractions(userRepository);
     }
 }
