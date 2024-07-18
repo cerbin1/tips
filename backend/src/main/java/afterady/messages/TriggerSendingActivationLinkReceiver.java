@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class TriggerSendingActivationLinkReceiver {
 
     @Autowired
-    private  EmailSendingService emailSendingService;
+    private EmailSendingService emailSendingService;
 
     @RabbitListener(queues = "activation-links-queue")
     public void receive(Message message) {
