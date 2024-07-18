@@ -19,7 +19,7 @@ export default function Header() {
       </nav>
 
       <div>
-        <FontAwesomeIcon icon={faUser} title="User" />
+        <FontAwesomeIcon icon={faUser} title="User" className="pr-2" />
         Zaloguj | Zarejestruj się
       </div>
     </header>
