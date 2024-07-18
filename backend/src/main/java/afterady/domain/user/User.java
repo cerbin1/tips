@@ -36,4 +36,7 @@ public class User {
         this.password = password;
     }
 
+    public void activate() {
+        this.active = true;
+    }
 }

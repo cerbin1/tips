@@ -14,6 +14,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static afterady.TestUtils.testUser;
@@ -97,4 +98,44 @@ public class UserActivatorServiceTest {
         assertEquals(2, userActivationLinkRepository.count());
     }
 
+    @Test
+    public void shouldFindLinkById() {
+        // given
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        User user = userRepository.save(testUser());
+        userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+
+        // when & then
+        assertTrue(userActivatorService.getById(linkId).isPresent());
+    }
+
+    @Test
+    public void shouldNotFindLinkById() {
+        // given
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+
+        // when & then
+        assertTrue(userActivatorService.getById(linkId).isEmpty());
+    }
+
+    @Test
+    public void shouldActivateUser() {
+        // given
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        User user = userRepository.save(testUser());
+        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+        assertFalse(user.getActive());
+        assertFalse(link.getExpired());
+
+        // when
+        userActivatorService.activateUserByLink(link);
+
+        // then
+        Optional<UserActivationLink> activatedLink = userActivatorService.getById(linkId);
+        assertTrue(activatedLink.isPresent());
+        assertTrue(activatedLink.get().getExpired());
+        Optional<User> activatedUser = userRepository.findById(user.getId());
+        assertTrue(activatedUser.isPresent());
+        assertTrue(activatedUser.get().getActive());
+    }
 }

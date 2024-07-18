@@ -21,4 +21,8 @@ public class UserActivationLink {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private Boolean expired = false;
+
+    public void expire() {
+        expired = true;
+    }
 }

@@ -20,12 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -174,4 +176,43 @@ public class AuthControllerTest {
         verify(sender, times(1)).send(new Message("email", "d4645e88-0d23-4946-a75d-694fc475ceba"));
         Mockito.verifyNoMoreInteractions(userRepository);
     }
+
+    @Test
+    public void shouldNotActivateUserWhenLinkNotExists() throws Exception {
+        // given
+        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(Optional.empty());
+
+        // when & then
+        mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldNotActivateUserWhenLinkExpired() throws Exception {
+        // given
+        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
+                .thenReturn(Optional.of(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
+
+        // when & then
+        mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldActivateUser() throws Exception {
+        // given
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
+        when(userActivatorService.getById(linkId))
+                .thenReturn(Optional.of(link));
+
+        // when & then
+        mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isOk());
+        verify(userActivatorService, times(1)).getById(linkId);
+        verify(userActivatorService, times(1)).activateUserByLink(link);
+        Mockito.verifyNoMoreInteractions(userActivatorService);
+    }
+
+
 }
