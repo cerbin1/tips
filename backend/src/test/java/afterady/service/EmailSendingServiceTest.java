@@ -26,16 +26,16 @@ public class EmailSendingServiceTest {
 
     @Test
     public void shouldSendEmail() {
-        // given
+        // arrange
         when(environment.getEnv(AFTERADY_MAIL_SENDER)).thenReturn("email");
         when(environment.getEnv(AFTERADY_MAIL_PWD)).thenReturn("password");
         when(environment.getEnv(AFTERADY_MAIL_HOST)).thenReturn("host");
         when(sender.send("email", "password", "to", "subject", "content")).thenReturn(true);
 
-        // when
+        // act
         boolean emailSent = emailSendingService.sendEmail("to", "subject", "content");
 
-        // then
+        // assert
         assertTrue(emailSent);
     }
 }

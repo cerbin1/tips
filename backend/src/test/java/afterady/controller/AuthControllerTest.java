@@ -52,7 +52,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -64,7 +64,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsEmpty() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -76,7 +76,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamUsernameIsNull() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -88,7 +88,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamUsernameIsEmpty() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -100,7 +100,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamPasswordIsNull() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -112,7 +112,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamPasswordIsEmpty() throws Exception {
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -124,10 +124,10 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenUsernameAlreadyExists() throws Exception {
-        // given
+        // arrange
         when(userRepository.existsByUsername("username")).thenReturn(true);
 
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -139,10 +139,10 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn400WhenEmailAlreadyExists() throws Exception {
-        // given
+        // arrange
         when(userRepository.existsByEmail("email")).thenReturn(true);
 
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -154,7 +154,7 @@ public class AuthControllerTest {
 
     @Test
     public void shouldReturn200WhenUserIsRegisteredSuccessfully() throws Exception {
-        // given
+        // arrange
         when(userRepository.existsByUsername("username")).thenReturn(false);
         when(userRepository.existsByEmail("email")).thenReturn(false);
         User createdUser = TestUtils.testUser();
@@ -162,7 +162,7 @@ public class AuthControllerTest {
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
                 .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
 
-        // when & then
+        // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
@@ -179,34 +179,34 @@ public class AuthControllerTest {
 
     @Test
     public void shouldNotActivateUserWhenLinkNotExists() throws Exception {
-        // given
+        // arrange
         when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(Optional.empty());
 
-        // when & then
+        // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldNotActivateUserWhenLinkExpired() throws Exception {
-        // given
+        // arrange
         when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
                 .thenReturn(Optional.of(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
 
-        // when & then
+        // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldActivateUser() throws Exception {
-        // given
+        // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
         when(userActivatorService.getById(linkId))
                 .thenReturn(Optional.of(link));
 
-        // when & then
+        // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
                 .andExpect(status().isOk());
         verify(userActivatorService, times(1)).getById(linkId);

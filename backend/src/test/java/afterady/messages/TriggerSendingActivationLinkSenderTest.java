@@ -20,13 +20,13 @@ public class TriggerSendingActivationLinkSenderTest {
 
     @Test
     public void shouldSendMessage() {
-        // given
+        // arrange
         Message message = new Message("email", "linkId");
 
-        // when
+        // act
         sender.send(message);
 
-        // then
+        // assert
         verify(rabbitTemplate).convertAndSend(eq("activation-links-exchange"), eq("links"), eq(message));
     }
 }

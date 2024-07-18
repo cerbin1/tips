@@ -59,14 +59,14 @@ public class UserActivatorServiceTest {
 
     @Test
     public void shouldCreateLink() {
-        // given
+        // arrange
         User user = userRepository.save(testUser());
         assertEquals(0, userActivationLinkRepository.count());
 
-        // when
+        // act
         UserActivationLink link = userActivatorService.createLinkFor(user);
 
-        // then
+        // assert
         assertNotNull(link.getLinkId());
         assertEquals("username", link.getUser().getUsername());
         assertEquals(false, link.getExpired());
@@ -75,62 +75,62 @@ public class UserActivatorServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenTryingToCreateLinkWhenThereIsAlreadyActiveLink() {
-        // given
+        // arrange
         User user = userRepository.save(testUser());
         assertEquals(0, userActivationLinkRepository.count());
         userActivatorService.createLinkFor(user);
 
-        // when & then
+        // act & assert
         assertThrows(UserActivationLinkAlreadyExistsException.class, () -> userActivatorService.createLinkFor(user));
     }
 
     @Test
     public void shouldCreateSecondLinkWhenFirstIsExpired() {
-        // given
+        // arrange
         User user = userRepository.save(testUser());
         userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, true));
         assertEquals(1, userActivationLinkRepository.count());
 
-        // when
+        // act
         userActivatorService.createLinkFor(user);
 
-        // then
+        // assert
         assertEquals(2, userActivationLinkRepository.count());
     }
 
     @Test
     public void shouldFindLinkById() {
-        // given
+        // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
         userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
 
-        // when & then
+        // act & assert
         assertTrue(userActivatorService.getById(linkId).isPresent());
     }
 
     @Test
     public void shouldNotFindLinkById() {
-        // given
+        // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
 
-        // when & then
+        // act & assert
         assertTrue(userActivatorService.getById(linkId).isEmpty());
     }
 
     @Test
     public void shouldActivateUser() {
-        // given
+        // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
         UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
         assertFalse(user.getActive());
         assertFalse(link.getExpired());
 
-        // when
+        // act
         userActivatorService.activateUserByLink(link);
 
-        // then
+        // assert
         Optional<UserActivationLink> activatedLink = userActivatorService.getById(linkId);
         assertTrue(activatedLink.isPresent());
         assertTrue(activatedLink.get().getExpired());

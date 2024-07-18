@@ -19,15 +19,15 @@ public class TriggerSendingActivationLinkReceiverTest {
 
     @Test
     public void shouldReceiveMessage() {
-        // given
+        // arrange
         when(emailSendingService.sendEmail(eq("email"), eq("Afterady - activation link"), eq("auth/activate/linkId")))
                 .thenReturn(true);
         Message message = new Message("email", "linkId");
 
-        // when
+        // act
         receiver.receive(message);
 
-        // then
+        // assert
         verify(emailSendingService, times(1))
                 .sendEmail("email", "Afterady - activation link", "auth/activate/linkId");
     }
