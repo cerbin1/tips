@@ -1,4 +1,4 @@
-import { getAllByLabelText, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
 import { expect } from "vitest";
