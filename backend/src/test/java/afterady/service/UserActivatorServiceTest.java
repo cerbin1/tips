@@ -87,7 +87,7 @@ public class UserActivatorServiceTest {
     public void shouldCreateSecondLinkWhenFirstIsExpired() {
         // given
         User user = userRepository.save(testUser());
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), testUser(), true));
+        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, true));
         assertEquals(1, userActivationLinkRepository.count());
 
         // when
