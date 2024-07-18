@@ -22,9 +22,7 @@ export default function AdviceDetails() {
         mollit anim id est laborum.
       </p>
       <p>Ocena przydatności: {rating}</p>
-      <Button>
-        <button onClick={increaseRating}>Oceń jako przydatne</button>
-      </Button>
+      <Button onClick={increaseRating}>Oceń jako przydatne</Button>
     </ContainerSection>
   );
 }
