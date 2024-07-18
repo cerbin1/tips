@@ -1,5 +1,6 @@
 package afterady.service.email;
 
+import afterady.config.EnvironmentWrapper;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -12,6 +13,12 @@ import static afterady.config.EnvironmentWrapper.AFTERADY_MAIL_HOST;
 @Component
 public class JavaEmailSender implements Sender {
 
+    private final EnvironmentWrapper environment;
+
+    public JavaEmailSender(EnvironmentWrapper environment) {
+        this.environment = environment;
+    }
+
     @Override
     public boolean send(String senderEmail, String senderPassword, String to, String subject, String content) {
         try {
@@ -23,7 +30,7 @@ public class JavaEmailSender implements Sender {
         }
     }
 
-    private static MimeMessage prepareMessage(String senderEmail, String senderPassword, String to, String subject, String content)
+    private MimeMessage prepareMessage(String senderEmail, String senderPassword, String to, String subject, String content)
             throws MessagingException {
         MimeMessage message = new MimeMessage(getConfiguredSession(senderEmail, senderPassword));
         message.setFrom(new InternetAddress(senderEmail));
@@ -33,9 +40,9 @@ public class JavaEmailSender implements Sender {
         return message;
     }
 
-    private static Session getConfiguredSession(String senderEmail, String senderPassword) {
+    private Session getConfiguredSession(String senderEmail, String senderPassword) {
         Properties properties = new Properties();
-        properties.put("mail.smtp.host", AFTERADY_MAIL_HOST);
+        properties.put("mail.smtp.host", environment.getEnv(AFTERADY_MAIL_HOST));
         properties.put("mail.smtp.starttls.required", "true");
         properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
         properties.put("mail.smtp.auth", "true");
