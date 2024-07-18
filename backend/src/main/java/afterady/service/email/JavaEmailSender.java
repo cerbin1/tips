@@ -1,6 +1,8 @@
 package afterady.service.email;
 
 import afterady.config.EnvironmentWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.mail.*;
@@ -12,6 +14,7 @@ import static afterady.config.EnvironmentWrapper.AFTERADY_MAIL_HOST;
 
 @Component
 public class JavaEmailSender implements Sender {
+    private final static Logger logger = LoggerFactory.getLogger(JavaEmailSender.class);
 
     private final EnvironmentWrapper environment;
 
@@ -24,8 +27,10 @@ public class JavaEmailSender implements Sender {
         try {
             MimeMessage message = prepareMessage(senderEmail, senderPassword, to, subject, content);
             Transport.send(message);
+            logger.info(String.format("Email for %s with subject: %s sent successfully.", to, subject));
             return true;
         } catch (MessagingException e) {
+            logger.error(String.format("Failed to send email %s with subject: %s.", to, subject));
             return false;
         }
     }
