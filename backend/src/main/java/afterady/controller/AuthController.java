@@ -2,6 +2,9 @@ package afterady.controller;
 
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
+import afterady.domain.user.UserActivationLink;
+import afterady.messages.Message;
+import afterady.messages.TriggerSendingActivationLinkSender;
 import afterady.service.UserActivatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +20,13 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final UserActivatorService userActivatorService;
+    private final TriggerSendingActivationLinkSender sender;
 
     @Autowired
-    public AuthController(UserRepository userRepository, UserActivatorService userActivatorService) {
+    public AuthController(UserRepository userRepository, UserActivatorService userActivatorService, TriggerSendingActivationLinkSender sender) {
         this.userRepository = userRepository;
         this.userActivatorService = userActivatorService;
+        this.sender = sender;
     }
 
     @PostMapping("/register")
@@ -44,7 +49,8 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use."));
         }
         User createdUser = userRepository.save(new User(username, email, request.getPassword()));
-        userActivatorService.createLinkFor(createdUser);
+        UserActivationLink activationLink = userActivatorService.createLinkFor(createdUser);
+        sender.send(new Message(email, activationLink.getLinkId().toString()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

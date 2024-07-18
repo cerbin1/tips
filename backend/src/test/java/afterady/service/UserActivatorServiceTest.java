@@ -17,8 +17,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.UUID;
 
 import static afterady.TestUtils.testUser;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class UserActivatorServiceTest {
@@ -64,9 +63,12 @@ public class UserActivatorServiceTest {
         assertEquals(0, userActivationLinkRepository.count());
 
         // when
-        userActivatorService.createLinkFor(user);
+        UserActivationLink link = userActivatorService.createLinkFor(user);
 
         // then
+        assertNotNull(link.getLinkId());
+        assertEquals("username", link.getUser().getUsername());
+        assertEquals(false, link.getExpired());
         assertEquals(1, userActivationLinkRepository.count());
     }
 

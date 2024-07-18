@@ -3,6 +3,9 @@ package afterady.controller;
 import afterady.TestUtils;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
+import afterady.domain.user.UserActivationLink;
+import afterady.messages.Message;
+import afterady.messages.TriggerSendingActivationLinkSender;
 import afterady.service.UserActivatorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -16,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.UUID;
 
 import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.is;
@@ -40,6 +45,8 @@ public class AuthControllerTest {
     private UserRepository userRepository;
     @MockBean
     private UserActivatorService userActivatorService;
+    @MockBean
+    private TriggerSendingActivationLinkSender sender;
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
@@ -150,6 +157,8 @@ public class AuthControllerTest {
         when(userRepository.existsByEmail("email")).thenReturn(false);
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
+        when(userActivatorService.createLinkFor(Mockito.any(User.class)))
+                .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
 
         // when & then
         mvc.perform(post("/auth/register")
@@ -162,6 +171,7 @@ public class AuthControllerTest {
         verify(userRepository, times(1)).existsByUsername("username");
         verify(userRepository, times(1)).existsByEmail("email");
         verify(userActivatorService, times(1)).createLinkFor(createdUser);
+        verify(sender, times(1)).send(new Message("email", "d4645e88-0d23-4946-a75d-694fc475ceba"));
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 }

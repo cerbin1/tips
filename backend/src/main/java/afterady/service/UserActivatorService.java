@@ -17,7 +17,7 @@ public class UserActivatorService {
         this.userActivationLinkRepository = userActivationLinkRepository;
     }
 
-    public void createLinkFor(User user) {
+    public UserActivationLink createLinkFor(User user) {
         Optional<UserActivationLink> activeUserActivationLink = StreamSupport
                 .stream(userActivationLinkRepository.findAllByUser((user)).spliterator(), false)
                 .filter(userActivationLink -> !userActivationLink.getExpired())
@@ -27,6 +27,6 @@ public class UserActivatorService {
         }
 
         UserActivationLink userActivationLink = new UserActivationLink(UUID.randomUUID(), user, false);
-        userActivationLinkRepository.save(userActivationLink);
+        return userActivationLinkRepository.save(userActivationLink);
     }
 }
