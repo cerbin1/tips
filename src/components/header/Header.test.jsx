@@ -43,13 +43,15 @@ describe("Header", () => {
   test("should get number of links", () => {
     renderWithRouter(<Header />);
 
-    expect(screen.getAllByRole("link")).toHaveLength(5);
+    expect(screen.getAllByRole("link")).toHaveLength(6);
   });
 
   test("should display user buttons", () => {
     renderWithRouter(<Header />);
 
-    expect(screen.getByText("Zaloguj | Zarejestruj się")).toBeInTheDocument();
     expect(screen.getByTitle("User")).toBeInTheDocument();
+    const registerUserLink = screen.getByText("Zarejestruj się");
+    expect(registerUserLink).toBeInTheDocument();
+    expect(registerUserLink).toHaveAttribute("href", "/user/register");
   });
 });

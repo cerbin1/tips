@@ -10,6 +10,7 @@ import Categories from "./components/advices/categories/Categories.jsx";
 import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
 import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
+import RegisterUser from "./components/user/RegisterUser.jsx";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
       { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
       { path: "/suggest", element: <SuggestAdvice /> },
+      {
+        path: "/user",
+        children: [{ path: "register", element: <RegisterUser /> }],
+      },
     ],
   },
 ]);

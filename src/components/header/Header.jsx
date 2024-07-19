@@ -20,7 +20,7 @@ export default function Header() {
 
       <div>
         <FontAwesomeIcon icon={faUser} title="User" className="pr-2" />
-        Zaloguj | Zarejestruj się
+        Zaloguj | <NavItem href="/user/register"> Zarejestruj się</NavItem>
       </div>
     </header>
   );
