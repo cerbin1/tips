@@ -12,12 +12,13 @@ import RandomAdvice from "./components/advices/RandomAdvice.jsx";
 import RegisterUser from "./components/user/RegisterUser.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
+import ErrorPage from "./components/common/ErrorPage.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    errorElement: <div>ERROR</div>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
