@@ -20,7 +20,7 @@ public class TriggerSendingActivationLinkReceiver {
     @RabbitListener(queues = "activation-links-queue")
     public void receive(Message message) {
         var subject = "Afterady - activation link";
-        var content = environment.getEnv(AFTERADY_FRONT_URL) + "auth/activate/" + message.linkId();
+        var content = environment.getEnv(AFTERADY_FRONT_URL) + "user/activate/" + message.linkId();
         emailSendingService.sendEmail(message.email(), subject, content);
     }
 }

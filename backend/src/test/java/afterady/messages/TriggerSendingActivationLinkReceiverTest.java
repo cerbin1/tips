@@ -34,6 +34,6 @@ public class TriggerSendingActivationLinkReceiverTest {
 
         // assert
         verify(emailSendingService, times(1))
-                .sendEmail("email", "Afterady - activation link", "http://localhost:8080/auth/activate/linkId");
+                .sendEmail("email", "Afterady - activation link", "http://localhost:8080/user/activate/linkId");
     }
 }
