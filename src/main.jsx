@@ -11,6 +11,7 @@ import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
 import RegisterUser from "./components/user/RegisterUser.jsx";
 import RootLayout from "./router/RootLayout.jsx";
+import ActivateUser from "./components/user/ActivateUser.jsx";
 
 const router = createBrowserRouter([
   {
@@ -33,14 +34,20 @@ const router = createBrowserRouter([
       { path: "/suggest", element: <SuggestAdvice /> },
       {
         path: "/user",
-        children: [{ path: "register", element: <RegisterUser /> }],
+        children: [
+          { path: "register", element: <RegisterUser /> },
+          {
+            path: "activate/:token",
+            element: <ActivateUser />,
+          },
+        ],
       },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+  <RouterProvider router={router} />
+  // </React.StrictMode>
 );
