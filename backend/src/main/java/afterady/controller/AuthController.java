@@ -83,6 +83,17 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> registerUser(@RequestBody LoginRequest request) {
+        if (request.getEmail() == null || request.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
+        }
+        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
+        }
+        return null;
+    }
+
     record MessageResponse(String message) {
     }
 }

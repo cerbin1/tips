@@ -245,4 +245,53 @@ public class AuthControllerTest {
         verify(userActivatorService, times(1)).resendLink(link);
         Mockito.verifyNoMoreInteractions(userActivatorService);
     }
+
+    @Test
+    public void shouldReturn400WhenLoginRequestParamEmailIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest(null, "password")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Email is required.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenLoginRequestParamEmailIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest("", "password")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Email is required.")));
+    }
+
+
+    @Test
+    public void shouldReturn400WhenLoginRequestParamPasswordIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest("email", null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Password is required.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenLoginRequestParamPasswordIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest("email", "")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Password is required.")));
+    }
 }
