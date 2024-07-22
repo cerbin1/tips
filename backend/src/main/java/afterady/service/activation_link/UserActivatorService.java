@@ -1,4 +1,4 @@
-package afterady.service;
+package afterady.service.activation_link;
 
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;

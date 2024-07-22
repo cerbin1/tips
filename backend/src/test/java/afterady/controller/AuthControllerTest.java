@@ -6,7 +6,7 @@ import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
 import afterady.messages.Message;
 import afterady.messages.TriggerSendingActivationLinkSender;
-import afterady.service.UserActivatorService;
+import afterady.service.activation_link.UserActivatorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
