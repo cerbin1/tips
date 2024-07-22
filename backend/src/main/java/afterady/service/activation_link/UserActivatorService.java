@@ -7,12 +7,15 @@ import afterady.domain.user.UserActivationLink;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
 
 @Service
 public class UserActivatorService {
+    private static final Byte EXPIRATION_TIME_IN_MINUTES = 15;
+
     private final UserActivationLinkRepository userActivationLinkRepository;
     private final UserRepository userRepository;
 
@@ -59,5 +62,13 @@ public class UserActivatorService {
     public void resendLink(UserActivationLink activationLink) {
         expireLink(activationLink);
         createLinkFor(activationLink.getUser());
+    }
+
+    public void expireOldLinks() {
+        userActivationLinkRepository.findAll().forEach(link -> {
+            if (link.getCreatedAt().plusMinutes(EXPIRATION_TIME_IN_MINUTES).isBefore(LocalDateTime.now())) {
+                expireLink(link);
+            }
+        });
     }
 }

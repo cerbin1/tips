@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "user_activation_link")
@@ -22,7 +23,15 @@ public class UserActivationLink {
     private User user;
     private Boolean expired = false;
 
+    private LocalDateTime createdAt = LocalDateTime.now();
+
     public void expire() {
         expired = true;
+    }
+
+    public UserActivationLink(UUID linkId, User user, Boolean expired) {
+        this.linkId = linkId;
+        this.user = user;
+        this.expired = expired;
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -161,5 +162,22 @@ public class UserActivatorServiceTest {
                 assertFalse(activationLink.getExpired());
             }
         });
+    }
+
+    @Test
+    public void shouldExpireOldLinks() {
+        // arrange
+        User user = userRepository.save(testUser());
+        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
+        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("123b407b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
+        assertEquals(2, userActivationLinkRepository.count());
+        userActivationLinkRepository.findAll().forEach(link -> assertFalse(link.getExpired()));
+
+        // act
+        userActivatorService.expireOldLinks();
+
+        // assert
+        assertEquals(2, userActivationLinkRepository.count());
+        userActivationLinkRepository.findAll().forEach(link -> assertTrue(link.getExpired()));
     }
 }
