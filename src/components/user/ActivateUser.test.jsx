@@ -34,9 +34,4 @@ describe("ActivateUser", () => {
     expect(loginButton).toBeInTheDocument();
     expect(loginButton).toHaveAttribute("href", "/login");
   });
-
-  // expect(screen.getByText("Aktywacja konta")).toBeInTheDocument();
-  // expect(screen.getByText("Konto zostało aktywowane")).toBeInTheDocument();
-  // expect(screen.getByText("Dziekuje")).toBeInTheDocument();
-  // expect(screen.getByText("Jeszcze nie masz konta?")).toBeInTheDocument();
 });
