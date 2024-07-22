@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import RootLayout from "./components/router/RootLayout.jsx";
 import Home from "./components/home/Home.jsx";
 import AdviceDetails from "./components/advices/AdviceDetails.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
@@ -11,6 +10,7 @@ import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx
 import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
 import RegisterUser from "./components/user/RegisterUser.jsx";
+import RootLayout from "./router/RootLayout.jsx";
 
 const router = createBrowserRouter([
   {
