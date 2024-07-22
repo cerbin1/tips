@@ -33,13 +33,13 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
         if (request.getEmail() == null || request.getEmail().isBlank()) {
-            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is required."));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
         }
         if (request.getUsername() == null || request.getUsername().isEmpty()) {
-            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Username is required."));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is required."));
         }
         if (request.getPassword() == null || request.getPassword().isEmpty()) {
-            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is required."));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
         }
         String username = request.getUsername();
         if (userRepository.existsByUsername(username)) {

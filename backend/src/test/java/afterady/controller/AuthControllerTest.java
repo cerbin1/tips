@@ -123,7 +123,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenUsernameAlreadyExists() throws Exception {
+    public void shouldReturn422WhenUsernameAlreadyExists() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(true);
 
@@ -133,12 +133,12 @@ public class AuthControllerTest {
                                 .writeValueAsString(
                                         new RegistrationRequest("email", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Username is already taken.")));
     }
 
     @Test
-    public void shouldReturn400WhenEmailAlreadyExists() throws Exception {
+    public void shouldReturn422WhenEmailAlreadyExists() throws Exception {
         // arrange
         when(userRepository.existsByEmail("email")).thenReturn(true);
 
@@ -148,7 +148,7 @@ public class AuthControllerTest {
                                 .writeValueAsString(
                                         new RegistrationRequest("email", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Email is already in use.")));
     }
 
