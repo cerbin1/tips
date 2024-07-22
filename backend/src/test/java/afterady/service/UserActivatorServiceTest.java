@@ -138,4 +138,28 @@ public class UserActivatorServiceTest {
         assertTrue(activatedUser.isPresent());
         assertTrue(activatedUser.get().getActive());
     }
+
+    @Test
+    public void shouldResendLink() {
+        // arrange
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        User user = userRepository.save(testUser());
+        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+        assertFalse(user.getActive());
+        assertFalse(link.getExpired());
+        assertEquals(userActivationLinkRepository.count(), 1);
+
+        // act
+        userActivatorService.resendLink(link);
+
+        // assert
+        assertEquals(userActivationLinkRepository.count(), 2);
+        userActivationLinkRepository.findAllByUser(user).forEach(activationLink -> {
+            if (activationLink.getLinkId().equals(linkId)) {
+                assertTrue(activationLink.getExpired());
+            } else {
+                assertFalse(activationLink.getExpired());
+            }
+        });
+    }
 }

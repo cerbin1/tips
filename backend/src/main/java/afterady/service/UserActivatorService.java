@@ -5,6 +5,7 @@ import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -52,5 +53,11 @@ public class UserActivatorService {
     private void expireLink(UserActivationLink link) {
         link.expire();
         userActivationLinkRepository.save(link);
+    }
+
+    @Transactional
+    public void resendLink(UserActivationLink activationLink) {
+        expireLink(activationLink);
+        createLinkFor(activationLink.getUser());
     }
 }

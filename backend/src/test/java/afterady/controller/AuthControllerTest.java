@@ -214,5 +214,35 @@ public class AuthControllerTest {
         Mockito.verifyNoMoreInteractions(userActivatorService);
     }
 
+    @Test
+    public void shouldNotResendNotExistingLink() throws Exception {
+        // arrange
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        when(userActivatorService.getById(linkId)).thenReturn(Optional.empty());
 
+        // act
+        mvc.perform(post("/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isBadRequest());
+
+        // assert
+        verify(userActivatorService, times(1)).getById(linkId);
+        Mockito.verifyNoMoreInteractions(userActivatorService);
+    }
+
+    @Test
+    public void shouldResendLink() throws Exception {
+        // arrange
+        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
+        when(userActivatorService.getById(linkId)).thenReturn(Optional.of(link));
+
+        // act
+        mvc.perform(post("/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isNoContent());
+
+        // assert
+        verify(userActivatorService, times(1)).getById(linkId);
+        verify(userActivatorService, times(1)).resendLink(link);
+        Mockito.verifyNoMoreInteractions(userActivatorService);
+    }
 }

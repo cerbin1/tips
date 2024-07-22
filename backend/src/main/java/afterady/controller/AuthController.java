@@ -52,7 +52,8 @@ public class AuthController {
         User createdUser = userRepository.save(new User(username, email, request.getPassword()));
         UserActivationLink activationLink = userActivatorService.createLinkFor(createdUser);
         sender.send(new Message(email, activationLink.getLinkId().toString()));
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        return new ResponseEntity<>(activationLink.getLinkId(), HttpStatus.OK);
     }
 
     @GetMapping("/activate/{linkId}")
@@ -67,6 +68,18 @@ public class AuthController {
             }
             userActivatorService.activateUserByLink(activationLink);
             return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/resend/{linkId}")
+    public ResponseEntity<?> resendLink(@PathVariable UUID linkId) {
+        Optional<UserActivationLink> maybeActivationLink = userActivatorService.getById(linkId);
+        if (maybeActivationLink.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            UserActivationLink activationLink = maybeActivationLink.get();
+            userActivatorService.resendLink(activationLink);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 
