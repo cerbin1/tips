@@ -1,6 +1,10 @@
 package afterady;
 
+import afterady.domain.user.RoleName;
 import afterady.domain.user.User;
+import afterady.domain.user.UserRole;
+
+import java.util.Set;
 
 import static java.util.Collections.emptySet;
 
@@ -10,5 +14,9 @@ public final class TestUtils {
 
     public static User testUser() {
         return new User(1L, "username", "email", "password", false, emptySet());
+    }
+
+    public static User testUserWithRoles() {
+        return new User(1L, "username", "email", "password", true, Set.of(new UserRole(RoleName.ROLE_USER), new UserRole(RoleName.ROLE_ADMIN)));
     }
 }

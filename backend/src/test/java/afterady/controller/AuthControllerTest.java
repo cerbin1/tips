@@ -6,6 +6,8 @@ import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
 import afterady.messages.Message;
 import afterady.messages.TriggerSendingActivationLinkSender;
+import afterady.security.JwtUtil;
+import afterady.service.CustomUserDetailsService;
 import afterady.service.activation_link.UserActivatorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -18,7 +20,10 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +52,12 @@ public class AuthControllerTest {
     private UserRepository userRepository;
     @MockBean
     private UserActivatorService userActivatorService;
+    @MockBean
+    private UserDetailsService userDetailsService;
+    @MockBean
+    private AuthenticationManager authenticationManager;
+    @MockBean
+    private JwtUtil jwtUtil;
     @MockBean
     private TriggerSendingActivationLinkSender sender;
 
@@ -293,5 +304,42 @@ public class AuthControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password is required.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenUserIsNotActivated() throws Exception {
+        // arrange
+        when(userDetailsService.loadUserByUsername("email"))
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", emptySet(), false));
+
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest("email", "password")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: User is not activated!")));
+    }
+
+    @Test
+    public void should() throws Exception {
+        // arrange
+        when(userDetailsService.loadUserByUsername("email"))
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", emptySet(), true));
+
+        // act
+        ResultActions result = mvc.perform(post("/auth/login")
+                .content(new ObjectMapper()
+                        .writeValueAsString(
+                                new LoginRequest("email", "password")))
+                .contentType(APPLICATION_JSON));
+
+        // assert
+        result.andExpect(status().isOk());
+        verify(authenticationManager).authenticate(any());
+        Mockito.verifyNoMoreInteractions(authenticationManager);
+        verify(jwtUtil).generateToken("email");
+        Mockito.verifyNoMoreInteractions(jwtUtil);
     }
 }

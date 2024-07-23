@@ -131,4 +131,18 @@ public class UserRepositoryTest {
         assertTrue(userRepository.existsByEmail("email"));
     }
 
+    @Test
+    public void shouldNotFindUserByEmail() {
+        // act & assert
+        assertFalse(userRepository.findByEmail("email").isPresent());
+    }
+
+    @Test
+    public void shouldFindUserByEmail() {
+        User user = TestUtils.testUser();
+        userRepository.save(user);
+
+        // act & assert
+        assertTrue(userRepository.findByEmail("email").isPresent());
+    }
 }
