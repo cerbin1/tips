@@ -6,6 +6,7 @@ import { useRouteError } from "react-router";
 
 beforeEach(() => {
   vi.clearAllMocks();
+  // https://github.com/vitest-dev/vitest/issues/3228 TODO CHECK
   //   vi.mock("react-router", {
   // useRouteError: () => ({ status: 200 }),
   /* () => {
