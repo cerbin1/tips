@@ -5,10 +5,12 @@ import { renderWithRouter } from "../../test-utils";
 
 describe("ActivateUser", () => {
   test("should display user activating info", () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+
     render(<ActivateUser />);
-    expect(screen.getByTestId("activate-user-section")).toBeInTheDocument();
 
     expect(screen.getByText("Aktywacja konta...")).toBeInTheDocument();
+    expect(screen.getByTestId("activate-user-section")).toBeInTheDocument();
   });
 
   test("should display error when request to activate user fails", async () => {
