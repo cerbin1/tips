@@ -4,7 +4,7 @@ import FormInput from "../common/FormInput";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function RegisterUser() {
+export default function Register() {
   const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
   const [userCreateLoading, setUserCreateLoading] = useState(false);
   const [userCreateError, setUserCreateError] = useState(undefined);
@@ -95,7 +95,7 @@ export default function RegisterUser() {
         <form
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 w-1/3"
-          aria-label="RegisterUser"
+          aria-label="Register"
         >
           <FormInput label="Adres e-mail" id="email" type="email" required />
           <FormInput label="Nazwa użytkownika" id="username" required />

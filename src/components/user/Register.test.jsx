@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeAll, beforeEach, expect, vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
-import RegisterUser from "./RegisterUser";
+import Register from "./Register";
 
 const mockedUseNavigate = vi.fn();
 
@@ -21,9 +21,9 @@ beforeEach(() => {
   globalThis.fetch.mockClear();
 });
 
-describe("RegisterUser", () => {
+describe("Register", () => {
   test("should display form", () => {
-    render(<RegisterUser />);
+    render(<Register />);
 
     expect(screen.getByTestId("register-user-section")).toBeInTheDocument();
     expect(screen.getByText("Rejestracja")).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe("RegisterUser", () => {
   });
 
   test("should not send form when email is empty", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
 
     const submitButton = screen.getByText("Wyślij");
     await userEvent.click(submitButton);
@@ -74,7 +74,7 @@ describe("RegisterUser", () => {
   });
 
   test("should not send form when username is empty", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -86,7 +86,7 @@ describe("RegisterUser", () => {
   });
 
   test("should not send form when password is empty", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -101,7 +101,7 @@ describe("RegisterUser", () => {
   });
 
   test("should not send form when password repeat is empty", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -119,7 +119,7 @@ describe("RegisterUser", () => {
   });
 
   test("should not send form when password and password repeat are not equal", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -141,7 +141,7 @@ describe("RegisterUser", () => {
   });
 
   test("should display general error when response is not ok", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fillForm();
 
     const submitButton = screen.getByText("Wyślij");
@@ -154,7 +154,7 @@ describe("RegisterUser", () => {
   });
 
   test("should display error when username is already taken", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fillForm();
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
@@ -175,7 +175,7 @@ describe("RegisterUser", () => {
   });
 
   test("should display error when email is already taken", async () => {
-    render(<RegisterUser />);
+    render(<Register />);
     fillForm();
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
@@ -196,7 +196,7 @@ describe("RegisterUser", () => {
   });
 
   test("should send form successfully", async () => {
-    renderWithRouter(<RegisterUser />);
+    renderWithRouter(<Register />);
     expect(screen.getByRole("form")).toBeInTheDocument();
 
     await fillAndSubmitForm();
@@ -237,7 +237,7 @@ describe("RegisterUser", () => {
   });
 
   test("should display error and hide resend button when resend activation link failed", async () => {
-    renderWithRouter(<RegisterUser />);
+    renderWithRouter(<Register />);
     await fillAndSubmitForm();
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");
@@ -262,7 +262,7 @@ describe("RegisterUser", () => {
   });
 
   test("should successfully resend activation link and then display info and hide resend button", async () => {
-    renderWithRouter(<RegisterUser />);
+    renderWithRouter(<Register />);
     await fillAndSubmitForm();
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");

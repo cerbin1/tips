@@ -9,7 +9,7 @@ import Categories from "./components/advices/categories/Categories.jsx";
 import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
 import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
-import RegisterUser from "./components/user/RegisterUser.jsx";
+import Register from "./components/user/Register.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
       {
         path: "/user",
         children: [
-          { path: "register", element: <RegisterUser /> },
+          { path: "register", element: <Register /> },
           {
             path: "activate/:token",
             element: <ActivateUser />,
