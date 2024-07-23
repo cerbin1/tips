@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { beforeAll, beforeEach, expect, vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 import RegisterUser from "./RegisterUser";
-// import { renderWithRouter } from "../../test-utils";
 
 const mockedUseNavigate = vi.fn();
 
