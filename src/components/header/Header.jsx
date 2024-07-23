@@ -10,18 +10,34 @@ export default function Header() {
       <Link className="logo" to="/">
         <Logo />
       </Link>
-
       <nav className="py-4">
         <NavigationItem href="/random">Losowa porada</NavigationItem>
         <NavigationItem href="/categories">Kategorie</NavigationItem>
         <NavigationItem href="/ranking">Ranking</NavigationItem>
         <NavigationItem href="/suggest">Zaproponuj</NavigationItem>
       </nav>
-
       <div>
-        <NavLink to="/user/login"> Login</NavLink>
-        <FontAwesomeIcon icon={faUser} title="User" className="" />
-        <NavLink to="/user/register"> Rejestracja</NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            isActive
+              ? "px-2 text-blue-to-light underline"
+              : "px-2 text-blue-to-light"
+          }
+          to="/user/login"
+        >
+          Login
+        </NavLink>
+        <FontAwesomeIcon icon={faUser} title="User" />
+        <NavLink
+          className={({ isActive }) =>
+            isActive
+              ? "px-2 text-blue-to-light underline"
+              : "px-2 text-blue-to-light"
+          }
+          to="/user/register"
+        >
+          Rejestracja
+        </NavLink>
       </div>
     </header>
   );
