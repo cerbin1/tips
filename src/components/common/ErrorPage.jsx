@@ -1,5 +1,6 @@
 import { useRouteError } from "react-router";
 import Header from "../header/Header";
+import ContainerSection from "./ContainerSection";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -20,8 +21,12 @@ export default function ErrorPage() {
   return (
     <>
       <Header />
-      <h2>{title}</h2>
-      <p>{message}</p>
+      <ContainerSection>
+        <div className="text-red-600">
+          <h1>{title}</h1>
+          <p>{message}</p>
+        </div>
+      </ContainerSection>
     </>
   );
 }

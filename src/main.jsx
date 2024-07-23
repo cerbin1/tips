@@ -33,6 +33,7 @@ const router = createBrowserRouter([
       { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
       { path: "/suggest", element: <SuggestAdvice /> },
+      { path: "/error", element: <ErrorPage /> },
       {
         path: "/user",
         children: [
