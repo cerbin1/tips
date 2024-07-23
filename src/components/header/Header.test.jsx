@@ -2,6 +2,7 @@ import { screen } from "@testing-library/react";
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
 import { expect } from "vitest";
+import userEvent from "@testing-library/user-event";
 
 describe("Header", () => {
   test("should display header", () => {
@@ -53,5 +54,17 @@ describe("Header", () => {
     const registerUserLink = screen.getByText("Zarejestruj się");
     expect(registerUserLink).toBeInTheDocument();
     expect(registerUserLink).toHaveAttribute("href", "/user/register");
+  });
+
+  test("should change styles to currently clicked link", async () => {
+    renderWithRouter(<Header />);
+    const randomAdviceLink = screen.getByText("Losowa porada");
+    expect(randomAdviceLink).toHaveClass(
+      "px-12 text-blue-to-light no-underline"
+    );
+
+    await userEvent.click(randomAdviceLink);
+
+    expect(randomAdviceLink).toHaveClass("px-12 text-blue-to-light underline");
   });
 });
