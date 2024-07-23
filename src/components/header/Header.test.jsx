@@ -44,16 +44,19 @@ describe("Header", () => {
   test("should get number of links", () => {
     renderWithRouter(<Header />);
 
-    expect(screen.getAllByRole("link")).toHaveLength(6);
+    expect(screen.getAllByRole("link")).toHaveLength(7);
   });
 
   test("should display user buttons", () => {
     renderWithRouter(<Header />);
 
     expect(screen.getByTitle("User")).toBeInTheDocument();
-    const registerUserLink = screen.getByText("Zarejestruj się");
+    const registerUserLink = screen.getByText("Rejestracja");
     expect(registerUserLink).toBeInTheDocument();
     expect(registerUserLink).toHaveAttribute("href", "/user/register");
+    const loginUserLink = screen.getByText("Login");
+    expect(loginUserLink).toBeInTheDocument();
+    expect(loginUserLink).toHaveAttribute("href", "/user/login");
   });
 
   test("should change styles to currently clicked link", async () => {

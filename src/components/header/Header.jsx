@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Logo from "./Logo";
-import NavItem from "./NavItem";
+import NavigationItem from "./NavigationItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,15 +12,16 @@ export default function Header() {
       </Link>
 
       <nav className="py-4">
-        <NavItem href="/random">Losowa porada</NavItem>
-        <NavItem href="/categories">Kategorie</NavItem>
-        <NavItem href="/ranking">Ranking</NavItem>
-        <NavItem href="/suggest">Zaproponuj</NavItem>
+        <NavigationItem href="/random">Losowa porada</NavigationItem>
+        <NavigationItem href="/categories">Kategorie</NavigationItem>
+        <NavigationItem href="/ranking">Ranking</NavigationItem>
+        <NavigationItem href="/suggest">Zaproponuj</NavigationItem>
       </nav>
 
       <div>
-        <FontAwesomeIcon icon={faUser} title="User" className="pr-2" />
-        Zaloguj | <NavItem href="/user/register"> Zarejestruj się</NavItem>
+        <NavLink to="/user/login"> Login</NavLink>
+        <FontAwesomeIcon icon={faUser} title="User" className="" />
+        <NavLink to="/user/register"> Rejestracja</NavLink>
       </div>
     </header>
   );
