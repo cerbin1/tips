@@ -13,6 +13,7 @@ import Register from "./components/user/Register.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
+import Login from "./components/user/Login.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
         path: "/user",
         children: [
           { path: "register", element: <Register /> },
+          { path: "login", element: <Login /> },
           {
             path: "activate/:token",
             element: <ActivateUser />,
