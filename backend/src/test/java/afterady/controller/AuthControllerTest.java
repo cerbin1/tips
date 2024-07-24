@@ -323,7 +323,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    public void should() throws Exception {
+    public void shouldReturn200WhenLoginIsSuccessful() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
                 .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", emptySet(), true));
