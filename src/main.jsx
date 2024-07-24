@@ -26,15 +26,9 @@ const router = createBrowserRouter([
     id: "root",
     loader: tokenLoader,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
+      { path: "/", element: <Home /> },
       { path: "/advices", element: <AdviceDetails /> },
-      {
-        path: "/categories",
-        element: <Categories />,
-      },
+      { path: "/categories", element: <Categories /> },
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
@@ -47,10 +41,7 @@ const router = createBrowserRouter([
           { path: "login", element: <Login /> },
           { path: "logout", action: logoutAction },
           { path: "profile", element: <Profile /> },
-          {
-            path: "activate/:token",
-            element: <ActivateUser />,
-          },
+          { path: "activate/:token", element: <ActivateUser /> },
         ],
       },
     ],
