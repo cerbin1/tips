@@ -57,7 +57,7 @@ export default function Header() {
             Profil
           </NavLink>
           <FontAwesomeIcon icon={faUser} title="User" />
-          <Form action="/user/logout" method="post">
+          <Form className="inline" action="/user/logout" method="post">
             <button className="px-2">Wyloguj</button>
           </Form>
         </div>
