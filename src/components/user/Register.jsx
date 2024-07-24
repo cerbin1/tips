@@ -51,6 +51,8 @@ export default function Register() {
               setUserCreateError("Nazwa użytkownika jest zajęta!");
             } else if (error.message === "Error: Email is already in use.") {
               setUserCreateError("Email jest zajęty!");
+            } else if (error.message === "Error: Email is not valid.") {
+              setUserCreateError("Email jest niepoprawny!");
             }
           } else {
             throw new Error(userCreateError.message);

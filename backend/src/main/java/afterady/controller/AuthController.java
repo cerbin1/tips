@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import static afterady.util.CustomStringUtils.validateEmail;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/auth")
@@ -52,8 +54,12 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
+        String email = request.getEmail();
+        if (email == null || email.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
+        }
+        if (!validateEmail(email)) {
+            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is not valid."));
         }
         if (request.getUsername() == null || request.getUsername().isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is required."));
@@ -65,7 +71,6 @@ public class AuthController {
         if (userRepository.existsByUsername(username)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Username is already taken."));
         }
-        String email = request.getEmail();
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is already in use."));
         }

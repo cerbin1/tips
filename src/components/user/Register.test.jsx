@@ -187,6 +187,26 @@ describe("Register", () => {
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
+  test("should display error when email is invalid", async () => {
+    render(<Register />);
+    fillForm();
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 422,
+        json: () => Promise.resolve({ message: "Error: Email is not valid." }),
+      })
+    );
+
+    const submitButton = screen.getByText("Wyślij");
+    await userEvent.click(submitButton);
+
+    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    const error = screen.getByText("Email jest niepoprawny!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+  });
+
   test("should send form successfully", async () => {
     renderWithRouter(<Register />);
     expect(screen.getByRole("form")).toBeInTheDocument();

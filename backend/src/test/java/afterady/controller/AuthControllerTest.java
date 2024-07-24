@@ -86,12 +86,24 @@ public class AuthControllerTest {
     }
 
     @Test
+    public void shouldReturn422WhenRegisterRequestParamEmailIsInvalid() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("invalid", "username", "password", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Email is not valid.")));
+    }
+
+    @Test
     public void shouldReturn400WhenRegistrationRequestParamUsernameIsNull() throws Exception {
         // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", null, "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", null, "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Username is required.")));
@@ -103,7 +115,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Username is required.")));
@@ -115,7 +127,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "username", null, emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", null, emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password is required.")));
@@ -127,7 +139,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "username", "", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password is required.")));
@@ -142,7 +154,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Username is already taken.")));
@@ -151,13 +163,13 @@ public class AuthControllerTest {
     @Test
     public void shouldReturn422WhenEmailAlreadyExists() throws Exception {
         // arrange
-        when(userRepository.existsByEmail("email")).thenReturn(true);
+        when(userRepository.existsByEmail("email@test.com")).thenReturn(true);
 
         // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Email is already in use.")));
@@ -177,14 +189,14 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(userRepository, times(1)).save(Mockito.any(User.class));
         verify(userRepository, times(1)).existsByUsername("username");
-        verify(userRepository, times(1)).existsByEmail("email");
+        verify(userRepository, times(1)).existsByEmail("email@test.com");
         verify(userActivatorService, times(1)).createLinkFor(createdUser);
-        verify(sender, times(1)).send(new Message("email", "d4645e88-0d23-4946-a75d-694fc475ceba"));
+        verify(sender, times(1)).send(new Message("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 
@@ -280,7 +292,6 @@ public class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Email is required.")));
     }
-
 
     @Test
     public void shouldReturn400WhenLoginRequestParamPasswordIsNull() throws Exception {
