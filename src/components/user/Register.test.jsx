@@ -4,17 +4,8 @@ import { beforeAll, beforeEach, expect, vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 import Register from "./Register";
 
-const mockedUseNavigate = vi.fn();
-
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-
-  vi.mock("react-router", () => {
-    return {
-      ...vi.importActual("react-router-dom"),
-      useNavigate: () => mockedUseNavigate,
-    };
-  });
 });
 
 beforeEach(() => {
