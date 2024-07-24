@@ -1,10 +1,10 @@
 import { screen } from "@testing-library/react";
 import { renderWithRouter } from "../../test-utils";
-import NavItem from "./NavItem";
+import NavigationItem from "./NavigationItem";
 
-describe("NavItem", () => {
+describe("NavigationItem", () => {
   test("should render component", () => {
-    renderWithRouter(<NavItem href="/link">Link</NavItem>);
+    renderWithRouter(<NavigationItem href="/link">Link</NavigationItem>);
 
     const test = screen.getByText("Link");
     expect(test).toBeInTheDocument();
