@@ -14,7 +14,7 @@ import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
-import { tokenLoader } from "./util/auth.js";
+import { checkAuthLoader, tokenLoader } from "./util/auth.js";
 
 const router = createBrowserRouter([
   {
@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
-      { path: "/suggest", element: <SuggestAdvice /> },
+      { path: "/suggest", element: <SuggestAdvice />, loader: checkAuthLoader },
       { path: "/error", element: <ErrorPage /> },
       {
         path: "/user",
