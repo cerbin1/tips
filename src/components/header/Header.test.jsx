@@ -10,6 +10,9 @@ beforeAll(() => {
     return {
       ...(await vi.importActual("react-router-dom")),
       useRouteLoaderData: vi.fn(),
+      Form: vi.fn(({ children }) => (
+        <form aria-label="test form">{children}</form>
+      )),
     };
   });
 });
@@ -76,15 +79,16 @@ describe("Header", () => {
     expect(rankingLink).toHaveAttribute("href", "/ranking");
     expect(suggestLink).toBeInTheDocument();
     expect(suggestLink).toHaveAttribute("href", "/suggest");
-    expect(screen.getAllByRole("link")).toHaveLength(7);
     expect(screen.getByTitle("User")).toBeInTheDocument();
     const userProfileLink = screen.getByText("Profil");
     expect(userProfileLink).toBeInTheDocument();
     expect(userProfileLink).toHaveAttribute("href", "/user/profile");
-    const logoutLink = screen.getByText("Wyloguj");
-    expect(logoutLink).toBeInTheDocument();
-    expect(logoutLink).toHaveAttribute("href", "/user/logout");
-    expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getByRole("form")).toBeInTheDocument();
+    const logoutButton = screen.getByText("Wyloguj");
+    expect(logoutButton).toBeInTheDocument();
+    expect(logoutButton).toHaveClass("px-2");
+    expect(screen.getAllByRole("link")).toHaveLength(6);
+    expect(screen.getAllByRole("button")).toHaveLength(1);
   });
 
   test("should change styles to currently clicked link", async () => {
