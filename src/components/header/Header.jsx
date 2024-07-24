@@ -1,4 +1,4 @@
-import { Link, NavLink, useRouteLoaderData } from "react-router-dom";
+import { Form, Link, NavLink, useRouteLoaderData } from "react-router-dom";
 import Logo from "./Logo";
 import NavigationItem from "./NavigationItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -57,9 +57,9 @@ export default function Header() {
             Profil
           </NavLink>
           <FontAwesomeIcon icon={faUser} title="User" />
-          <NavLink className="px-2" to="/user/logout">
-            Wyloguj
-          </NavLink>
+          <Form action="/user/logout" method="post">
+            <button className="px-2">Wyloguj</button>
+          </Form>
         </div>
       )}
     </header>
