@@ -1,4 +1,3 @@
-import { screen } from "@testing-library/react";
 import TableDataLink from "./TableDataLink";
 import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";

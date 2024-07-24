@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import ActivateUser from "./ActivateUser";
-import { test, vi } from "vitest";
+import { vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 
 describe("ActivateUser", () => {

@@ -1,4 +1,3 @@
-import { render, screen } from "@testing-library/react";
 import ContainerSection from "./ContainerSection";
 
 describe("ContainerSection", () => {

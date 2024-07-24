@@ -1,4 +1,3 @@
-import { screen } from "@testing-library/react";
 import CategoryDetails from "./CategoryDetails";
 import { renderWithRouter } from "../../../test-utils";
 

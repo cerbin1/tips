@@ -1,4 +1,3 @@
-import { screen } from "@testing-library/react";
 import Ranking from "./Ranking";
 import { renderWithRouter } from "../../../test-utils";
 

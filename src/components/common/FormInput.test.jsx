@@ -1,6 +1,4 @@
-import { render, screen } from "@testing-library/react";
 import FormInput from "./FormInput";
-import { expect, test } from "vitest";
 
 describe("FormInput", () => {
   test("should render text input", () => {

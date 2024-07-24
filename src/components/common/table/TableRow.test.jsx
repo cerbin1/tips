@@ -1,6 +1,4 @@
-import { render, screen } from "@testing-library/react";
 import TableRow from "./TableRow";
-import { expect } from "vitest";
 
 describe("TableRow", () => {
   test("should display table row", () => {

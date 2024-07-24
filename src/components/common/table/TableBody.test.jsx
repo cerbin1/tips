@@ -1,4 +1,3 @@
-import { render, screen } from "@testing-library/react";
 import TableBody from "./TableBody";
 import TableRow from "./TableRow";
 import TableData from "./TableData";

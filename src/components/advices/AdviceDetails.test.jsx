@@ -1,6 +1,5 @@
-import { render, screen } from "@testing-library/react";
-import AdviceDetails from "./AdviceDetails";
 import userEvent from "@testing-library/user-event";
+import AdviceDetails from "./AdviceDetails";
 
 describe("AdviceDetails", () => {
   test("should display container", () => {

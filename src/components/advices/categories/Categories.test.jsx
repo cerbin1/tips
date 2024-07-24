@@ -1,7 +1,5 @@
-import { screen } from "@testing-library/react";
 import Categories from "./Categories";
 import { renderWithRouter } from "../../../test-utils";
-import { expect } from "vitest";
 
 describe("Categories", () => {
   test("should display categories", () => {

@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeAll, beforeEach, expect, vi } from "vitest";
+import { vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 import Register from "./Register";
 

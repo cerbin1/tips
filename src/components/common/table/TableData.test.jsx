@@ -1,4 +1,3 @@
-import { render, screen } from "@testing-library/react";
 import TableData from "./TableData";
 
 describe("TableData", () => {

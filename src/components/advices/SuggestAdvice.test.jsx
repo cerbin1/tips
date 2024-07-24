@@ -1,4 +1,3 @@
-import { render, screen } from "@testing-library/react";
 import SuggestAdvice from "./SuggestAdvice";
 
 describe("SuggestAdvice", () => {

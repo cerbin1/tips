@@ -1,6 +1,4 @@
-import { render, screen } from "@testing-library/react";
 import Profile from "./Profile";
-import { expect } from "vitest";
 
 describe("Profile", () => {
   test("should display profile", () => {

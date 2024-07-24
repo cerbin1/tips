@@ -1,7 +1,6 @@
-import { screen } from "@testing-library/react";
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
-import { beforeAll, expect, vi } from "vitest";
+import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { useRouteLoaderData } from "react-router-dom";
 
