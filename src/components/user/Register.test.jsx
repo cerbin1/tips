@@ -6,6 +6,7 @@ import Register from "./Register";
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+  import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
 beforeEach(() => {
@@ -192,16 +193,13 @@ describe("Register", () => {
 
     await fillAndSubmitForm();
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/auth/register",
-      {
-        body: '{"email":"test@email","username":"username","password":"password","passwordRepeat":"password"}',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      }
-    );
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/register", {
+      body: '{"email":"test@email","username":"username","password":"password","passwordRepeat":"password"}',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
     expect(screen.queryByRole("form")).toBeNull();
     expect(screen.getAllByRole("generic").at(2)).toHaveClass(
       "my-4 py-2 px-8 border border-cyan-200 radius-2xl text-green-600 leading-loose"
@@ -238,7 +236,7 @@ describe("Register", () => {
     await userEvent.click(resendActivationLinkButton);
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+      "backend/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
       {
         headers: {
           "Content-Type": "application/json",
@@ -263,7 +261,7 @@ describe("Register", () => {
     await userEvent.click(resendActivationLinkButton);
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+      "backend/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
       {
         headers: {
           "Content-Type": "application/json",

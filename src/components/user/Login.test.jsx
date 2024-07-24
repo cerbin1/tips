@@ -15,6 +15,8 @@ describe("Login", () => {
         useNavigate: () => someMock,
       };
     });
+
+    import.meta.env.VITE_BACKEND_URL = "backend/";
   });
 
   beforeEach(() => {
@@ -92,16 +94,13 @@ describe("Login", () => {
 
     await userEvent.click(loginButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "http://localhost:8080/auth/login",
-      {
-        body: '{"email":"test@email","password":"password"}',
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-      }
-    );
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/login", {
+      body: '{"email":"test@email","password":"password"}',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+    });
     expect(someMock).toHaveBeenCalled();
   });
 });
