@@ -1,16 +1,18 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import ActivateUser from "./ActivateUser";
 import { test, vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 
 describe("ActivateUser", () => {
-  test("should display user activating info", () => {
+  test("should display user activating info", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
     render(<ActivateUser />);
 
     expect(screen.getByText("Aktywacja konta...")).toBeInTheDocument();
-    expect(screen.getByTestId("activate-user-section")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText("Aktywacja konta...")).toBeNull();
+    });
   });
 
   test("should display error when request to activate user fails", async () => {
