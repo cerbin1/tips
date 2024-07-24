@@ -1,8 +1,18 @@
 import { screen } from "@testing-library/react";
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
-import { expect } from "vitest";
+import { beforeAll, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import { useRouteLoaderData } from "react-router-dom";
+
+beforeAll(() => {
+  vi.mock("react-router-dom", async () => {
+    return {
+      ...(await vi.importActual("react-router-dom")),
+      useRouteLoaderData: vi.fn(),
+    };
+  });
+});
 
 describe("Header", () => {
   test("should display header", () => {
@@ -21,8 +31,35 @@ describe("Header", () => {
     expect(screen.getByText("Afterady")).toBeInTheDocument();
   });
 
-  test("should display navbar with links", () => {
+  test("should display header for not logged in user", () => {
     renderWithRouter(<Header />);
+    useRouteLoaderData.mockReturnValue({ jwt: null });
+
+    const navbar = screen.getByRole("navigation");
+    expect(navbar).toBeInTheDocument();
+    expect(navbar).toHaveClass("py-4");
+    const randomAdviceLink = screen.getByText("Losowa porada");
+    const categoriesLink = screen.getByText("Kategorie");
+    const rankingLink = screen.getByText("Ranking");
+    expect(randomAdviceLink).toBeInTheDocument();
+    expect(randomAdviceLink).toHaveAttribute("href", "/random");
+    expect(categoriesLink).toBeInTheDocument();
+    expect(categoriesLink).toHaveAttribute("href", "/categories");
+    expect(rankingLink).toBeInTheDocument();
+    expect(rankingLink).toHaveAttribute("href", "/ranking");
+    expect(screen.getByTitle("User")).toBeInTheDocument();
+    const registerUserLink = screen.getByText("Rejestracja");
+    expect(registerUserLink).toBeInTheDocument();
+    expect(registerUserLink).toHaveAttribute("href", "/user/register");
+    const loginUserLink = screen.getByText("Login");
+    expect(loginUserLink).toBeInTheDocument();
+    expect(loginUserLink).toHaveAttribute("href", "/user/login");
+    expect(screen.getAllByRole("link")).toHaveLength(6);
+  });
+
+  test("should display header for logged in user", () => {
+    renderWithRouter(<Header />);
+    useRouteLoaderData.mockReturnValue({ jwt: "token" });
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
@@ -39,24 +76,15 @@ describe("Header", () => {
     expect(rankingLink).toHaveAttribute("href", "/ranking");
     expect(suggestLink).toBeInTheDocument();
     expect(suggestLink).toHaveAttribute("href", "/suggest");
-  });
-
-  test("should get number of links", () => {
-    renderWithRouter(<Header />);
-
     expect(screen.getAllByRole("link")).toHaveLength(7);
-  });
-
-  test("should display user buttons", () => {
-    renderWithRouter(<Header />);
-
     expect(screen.getByTitle("User")).toBeInTheDocument();
-    const registerUserLink = screen.getByText("Rejestracja");
-    expect(registerUserLink).toBeInTheDocument();
-    expect(registerUserLink).toHaveAttribute("href", "/user/register");
-    const loginUserLink = screen.getByText("Login");
-    expect(loginUserLink).toBeInTheDocument();
-    expect(loginUserLink).toHaveAttribute("href", "/user/login");
+    const userProfileLink = screen.getByText("Profil");
+    expect(userProfileLink).toBeInTheDocument();
+    expect(userProfileLink).toHaveAttribute("href", "/user/profile");
+    const logoutLink = screen.getByText("Wyloguj");
+    expect(logoutLink).toBeInTheDocument();
+    expect(logoutLink).toHaveAttribute("href", "/user/logout");
+    expect(screen.getAllByRole("link")).toHaveLength(7);
   });
 
   test("should change styles to currently clicked link", async () => {

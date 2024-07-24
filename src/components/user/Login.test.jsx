@@ -3,26 +3,26 @@ import Login from "./Login";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 
-const someMock = vi.fn();
+const useNavigateMock = vi.fn();
+
+beforeAll(() => {
+  globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+
+  vi.mock("react-router", () => {
+    return {
+      ...vi.importActual("react-router"),
+      useNavigate: () => useNavigateMock,
+    };
+  });
+
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
+beforeEach(() => {
+  globalThis.fetch.mockClear();
+});
 
 describe("Login", () => {
-  beforeAll(() => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-
-    vi.mock("react-router", () => {
-      return {
-        ...vi.importActual("react-router"),
-        useNavigate: () => someMock,
-      };
-    });
-
-    import.meta.env.VITE_BACKEND_URL = "backend/";
-  });
-
-  beforeEach(() => {
-    globalThis.fetch.mockClear();
-  });
-
   test("should display form", () => {
     render(<Login />);
 
@@ -90,7 +90,13 @@ describe("Login", () => {
     await fillForm();
     const loginButton = screen.getByRole("button");
     expect(loginButton).toHaveTextContent("Zaloguj");
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ jwt: "token" }),
+      })
+    );
 
     await userEvent.click(loginButton);
 
@@ -101,7 +107,7 @@ describe("Login", () => {
       },
       method: "POST",
     });
-    expect(someMock).toHaveBeenCalled();
+    expect(useNavigateMock).toHaveBeenCalled();
   });
 });
 

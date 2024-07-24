@@ -14,12 +14,15 @@ import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
+import { tokenLoader } from "./util/auth.js";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
     errorElement: <ErrorPage />,
+    id: "root",
+    loader: tokenLoader,
     children: [
       {
         path: "/",

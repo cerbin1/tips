@@ -19,22 +19,28 @@ export default function Login() {
       const email = formData.get("email");
       const password = formData.get("password");
       try {
-        await fetch(import.meta.env.VITE_BACKEND_URL + "auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-          }),
-        }).then((response) => {
-          if (response.ok) {
-            navigate("/random");
-          } else {
-            throw new Error();
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "auth/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              email: email,
+              password: password,
+            }),
           }
-        });
+        );
+        if (response.ok) {
+          const data = await response.json();
+          const token = data.jwt;
+          localStorage.setItem("token", token);
+
+          navigate("/random");
+        } else {
+          throw new Error();
+        }
       } catch (error) {
         setError("Nie udało się zalogować!");
       }
