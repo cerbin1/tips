@@ -16,6 +16,7 @@ import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
 import { checkAuthLoader, tokenLoader } from "./util/auth.js";
 import { action as logoutAction } from "./components/user/Logout.jsx";
+import Profile from "./components/user/Profile.jsx";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
           { path: "register", element: <Register /> },
           { path: "login", element: <Login /> },
           { path: "logout", action: logoutAction },
+          { path: "profile", element: <Profile /> },
           {
             path: "activate/:token",
             element: <ActivateUser />,
