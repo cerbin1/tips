@@ -1,74 +1,74 @@
-import { useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
-import { useNavigate } from "react-router";
+import { useActionData, useNavigation } from "react-router";
+import { Form, redirect } from "react-router-dom";
 
 export default function Login() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(undefined);
+  const data = useActionData();
+  const navigation = useNavigation();
 
-  const navigate = useNavigate();
-
-  function handleLogin(event) {
-    event.preventDefault();
-    setIsLoading(true);
-
-    async function sendRequest() {
-      const formData = new FormData(event.target);
-      const email = formData.get("email");
-      const password = formData.get("password");
-      try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "auth/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password,
-            }),
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          const token = data.jwt;
-          localStorage.setItem("token", token);
-
-          navigate("/random");
-        } else {
-          throw new Error();
-        }
-      } catch (error) {
-        setError("Nie udało się zalogować!");
-      }
-
-      setIsLoading(false);
-    }
-
-    sendRequest();
-  }
+  const isSubmitting = navigation.state !== "idle";
 
   return (
     <ContainerSection data-testid="login-section">
       <h1>Login</h1>
-      <form
-        onSubmit={handleLogin}
+      <Form
+        method="post"
         className="flex flex-col gap-4 w-1/3"
         aria-label="Login"
       >
         <FormInput label="Adres e-mail" id="email" type="email" required />
         <FormInput label="Hasło" id="password" type="password" required />
         <div>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Logowanie..." : "Zaloguj"}
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logowanie..." : "Zaloguj"}
           </Button>
         </div>
 
-        {error && <div className="py-6 text-red-500">{error}</div>}
-      </form>
+        {data && data.errors && (
+          <div>
+            {Object.values(data.errors).map((error) => (
+              <p className="py-6 text-red-500" key={error}>
+                {error}
+              </p>
+            ))}
+          </div>
+        )}
+      </Form>
     </ContainerSection>
   );
+}
+
+export async function action({ request }) {
+  console.log(request);
+  const formData = await request.formData();
+  console.log("formData", formData);
+
+  const response = await fetch(
+    import.meta.env.VITE_BACKEND_URL + "auth/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: formData.get("email"),
+        password: formData.get("password"),
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw json(
+      { message: "Nie udało się zautentykować użytkownika" },
+      { status: 500 }
+    );
+  }
+
+  const responseData = await response.json();
+  const token = responseData.jwt;
+  localStorage.setItem("token", token);
+
+  return redirect("/random");
 }

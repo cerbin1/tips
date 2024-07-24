@@ -1,17 +1,41 @@
-import { fireEvent } from "@testing-library/react";
-import Login from "./Login";
+import { fireEvent, render, waitFor } from "@testing-library/react";
+import Login, { action, action as loginAction } from "./Login";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
+import {
+  MemoryRouter,
+  Route,
+  Routes,
+  useActionData,
+  useNavigation,
+} from "react-router";
 
 const useNavigateMock = vi.fn();
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
-  vi.mock("react-router", () => {
+  vi.mock("react-router", async () => {
+    const actual = await vi.importActual("react-router");
     return {
-      ...vi.importActual("react-router"),
-      useNavigate: () => useNavigateMock,
+      ...actual,
+      // useNavigate: () => useNavigateMock,
+      useActionData: vi.fn(),
+      useNavigation: vi.fn(() => {
+        return {
+          state: "idle",
+        };
+      }),
+    };
+  });
+
+  vi.mock("react-router-dom", async () => {
+    return {
+      ...(await vi.importActual("react-router-dom")),
+      useRouteLoaderData: vi.fn(),
+      Form: vi.fn(({ children, ...props }) => (
+        <form {...props}>{children}</form>
+      )),
     };
   });
 
@@ -27,7 +51,9 @@ describe("Login", () => {
     render(<Login />);
 
     expect(screen.getByTestId("login-section")).toBeInTheDocument();
-    expect(screen.getByText("Login")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Login"
+    );
     const form = screen.getByRole("form");
     expect(form).toBeInTheDocument();
     expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
@@ -70,7 +96,10 @@ describe("Login", () => {
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
-  test("should display general error when response is not ok", async () => {
+  test("should display form errors", async () => {
+    useActionData.mockReturnValue({
+      errors: ["Nie udało się zalogować!"],
+    });
     render(<Login />);
     await fillForm();
     const loginButton = screen.getByRole("button");
@@ -78,36 +107,20 @@ describe("Login", () => {
 
     await userEvent.click(loginButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
-  test("should send form successfully", async () => {
-    render(<Login />);
-    expect(screen.getByRole("form")).toBeInTheDocument();
-    await fillForm();
-    const loginButton = screen.getByRole("button");
-    expect(loginButton).toHaveTextContent("Zaloguj");
-    globalThis.fetch = vi.fn(() =>
-      Promise.resolve({
-        ok: true,
-        status: 200,
-        json: () => Promise.resolve({ jwt: "token" }),
-      })
-    );
-
-    await userEvent.click(loginButton);
-
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/login", {
-      body: '{"email":"test@email","password":"password"}',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
+  test("should change button text when form is submitting", async () => {
+    useNavigation.mockReturnValue({
+      state: "submitting",
     });
-    expect(useNavigateMock).toHaveBeenCalled();
+
+    render(<Login />);
+
+    const loginButton = screen.getByRole("button");
+    expect(loginButton).toHaveTextContent("Logowanie...");
   });
 });
 

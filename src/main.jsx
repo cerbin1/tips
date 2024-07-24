@@ -13,7 +13,7 @@ import Register from "./components/user/Register.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
-import Login from "./components/user/Login.jsx";
+import Login, { action as loginAction } from "./components/user/Login.jsx";
 import { checkAuthLoader, tokenLoader } from "./util/auth.js";
 import { action as logoutAction } from "./components/user/Logout.jsx";
 import Profile from "./components/user/Profile.jsx";
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         path: "/user",
         children: [
           { path: "register", element: <Register /> },
-          { path: "login", element: <Login /> },
+          { path: "login", element: <Login />, action: loginAction },
           { path: "logout", action: logoutAction },
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
