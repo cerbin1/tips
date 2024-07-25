@@ -69,6 +69,13 @@ public class AuthController {
         if (password == null || password.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
         }
+        String passwordRepeat = request.getPasswordRepeat();
+        if (passwordRepeat == null || passwordRepeat.isEmpty()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Password repeat is required."));
+        }
+        if(!password.equals(passwordRepeat)) {
+            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Passwords do not match."));
+        }
         if (!validatePassword(password)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is not valid."));
         }

@@ -57,6 +57,8 @@ export default function Register() {
               setUserCreateError(
                 "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
               );
+            } else if (error.message === "Error: Passwords do not match.") {
+              setUserCreateError("Hasła musza być takie same!");
             }
           } else {
             throw new Error(userCreateError.message);

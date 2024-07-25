@@ -188,6 +188,26 @@ describe("Register", () => {
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
+  test("should display error when passwords do not match", async () => {
+    render(<Register />);
+    fillForm();
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 422,
+        json: () =>
+          Promise.resolve({ message: "Error: Passwords do not match." }),
+      })
+    );
+
+    await userEvent.click(screen.getByText("Wyślij"));
+
+    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    const error = screen.getByText("Hasła musza być takie same!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+  });
+
   test("should display error when email is already taken", async () => {
     render(<Register />);
     fillForm();
