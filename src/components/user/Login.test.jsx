@@ -1,16 +1,8 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
-import Login, { action, action as loginAction } from "./Login";
+import { fireEvent, render } from "@testing-library/react";
+import Login from "./Login";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import {
-  MemoryRouter,
-  Route,
-  Routes,
-  useActionData,
-  useNavigation,
-} from "react-router";
-
-const useNavigateMock = vi.fn();
+import { useActionData, useNavigation } from "react-router";
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
@@ -19,7 +11,6 @@ beforeAll(() => {
     const actual = await vi.importActual("react-router");
     return {
       ...actual,
-      // useNavigate: () => useNavigateMock,
       useActionData: vi.fn(),
       useNavigation: vi.fn(() => {
         return {
