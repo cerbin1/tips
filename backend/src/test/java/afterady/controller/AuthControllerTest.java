@@ -146,6 +146,54 @@ public class AuthControllerTest {
     }
 
     @Test
+    public void shouldReturn422WhenRegistrationRequestParamPasswordIsTooShort() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email@test.com", "username", "qwe123", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenRegistrationRequestParamPasswordHaveNoLetter() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email@test.com", "username", "12345678", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenRegistrationRequestParamPasswordHaveNoNumber() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenRegistrationRequestParamPasswordHaveNoSpecialCharacter() throws Exception {
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
+    }
+
+    @Test
     public void shouldReturn422WhenUsernameAlreadyExists() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(true);
@@ -154,7 +202,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Username is already taken.")));
@@ -169,7 +217,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Email is already in use.")));
@@ -189,7 +237,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", emptySet())))
+                                        new RegistrationRequest("email@test.com", "username", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(userRepository, times(1)).save(Mockito.any(User.class));

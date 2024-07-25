@@ -53,6 +53,10 @@ export default function Register() {
               setUserCreateError("Email jest zajęty!");
             } else if (error.message === "Error: Email is not valid.") {
               setUserCreateError("Email jest niepoprawny!");
+            } else if (error.message === "Error: Password is not valid.") {
+              setUserCreateError(
+                "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
+              );
             }
           } else {
             throw new Error(userCreateError.message);

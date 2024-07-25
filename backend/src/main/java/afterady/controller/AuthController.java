@@ -7,6 +7,7 @@ import afterady.messages.Message;
 import afterady.messages.TriggerSendingActivationLinkSender;
 import afterady.security.JwtUtil;
 import afterady.service.activation_link.UserActivatorService;
+import afterady.util.CustomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import static afterady.util.CustomStringUtils.*;
 import static afterady.util.CustomStringUtils.validateEmail;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -64,8 +66,12 @@ public class AuthController {
         if (request.getUsername() == null || request.getUsername().isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is required."));
         }
-        if (request.getPassword() == null || request.getPassword().isEmpty()) {
+        String password = request.getPassword();
+        if (password == null || password.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
+        }
+        if(!validatePassword(password)) {
+            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is not valid."));
         }
         String username = request.getUsername();
         if (userRepository.existsByUsername(username)) {
@@ -74,7 +80,7 @@ public class AuthController {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is already in use."));
         }
-        User createdUser = userRepository.save(new User(username, email, encoder.encode(request.getPassword())));
+        User createdUser = userRepository.save(new User(username, email, encoder.encode(password)));
         UserActivationLink activationLink = userActivatorService.createLinkFor(createdUser);
         sender.send(new Message(email, activationLink.getLinkId().toString()));
 

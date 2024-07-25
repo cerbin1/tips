@@ -92,6 +92,28 @@ describe("Register", () => {
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
+  test("should not send form when password is invalid", async () => {
+    render(<Register />);
+    fillForm();
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 422,
+        json: () =>
+          Promise.resolve({ message: "Error: Password is not valid." }),
+      })
+    );
+
+    await userEvent.click(screen.getByText("Wyślij"));
+
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(
+      screen.getByText(
+        "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
+      )
+    ).toBeInTheDocument();
+  });
+
   test("should not send form when password repeat is empty", async () => {
     render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
@@ -135,9 +157,9 @@ describe("Register", () => {
   test("should display general error when response is not ok", async () => {
     render(<Register />);
     fillForm();
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
-    const submitButton = screen.getByText("Wyślij");
-    await userEvent.click(submitButton);
+    await userEvent.click(screen.getByText("Wyślij"));
 
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     const error = screen.getByText("Nie udało się utworzyć użytkownika!");
