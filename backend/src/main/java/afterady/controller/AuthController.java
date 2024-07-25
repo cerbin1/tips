@@ -7,7 +7,6 @@ import afterady.messages.Message;
 import afterady.messages.TriggerSendingActivationLinkSender;
 import afterady.security.JwtUtil;
 import afterady.service.activation_link.UserActivatorService;
-import afterady.util.CustomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
-import static afterady.util.CustomStringUtils.*;
 import static afterady.util.CustomStringUtils.validateEmail;
+import static afterady.util.CustomStringUtils.validatePassword;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -70,7 +69,7 @@ public class AuthController {
         if (password == null || password.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
         }
-        if(!validatePassword(password)) {
+        if (!validatePassword(password)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is not valid."));
         }
         String username = request.getUsername();
