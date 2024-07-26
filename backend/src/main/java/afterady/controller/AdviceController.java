@@ -1,13 +1,11 @@
 package afterady.controller;
 
+import afterady.domain.advice.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static afterady.domain.advice.AdviceCategory.isValid;
 import static afterady.domain.advice.AdviceCategory.valueOf;
@@ -52,7 +50,12 @@ public class AdviceController {
         return ResponseEntity.ok().build();
     }
 
-    private static MessageResponse validationError() {
+    @GetMapping("/categories")
+    public ResponseEntity<?> getAdviceCategories() {
+        return ResponseEntity.ok(AdviceCategory.getCategories());
+    }
+
+    private MessageResponse validationError() {
         return new MessageResponse("Error: validation failed.");
     }
 

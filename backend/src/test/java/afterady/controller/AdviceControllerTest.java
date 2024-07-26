@@ -24,13 +24,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = {
@@ -167,6 +168,15 @@ class AdviceControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: content too long.")));
+    }
+
+    @Test
+    public void shouldGetCategories() throws Exception {
+        // act & assert
+        mvc.perform(get("/advices/categories"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath(("$"), hasSize(5)))
+                .andExpect(content().json("[{\"name\":\"PERSONAL_DEVELOPMENT\", \"displayName\":\"Rozwój osobisty\"},{\"name\":\"HEALTH\", \"displayName\":\"Zdrowie\"}, {\"name\":\"HOME\", \"displayName\":\"Dom\"}, {\"name\":\"FINANCE\", \"displayName\":\"Finanse\"}, {\"name\":\"TECHNOLOGY\", \"displayName\":\"Technologia\"}]"));
     }
 
     @Test
