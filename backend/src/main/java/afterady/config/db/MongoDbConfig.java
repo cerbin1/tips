@@ -18,8 +18,11 @@ public class MongoDbConfig {
     @Value("${spring.data.mongodb.database}")
     private String databaseName;
 
-    @Value("${mongodb.schema.file.path}")
-    private String schemaFilePath;
+    @Value("${mongodb.advice.schema.file.path}")
+    private String adviceSchemaPath;
+
+    @Value("${mongodb.suggestedAdvice.schema.file.path}")
+    private String suggestedAdviceSchemaPath;
 
     private final MongoClient mongoClient;
 
@@ -30,11 +33,16 @@ public class MongoDbConfig {
     @PostConstruct
     public void init() throws IOException {
         MongoDatabase database = mongoClient.getDatabase(databaseName);
-        if (!database.listCollectionNames().into(new ArrayList<>()).contains("advice")) {
-            database.createCollection("advice");
+        initCollection(database, "advice", adviceSchemaPath);
+        initCollection(database, "suggestedAdvice", suggestedAdviceSchemaPath);
+    }
+
+    private void initCollection(MongoDatabase database, String collectionName, String schemaFilePath) throws IOException {
+        if (!database.listCollectionNames().into(new ArrayList<>()).contains(collectionName)) {
+            database.createCollection(collectionName);
         }
         String schemaJson = new String(Files.readAllBytes(Paths.get(schemaFilePath)));
         Document schemaDocument = Document.parse(schemaJson);
-        database.runCommand(new Document("collMod", "advice").append("validator", schemaDocument));
+        database.runCommand(new Document("collMod", collectionName).append("validator", schemaDocument));
     }
 }

@@ -1,0 +1,32 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "name",
+      "category",
+      "content"
+    ],
+    "properties": {
+      "id": {
+        "bsonType": "string"
+      },
+      "name": {
+        "bsonType": "string"
+      },
+      "category": {
+        "bsonType": "string",
+        "enum": [
+          "PERSONAL_DEVELOPMENT",
+          "HEALTH",
+          "HOME",
+          "FINANCE",
+          "TECHNOLOGY"
+        ]
+      },
+      "content": {
+        "bsonType": "string"
+      }
+    }
+  }
+}

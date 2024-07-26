@@ -1,0 +1,185 @@
+package afterady.controller;
+
+import afterady.config.db.MongoDbConfig;
+import afterady.config.db.TestDataInitializer;
+import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.SuggestedAdvice;
+import afterady.domain.repository.AdviceRepository;
+import afterady.domain.repository.SuggestedAdviceRepository;
+import afterady.domain.repository.UserRepository;
+import afterady.service.activation_link.UserActivatorService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@EnableAutoConfiguration(exclude = {
+        DataSourceAutoConfiguration.class,
+        DataSourceTransactionManagerAutoConfiguration.class,
+        HibernateJpaAutoConfiguration.class,
+        MongoAutoConfiguration.class,
+        MongoDataAutoConfiguration.class}
+)
+@AutoConfigureMockMvc(addFilters = false)
+class AdviceControllerTest {
+
+    @Autowired
+    private MockMvc mvc;
+
+    @MockBean
+    private TestDataInitializer testDataInitializer;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private UserActivatorService userActivatorService;
+    @MockBean
+    private UserDetailsService userDetailsService;
+    @MockBean
+    private AdviceRepository adviceRepository;
+    @MockBean
+    private MongoDbConfig mongoDbConfig;
+    @MockBean
+    private SuggestedAdviceRepository suggestedAdviceRepository;
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest(null, "HOME", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("", "HOME", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsTooLong() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: name too long.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", null, "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsNotValid() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "category", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsTooLong() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001))))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: content too long.")));
+    }
+
+    @Test
+    public void shouldCreateNewAdvice() throws Exception {
+        when(suggestedAdviceRepository.save(any(SuggestedAdvice.class)))
+                .thenReturn(new SuggestedAdvice("1", "name", AdviceCategory.HOME, "content"));
+
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+}
