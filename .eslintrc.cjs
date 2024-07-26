@@ -1,3 +1,5 @@
+import { vitest } from "vitest";
+
 module.exports = {
   root: true,
   env: { browser: true, es2020: true, node: true },
@@ -22,7 +24,7 @@ module.exports = {
     {
       files: ["**/*.test.js", "**/*.test.jsx"],
       env: {
-        jest: true,
+        vitest: true,
       },
     },
   ],
