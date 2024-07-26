@@ -1,4 +1,8 @@
 package afterady.domain.advice;
 
-public record Advice(String id, String name, String category, String content) {
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
+
+@Document(collection = "advice")
+public record Advice(@MongoId String id, String name, AdviceCategory category, String content) {
 }
