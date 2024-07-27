@@ -516,7 +516,7 @@ public class AuthControllerTest {
         verify(userRepository, times(1)).findByEmail("email@test.com");
         verify(resetPasswordService, times(1)).createLinkFor(Mockito.any(User.class));
         Mockito.verifyNoMoreInteractions(userRepository);
-        Mockito.verifyNoMoreInteractions(userActivatorService);
+        Mockito.verifyNoMoreInteractions(resetPasswordService);
         verify(resetPasswordService, times(1)).createLinkFor(user);
         verify(resetPasswordLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
     }
