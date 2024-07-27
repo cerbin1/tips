@@ -1,5 +1,6 @@
 package afterady.security;
 
+import afterady.config.EnvironmentWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,24 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import static afterady.config.EnvironmentWrapper.AFTERADY_FRONT_URL;
 
 @Configuration
 @EnableMethodSecurity
-public class WebSecurityConfig {
+public class WebSecurityConfig implements WebMvcConfigurer {
+
+
+    private final UserDetailsService userDetailsService;
+    private final EnvironmentWrapper environment;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    public WebSecurityConfig(UserDetailsService userDetailsService, EnvironmentWrapper environment) {
+        this.userDetailsService = userDetailsService;
+        this.environment = environment;
+    }
 
     @Bean
     public JwtFilter authenticationJwtTokenFilter() {
@@ -63,5 +75,12 @@ public class WebSecurityConfig {
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(environment.getEnv(AFTERADY_FRONT_URL))
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
     }
 }
