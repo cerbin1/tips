@@ -2,15 +2,17 @@ package afterady.controller;
 
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.ResetPasswordLink;
 import afterady.domain.user.Role;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
-import afterady.messages.Message;
-import afterady.messages.TriggerSendingActivationLinkSender;
+import afterady.messages.LinkMessage;
+import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
+import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSender;
 import afterady.security.JwtUtil;
 import afterady.service.activation_link.UserActivatorService;
+import afterady.service.password_reset.ResetPasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ import java.util.UUID;
 import static afterady.domain.user.RoleName.ROLE_USER;
 import static afterady.util.CustomStringUtils.validateEmail;
 import static afterady.util.CustomStringUtils.validatePassword;
+import static org.springframework.http.HttpStatus.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -34,30 +37,36 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final UserActivatorService userActivatorService;
-    private final TriggerSendingActivationLinkSender sender;
+    private final TriggerSendingActivationLinkSender activationLinkSender;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder encoder;
     private final RoleRepository roleRepository;
+    private final ResetPasswordService resetPasswordService;
+    private final TriggerSendingPasswordResetLinkSender resetPasswordLinkSender;
 
     @Autowired
     public AuthController(UserRepository userRepository,
                           UserActivatorService userActivatorService,
-                          TriggerSendingActivationLinkSender sender,
+                          TriggerSendingActivationLinkSender activationLinkSender,
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
                           UserDetailsService userDetailsService,
                           PasswordEncoder encoder,
-                          RoleRepository roleRepository) {
+                          RoleRepository roleRepository,
+                          ResetPasswordService resetPasswordService,
+                          TriggerSendingPasswordResetLinkSender resetPasswordLinkSender) {
         this.userRepository = userRepository;
         this.userActivatorService = userActivatorService;
-        this.sender = sender;
+        this.activationLinkSender = activationLinkSender;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.encoder = encoder;
         this.roleRepository = roleRepository;
+        this.resetPasswordService = resetPasswordService;
+        this.resetPasswordLinkSender = resetPasswordLinkSender;
     }
 
     @PostMapping("/register")
@@ -102,23 +111,23 @@ public class AuthController {
 
         User createdUser = userRepository.save(user);
         UserActivationLink activationLink = userActivatorService.createLinkFor(createdUser);
-        sender.send(new Message(email, activationLink.getLinkId().toString()));
+        activationLinkSender.send(new LinkMessage(email, activationLink.getLinkId().toString()));
 
-        return new ResponseEntity<>(activationLink.getLinkId(), HttpStatus.OK);
+        return new ResponseEntity<>(activationLink.getLinkId(), OK);
     }
 
     @GetMapping("/activate/{linkId}")
     public ResponseEntity<?> activateUserByLinkId(@PathVariable String linkId) {
         Optional<UserActivationLink> maybeActivationLink = userActivatorService.getById(UUID.fromString(linkId));
         if (maybeActivationLink.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } else {
             UserActivationLink activationLink = maybeActivationLink.get();
             if (activationLink.getExpired()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(BAD_REQUEST);
             }
             userActivatorService.activateUserByLink(activationLink);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(OK);
         }
     }
 
@@ -126,11 +135,11 @@ public class AuthController {
     public ResponseEntity<?> resendLink(@PathVariable UUID linkId) {
         Optional<UserActivationLink> maybeActivationLink = userActivatorService.getById(linkId);
         if (maybeActivationLink.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(BAD_REQUEST);
         } else {
             UserActivationLink activationLink = maybeActivationLink.get();
             userActivatorService.resendLink(activationLink);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(NO_CONTENT);
         }
     }
 
@@ -152,6 +161,22 @@ public class AuthController {
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
         return ResponseEntity.ok(new LoginResponse(jwt, extractRolesFrom(userDetails)));
     }
+
+    @PutMapping("/account/password")
+    public ResponseEntity<?> sendPasswordResetLink(@RequestParam String email) {
+        if (email.isBlank()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
+        }
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        ResetPasswordLink resetPasswordLink = resetPasswordService.createLinkFor(user.get());
+        resetPasswordLinkSender.send(new LinkMessage(email, resetPasswordLink.getLinkId().toString()));
+        return new ResponseEntity<>(OK);
+
+    }
+
 
     private static String[] extractRolesFrom(UserDetails userDetails) {
         return userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);

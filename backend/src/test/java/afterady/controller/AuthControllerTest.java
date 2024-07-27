@@ -3,14 +3,17 @@ package afterady.controller;
 import afterady.TestUtils;
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.ResetPasswordLink;
 import afterady.domain.user.Role;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
-import afterady.messages.Message;
-import afterady.messages.TriggerSendingActivationLinkSender;
+import afterady.messages.LinkMessage;
+import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
+import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSender;
 import afterady.security.JwtUtil;
 import afterady.service.CustomUserDetailsService;
 import afterady.service.activation_link.UserActivatorService;
+import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,17 +30,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 import static afterady.domain.user.RoleName.ROLE_USER;
 import static java.util.Collections.emptySet;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,9 +66,13 @@ public class AuthControllerTest {
     @MockBean
     private JwtUtil jwtUtil;
     @MockBean
-    private TriggerSendingActivationLinkSender sender;
+    private TriggerSendingActivationLinkSender activationLinkSender;
     @MockBean
     private RoleRepository roleRepository;
+    @MockBean
+    private ResetPasswordService resetPasswordService;
+    @MockBean
+    private TriggerSendingPasswordResetLinkSender resetPasswordLinkSender;
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
@@ -274,7 +281,7 @@ public class AuthControllerTest {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
                 .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
-        when(roleRepository.findByName(ROLE_USER)).thenReturn(Optional.empty());
+        when(roleRepository.findByName(ROLE_USER)).thenReturn(empty());
 
         // act & assert
         mvc.perform(post("/auth/register")
@@ -295,7 +302,7 @@ public class AuthControllerTest {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
                 .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
-        when(roleRepository.findByName(ROLE_USER)).thenReturn(Optional.of(new Role(ROLE_USER)));
+        when(roleRepository.findByName(ROLE_USER)).thenReturn(of(new Role(ROLE_USER)));
 
         // act & assert
         mvc.perform(post("/auth/register")
@@ -308,14 +315,14 @@ public class AuthControllerTest {
         verify(userRepository, times(1)).existsByUsername("username");
         verify(userRepository, times(1)).existsByEmail("email@test.com");
         verify(userActivatorService, times(1)).createLinkFor(createdUser);
-        verify(sender, times(1)).send(new Message("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
+        verify(activationLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     public void shouldNotActivateUserWhenLinkNotExists() throws Exception {
         // arrange
-        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(Optional.empty());
+        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(empty());
 
         // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -326,7 +333,7 @@ public class AuthControllerTest {
     public void shouldNotActivateUserWhenLinkExpired() throws Exception {
         // arrange
         when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
-                .thenReturn(Optional.of(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
+                .thenReturn(of(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
 
         // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -339,7 +346,7 @@ public class AuthControllerTest {
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
         when(userActivatorService.getById(linkId))
-                .thenReturn(Optional.of(link));
+                .thenReturn(of(link));
 
         // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -353,7 +360,7 @@ public class AuthControllerTest {
     public void shouldNotResendNotExistingLink() throws Exception {
         // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-        when(userActivatorService.getById(linkId)).thenReturn(Optional.empty());
+        when(userActivatorService.getById(linkId)).thenReturn(empty());
 
         // act
         mvc.perform(post("/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -369,7 +376,7 @@ public class AuthControllerTest {
         // arrange
         UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
-        when(userActivatorService.getById(linkId)).thenReturn(Optional.of(link));
+        when(userActivatorService.getById(linkId)).thenReturn(of(link));
 
         // act
         mvc.perform(post("/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -468,5 +475,49 @@ public class AuthControllerTest {
         Mockito.verifyNoMoreInteractions(authenticationManager);
         verify(jwtUtil).generateToken("email");
         Mockito.verifyNoMoreInteractions(jwtUtil);
+    }
+
+    @Test
+    public void shouldReturn400WhenEmailIsNullWhenRestartingPassword() throws Exception {
+        // act & assert
+        mvc.perform(put("/auth/account/password"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400WhenEmailIsEmptyWhenRestartingPassword() throws Exception {
+        // act & assert
+        mvc.perform(put("/auth/account/password?email="))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: Email is required.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenEmailNotExistsWhenRestartingPassword() throws Exception {
+        when(userRepository.findByEmail("test@test")).thenReturn(empty());
+
+        // act & assert
+        mvc.perform(put("/auth/account/password?email=test@test"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldSendRestartPasswordLink() throws Exception {
+        User user = TestUtils.testUser();
+        when(userRepository.findByEmail("email@test.com")).thenReturn(of(user));
+        when(resetPasswordService.createLinkFor(Mockito.any(User.class)))
+                .thenReturn(new ResetPasswordLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), user, false));
+
+        // act
+        mvc.perform(put("/auth/account/password?email=email@test.com"))
+                .andExpect(status().isOk());
+
+        // assert
+        verify(userRepository, times(1)).findByEmail("email@test.com");
+        verify(resetPasswordService, times(1)).createLinkFor(Mockito.any(User.class));
+        Mockito.verifyNoMoreInteractions(userRepository);
+        Mockito.verifyNoMoreInteractions(userActivatorService);
+        verify(resetPasswordService, times(1)).createLinkFor(user);
+        verify(resetPasswordLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
     }
 }

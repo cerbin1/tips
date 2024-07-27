@@ -8,7 +8,9 @@ import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.service.activation_link.UserActivatorService;
+import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +66,10 @@ class AdviceControllerTest {
     private SuggestedAdviceRepository suggestedAdviceRepository;
     @MockBean
     private RoleRepository roleRepository;
+    @MockBean
+    private ResetPasswordService resetPasswordService;
+    @MockBean
+    private TriggerSendingActivationLinkSender resetPasswordLinkSender;
 
     @Test
     public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsNull() throws Exception {

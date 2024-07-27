@@ -1,5 +1,7 @@
-package afterady.messages;
+package afterady.messages.reset_password_link;
 
+import afterady.messages.LinkMessage;
+import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -10,23 +12,23 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
-public class TriggerSendingActivationLinkSenderTest {
+public class TriggerSendingPasswordResetLinkSenderTest {
 
     @Mock
     private RabbitTemplate rabbitTemplate;
 
     @InjectMocks
-    private TriggerSendingActivationLinkSender sender;
+    private TriggerSendingPasswordResetLinkSender sender;
 
     @Test
     public void shouldSendMessage() {
         // arrange
-        Message message = new Message("email", "linkId");
+        LinkMessage message = new LinkMessage("email", "linkId");
 
         // act
         sender.send(message);
 
         // assert
-        verify(rabbitTemplate).convertAndSend(eq("activation-links-exchange"), eq("links"), eq(message));
+        verify(rabbitTemplate).convertAndSend(eq("exchange"), eq("routing.key.2"), eq(message));
     }
 }

@@ -1,6 +1,8 @@
-package afterady.messages;
+package afterady.messages.reset_password_link;
 
 import afterady.config.EnvironmentWrapper;
+import afterady.messages.LinkMessage;
+import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkReceiver;
 import afterady.service.email.EmailSendingService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -11,7 +13,7 @@ import static afterady.config.EnvironmentWrapper.AFTERADY_FRONT_URL;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-public class TriggerSendingActivationLinkReceiverTest {
+public class TriggerSendingPasswordResetLinkReceiverTest {
 
     @Mock
     private EmailSendingService emailSendingService;
@@ -19,21 +21,21 @@ public class TriggerSendingActivationLinkReceiverTest {
     private EnvironmentWrapper environment;
 
     @InjectMocks
-    private TriggerSendingActivationLinkReceiver receiver;
+    private TriggerSendingPasswordResetLinkReceiver receiver;
 
     @Test
     public void shouldReceiveMessage() {
         // arrange
-        when(emailSendingService.sendEmail(eq("email"), eq("Afterady - activation link"), eq("auth/activate/linkId")))
+        when(emailSendingService.sendEmail(eq("email"), eq("Afterady - password reset link"), eq("auth/account/password")))
                 .thenReturn(true);
         when(environment.getEnv(AFTERADY_FRONT_URL)).thenReturn("http://localhost:8080/");
-        Message message = new Message("email", "linkId");
+        LinkMessage message = new LinkMessage("email", "linkId");
 
         // act
         receiver.receive(message);
 
         // assert
         verify(emailSendingService, times(1))
-                .sendEmail("email", "Afterady - activation link", "http://localhost:8080/user/activate/linkId");
+                .sendEmail("email", "Afterady - password reset link", "http://localhost:8080/user/profile/password-reset/linkId");
     }
 }
