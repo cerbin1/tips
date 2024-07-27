@@ -22,7 +22,8 @@ public class TriggerSendingPasswordResetLinkReceiver {
     @RabbitListener(queues = PASSWORD_RESET_LINKS_QUEUE)
     public void receive(LinkMessage message) {
         var subject = "Afterady - password reset link";
-        var content = environment.getEnv(AFTERADY_FRONT_URL) + "user/profile/password-reset/" + message.linkId();
-        emailSendingService.sendEmail(message.email(), subject, content);
+        String email = message.email();
+        var content = environment.getEnv(AFTERADY_FRONT_URL) + "user/profile/password-reset/" + message.linkId() + "?email=" + email;
+        emailSendingService.sendEmail(email, subject, content);
     }
 }
