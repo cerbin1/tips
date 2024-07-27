@@ -25,7 +25,6 @@ export function checkAuthLoader() {
 }
 
 export function getUserRoles() {
-  console.log(localStorage);
   const roles = localStorage.getItem("roles");
   if (!roles) {
     return null;
