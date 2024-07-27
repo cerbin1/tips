@@ -41,9 +41,7 @@ export default function Login() {
 }
 
 export async function action({ request }) {
-  console.log(request);
   const formData = await request.formData();
-  console.log("formData", formData);
 
   const response = await fetch(
     import.meta.env.VITE_BACKEND_URL + "auth/login",
