@@ -480,14 +480,14 @@ public class AuthControllerTest {
     @Test
     public void shouldReturn400WhenEmailIsNullWhenRestartingPassword() throws Exception {
         // act & assert
-        mvc.perform(put("/auth/account/password"))
+        mvc.perform(put("/auth/account/password-reset"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void shouldReturn400WhenEmailIsEmptyWhenRestartingPassword() throws Exception {
         // act & assert
-        mvc.perform(put("/auth/account/password?email="))
+        mvc.perform(put("/auth/account/password-reset?email="))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Email is required.")));
     }
@@ -497,7 +497,7 @@ public class AuthControllerTest {
         when(userRepository.findByEmail("test@test")).thenReturn(empty());
 
         // act & assert
-        mvc.perform(put("/auth/account/password?email=test@test"))
+        mvc.perform(put("/auth/account/password-reset?email=test@test"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -509,7 +509,7 @@ public class AuthControllerTest {
                 .thenReturn(new ResetPasswordLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), user, false));
 
         // act
-        mvc.perform(put("/auth/account/password?email=email@test.com"))
+        mvc.perform(put("/auth/account/password-reset?email=email@test.com"))
                 .andExpect(status().isOk());
 
         // assert

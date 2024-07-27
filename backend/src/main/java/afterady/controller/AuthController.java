@@ -162,7 +162,7 @@ public class AuthController {
         return ResponseEntity.ok(new LoginResponse(jwt, extractRolesFrom(userDetails)));
     }
 
-    @PutMapping("/account/password")
+    @PutMapping("/account/password-reset")
     public ResponseEntity<?> sendPasswordResetLink(@RequestParam String email) {
         if (email.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));

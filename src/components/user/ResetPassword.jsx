@@ -20,7 +20,7 @@ export default function ResetPassword() {
       try {
         const response = await fetch(
           import.meta.env.VITE_BACKEND_URL +
-            "auth/account/password?email=" +
+            "auth/account/password-reset?email=" +
             email,
           { method: "PUT" }
         );

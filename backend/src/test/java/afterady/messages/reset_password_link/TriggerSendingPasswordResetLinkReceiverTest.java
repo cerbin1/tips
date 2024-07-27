@@ -25,7 +25,7 @@ public class TriggerSendingPasswordResetLinkReceiverTest {
     @Test
     public void shouldReceiveMessage() {
         // arrange
-        when(emailSendingService.sendEmail(eq("email"), eq("Afterady - password reset link"), eq("auth/account/password")))
+        when(emailSendingService.sendEmail(eq("email"), eq("Afterady - password reset link"), eq("auth/account/password-reset")))
                 .thenReturn(true);
         when(environment.getEnv(AFTERADY_FRONT_URL)).thenReturn("http://localhost:8080/");
         LinkMessage message = new LinkMessage("email", "linkId");

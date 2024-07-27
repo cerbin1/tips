@@ -63,7 +63,7 @@ describe("ResetPassword", () => {
     await userEvent.click(screen.getByRole("button"));
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/account/password?email=test@test",
+      "backend/auth/account/password-reset?email=test@test",
       { method: "PUT" }
     );
     const error = screen.getByText(
@@ -85,7 +85,7 @@ describe("ResetPassword", () => {
     await userEvent.click(screen.getByRole("button"));
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/account/password?email=test@test",
+      "backend/auth/account/password-reset?email=test@test",
       { method: "PUT" }
     );
     const error = screen.getByText(
