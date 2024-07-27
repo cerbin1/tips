@@ -61,7 +61,7 @@ export default function Register() {
               setUserCreateError("Hasła musza być takie same!");
             }
           } else {
-            throw new Error(userCreateError.message);
+            throw new Error(response);
           }
         }
       } catch (error) {
