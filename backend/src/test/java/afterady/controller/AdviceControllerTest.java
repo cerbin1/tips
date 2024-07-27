@@ -5,6 +5,7 @@ import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
+import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.service.activation_link.UserActivatorService;
@@ -61,6 +62,8 @@ class AdviceControllerTest {
     private MongoDbConfig mongoDbConfig;
     @MockBean
     private SuggestedAdviceRepository suggestedAdviceRepository;
+    @MockBean
+    private RoleRepository roleRepository;
 
     @Test
     public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsNull() throws Exception {

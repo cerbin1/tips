@@ -7,12 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_role")
+@Table(name = "role")
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UserRole {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +22,7 @@ public class UserRole {
     @Column(length = 20)
     private RoleName name;
 
-    public UserRole(RoleName name) {
+    public Role(RoleName name) {
         this.name = name;
     }
 }

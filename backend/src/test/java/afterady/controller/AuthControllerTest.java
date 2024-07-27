@@ -1,7 +1,9 @@
 package afterady.controller;
 
 import afterady.TestUtils;
+import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.Role;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
 import afterady.messages.Message;
@@ -26,8 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
+import static afterady.domain.user.RoleName.ROLE_USER;
 import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -60,6 +64,8 @@ public class AuthControllerTest {
     private JwtUtil jwtUtil;
     @MockBean
     private TriggerSendingActivationLinkSender sender;
+    @MockBean
+    private RoleRepository roleRepository;
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
@@ -260,6 +266,27 @@ public class AuthControllerTest {
     }
 
     @Test
+    public void shouldReturn500WhenRoleUserDoesNotExist() throws Exception {
+        // arrange
+        when(userRepository.existsByUsername("username")).thenReturn(false);
+        when(userRepository.existsByEmail("email")).thenReturn(false);
+        User createdUser = TestUtils.testUser();
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
+        when(userActivatorService.createLinkFor(Mockito.any(User.class)))
+                .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
+        when(roleRepository.findByName(ROLE_USER)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest("email@test.com", "username", "password123!", "password123!", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.message", is("Error: Role user not found.")));
+    }
+
+    @Test
     public void shouldReturn200WhenUserIsRegisteredSuccessfully() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(false);
@@ -268,6 +295,7 @@ public class AuthControllerTest {
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
                 .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
+        when(roleRepository.findByName(ROLE_USER)).thenReturn(Optional.of(new Role(ROLE_USER)));
 
         // act & assert
         mvc.perform(post("/auth/register")
@@ -421,7 +449,8 @@ public class AuthControllerTest {
     public void shouldReturn200WhenLoginIsSuccessful() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
-                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", emptySet(), true));
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+        when(jwtUtil.generateToken("email")).thenReturn("token");
 
         // act
         ResultActions result = mvc.perform(post("/auth/login")
@@ -432,6 +461,9 @@ public class AuthControllerTest {
 
         // assert
         result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.jwt").value("token"));
+        result.andExpect(jsonPath("$.roles").isArray());
+        result.andExpect(jsonPath("$.roles[0]").value("ROLE_USER"));
         verify(authenticationManager).authenticate(any());
         Mockito.verifyNoMoreInteractions(authenticationManager);
         verify(jwtUtil).generateToken("email");

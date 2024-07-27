@@ -1,7 +1,10 @@
 package afterady.repository;
 
 import afterady.TestUtils;
+import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.Role;
+import afterady.domain.user.RoleName;
 import afterady.domain.user.User;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -47,12 +50,15 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     @Transactional
     public void shouldSaveUser() {
         // arrange
-        User user = new User("username", "email", "password");
+        Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
+        User user = new User("username", "email", "password", role);
 
         // act
         userRepository.save(user);
@@ -70,7 +76,8 @@ public class UserRepositoryTest {
     @Transactional
     public void shouldDeleteUser() {
         // arrange
-        User user = new User("username", "email", "password");
+        Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
+        User user = new User("username", "email", "password", role);
         userRepository.save(user);
         assertEquals(1, userRepository.count());
 

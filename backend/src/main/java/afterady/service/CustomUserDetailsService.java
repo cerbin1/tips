@@ -2,7 +2,7 @@ package afterady.service;
 
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
-import afterady.domain.user.UserRole;
+import afterady.domain.user.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     }
 
-    public record UserDetailsImpl(String email, String password, Set<UserRole> roles,
+    public record UserDetailsImpl(String email, String password, Set<Role> roles,
                                   Boolean active) implements UserDetails {
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {

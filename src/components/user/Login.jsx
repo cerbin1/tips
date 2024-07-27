@@ -66,7 +66,10 @@ export async function action({ request }) {
 
   const responseData = await response.json();
   const token = responseData.jwt;
+  const roles = responseData.roles;
+
   localStorage.setItem("token", token);
+  localStorage.setItem("roles", roles);
 
   return redirect("/random");
 }

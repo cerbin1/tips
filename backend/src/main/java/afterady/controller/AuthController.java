@@ -1,6 +1,8 @@
 package afterady.controller;
 
+import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
+import afterady.domain.user.Role;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
 import afterady.messages.Message;
@@ -12,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 import java.util.UUID;
 
+import static afterady.domain.user.RoleName.ROLE_USER;
 import static afterady.util.CustomStringUtils.validateEmail;
 import static afterady.util.CustomStringUtils.validatePassword;
 
@@ -35,6 +39,7 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder encoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
     public AuthController(UserRepository userRepository,
@@ -43,7 +48,8 @@ public class AuthController {
                           AuthenticationManager authenticationManager,
                           JwtUtil jwtUtil,
                           UserDetailsService userDetailsService,
-                          PasswordEncoder encoder) {
+                          PasswordEncoder encoder,
+                          RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.userActivatorService = userActivatorService;
         this.sender = sender;
@@ -51,6 +57,7 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
         this.encoder = encoder;
+        this.roleRepository = roleRepository;
     }
 
     @PostMapping("/register")
@@ -73,7 +80,7 @@ public class AuthController {
         if (passwordRepeat == null || passwordRepeat.isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password repeat is required."));
         }
-        if(!password.equals(passwordRepeat)) {
+        if (!password.equals(passwordRepeat)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Passwords do not match."));
         }
         if (!validatePassword(password)) {
@@ -86,7 +93,14 @@ public class AuthController {
         if (userRepository.existsByEmail(email)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is already in use."));
         }
-        User createdUser = userRepository.save(new User(username, email, encoder.encode(password)));
+
+        Optional<Role> maybeRoleUser = roleRepository.findByName(ROLE_USER);
+        if (maybeRoleUser.isEmpty()) {
+            return ResponseEntity.internalServerError().body(new MessageResponse("Error: Role user not found."));
+        }
+        User user = new User(username, email, encoder.encode(password), maybeRoleUser.get());
+
+        User createdUser = userRepository.save(user);
         UserActivationLink activationLink = userActivatorService.createLinkFor(createdUser);
         sender.send(new Message(email, activationLink.getLinkId().toString()));
 
@@ -136,9 +150,16 @@ public class AuthController {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        return ResponseEntity.ok(new JwtResponse(jwt));
+        return ResponseEntity.ok(new LoginResponse(jwt, extractRolesFrom(userDetails)));
+    }
+
+    private static String[] extractRolesFrom(UserDetails userDetails) {
+        return userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toArray(String[]::new);
     }
 
     record MessageResponse(String message) {
+    }
+
+    public record LoginResponse(String jwt, String[] roles) {
     }
 }
