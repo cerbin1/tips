@@ -3,6 +3,7 @@ import Login from "./Login";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { useActionData, useNavigation } from "react-router";
+import { renderWithRouter } from "../../test-utils";
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
@@ -39,7 +40,7 @@ beforeEach(() => {
 
 describe("Login", () => {
   test("should display form", () => {
-    render(<Login />);
+    renderWithRouter(<Login />);
 
     expect(screen.getByTestId("login-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -64,10 +65,16 @@ describe("Login", () => {
     expect(loginButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
     );
+    const resetPasswordButton = screen.getByText("Zresetuj hasło");
+    expect(resetPasswordButton).toBeInTheDocument();
+    expect(resetPasswordButton).toHaveAttribute("href", "/user/reset-password");
+    expect(resetPasswordButton).toHaveClass(
+      "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
+    );
   });
 
   test("should not send form when email is empty", async () => {
-    render(<Login />);
+    renderWithRouter(<Login />);
 
     const submitButton = screen.getByText("Zaloguj");
     await userEvent.click(submitButton);
@@ -76,7 +83,7 @@ describe("Login", () => {
   });
 
   test("should not send form when password is empty", async () => {
-    render(<Login />);
+    renderWithRouter(<Login />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -91,12 +98,10 @@ describe("Login", () => {
     useActionData.mockReturnValue({
       errors: ["Nie udało się zalogować!"],
     });
-    render(<Login />);
+    renderWithRouter(<Login />);
     await fillForm();
-    const loginButton = screen.getByRole("button");
-    expect(loginButton).toHaveTextContent("Zaloguj");
 
-    await userEvent.click(loginButton);
+    await userEvent.click(screen.getByText("Zaloguj"));
 
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
@@ -108,10 +113,9 @@ describe("Login", () => {
       state: "submitting",
     });
 
-    render(<Login />);
+    renderWithRouter(<Login />);
 
-    const loginButton = screen.getByRole("button");
-    expect(loginButton).toHaveTextContent("Logowanie...");
+    expect(screen.getByText("Logowanie...")).toBeInTheDocument();
   });
 });
 

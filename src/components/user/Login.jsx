@@ -2,11 +2,12 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
 import { useActionData, useNavigation } from "react-router";
-import { Form, redirect } from "react-router-dom";
+import { Form, Link, redirect } from "react-router-dom";
 
 export default function Login() {
   const data = useActionData();
   const navigation = useNavigation();
+  const navigate = useNavigation();
 
   const isSubmitting = navigation.state !== "idle";
 
@@ -20,7 +21,14 @@ export default function Login() {
       >
         <FormInput label="Adres e-mail" id="email" type="email" required />
         <FormInput label="Hasło" id="password" type="password" required />
-        <div>
+
+        <div className="flex justify-between">
+          <Link
+            to="/user/reset-password"
+            className="px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
+          >
+            Zresetuj hasło
+          </Link>
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting ? "Logowanie..." : "Zaloguj"}
           </Button>

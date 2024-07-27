@@ -17,6 +17,7 @@ import Login, { action as loginAction } from "./components/user/Login.jsx";
 import { checkAuthLoader, tokenLoader } from "./util/auth.js";
 import { action as logoutAction } from "./components/user/Logout.jsx";
 import Profile from "./components/user/Profile.jsx";
+import ResetPassword from "./components/user/ResetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
           { path: "logout", action: logoutAction },
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
+          { path: "reset-password", element: <ResetPassword /> },
         ],
       },
     ],
