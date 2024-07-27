@@ -19,7 +19,7 @@ public class TestDataInitializer {
     @EventListener(ApplicationStartedEvent.class)
     public void onApplicationEvent() {
         adviceRepository.deleteAll();
-        adviceRepository.save(new Advice("1", "Jak zarządzać czasem", PERSONAL_DEVELOPMENT , "Planowanie dnia jest kluczem do skutecznego zarządzania czasem. Ustal priorytety i trzymaj się planu."));
+        adviceRepository.save(new Advice("1", "Jak zarządzać czasem", PERSONAL_DEVELOPMENT, "Planowanie dnia jest kluczem do skutecznego zarządzania czasem. Ustal priorytety i trzymaj się planu."));
         adviceRepository.save(new Advice("2", "Organizacja przestrzeni w domu", HOME, "Używaj koszyków i pojemników do przechowywania rzeczy, aby utrzymać porządek w domu."));
         adviceRepository.save(new Advice("3", "Zdrowa dieta", HEALTH, "Zachowaj zrównoważoną dietę bogatą w warzywa, owoce, białko i zdrowe tłuszcze, aby utrzymać zdrowie."));
         adviceRepository.save(new Advice("4", "Oszczędzanie pieniędzy", FINANCE, "Stwórz budżet domowy i trzymaj się go, aby kontrolować swoje wydatki i oszczędzać pieniądze."));

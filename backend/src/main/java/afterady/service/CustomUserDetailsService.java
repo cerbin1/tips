@@ -1,8 +1,8 @@
 package afterady.service;
 
 import afterady.domain.repository.UserRepository;
-import afterady.domain.user.User;
 import afterady.domain.user.Role;
+import afterady.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

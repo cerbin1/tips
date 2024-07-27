@@ -1,12 +1,12 @@
 package afterady;
 
-import afterady.domain.user.RoleName;
-import afterady.domain.user.User;
 import afterady.domain.user.Role;
+import afterady.domain.user.User;
 
 import java.util.Set;
 
-import static afterady.domain.user.RoleName.*;
+import static afterady.domain.user.RoleName.ROLE_ADMIN;
+import static afterady.domain.user.RoleName.ROLE_USER;
 import static java.util.Collections.emptySet;
 
 public final class TestUtils {

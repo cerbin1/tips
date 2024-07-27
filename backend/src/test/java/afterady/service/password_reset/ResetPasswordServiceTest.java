@@ -4,8 +4,6 @@ import afterady.domain.repository.ResetPasswordLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.ResetPasswordLink;
 import afterady.domain.user.User;
-import afterady.domain.user.UserActivationLink;
-import afterady.service.activation_link.UserActivationLinkAlreadyExistsException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

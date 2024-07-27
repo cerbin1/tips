@@ -1,11 +1,11 @@
 package afterady.messages;
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class LinksSendingMQConfiguration {
@@ -27,6 +27,7 @@ public class LinksSendingMQConfiguration {
     public TopicExchange exchange() {
         return new TopicExchange(LINKS_EXCHANGE);
     }
+
     @Bean
     public Binding binding1(Queue queue1, TopicExchange exchange) {
         return BindingBuilder.bind(queue1).to(exchange).with("routing.key.1");

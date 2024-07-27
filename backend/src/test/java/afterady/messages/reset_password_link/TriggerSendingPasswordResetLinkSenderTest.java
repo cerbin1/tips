@@ -1,7 +1,6 @@
 package afterady.messages.reset_password_link;
 
 import afterady.messages.LinkMessage;
-import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
