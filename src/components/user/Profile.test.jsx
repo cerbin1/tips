@@ -13,5 +13,3 @@ describe("Profile", () => {
     expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
   });
 });
-TriggerSendingPasswordResetLink;
-Sender;
