@@ -30,7 +30,6 @@ import static afterady.util.CustomStringUtils.validateEmail;
 import static afterady.util.CustomStringUtils.validatePassword;
 import static org.springframework.http.HttpStatus.*;
 
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
