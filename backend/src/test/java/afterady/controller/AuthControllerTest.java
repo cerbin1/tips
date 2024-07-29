@@ -12,6 +12,7 @@ import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSender;
 import afterady.security.JwtUtil;
 import afterady.service.CustomUserDetailsService;
+import afterady.service.activation_link.LinksRemover;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,6 +74,8 @@ public class AuthControllerTest {
     private ResetPasswordService resetPasswordService;
     @MockBean
     private TriggerSendingPasswordResetLinkSender resetPasswordLinkSender;
+    @MockBean
+    LinksRemover linksRemover;
 
     @Test
     public void shouldReturn400WhenRegistrationRequestParamEmailIsNull() throws Exception {
@@ -519,5 +522,86 @@ public class AuthControllerTest {
         Mockito.verifyNoMoreInteractions(resetPasswordService);
         verify(resetPasswordService, times(1)).createLinkFor(user);
         verify(resetPasswordLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
+    }
+
+    @Test
+    public void shouldReturn400WhenLinkIdIsNotCorrectUuid() throws Exception {
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/qwe"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400WhenChangingUserPasswordAndPasswordParamIsNull() throws Exception {
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn400WhenChangingUserPasswordAndPasswordParamIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
+                        .contentType(APPLICATION_JSON)
+                        .content(""))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturn422WhenChangingUserPasswordAndPasswordParamIsInvalid() throws Exception {
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
+                        .contentType(APPLICATION_JSON)
+                        .content("password"))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void shouldNotChangeUserPasswordWhenLinkNotExists() throws Exception {
+        // arrange
+        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(empty());
+
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
+                        .contentType(APPLICATION_JSON)
+                        .content("password123!"))
+                .andExpect(status().isBadRequest());
+        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        Mockito.verifyNoMoreInteractions(resetPasswordService);
+    }
+
+    @Test
+    public void shouldNotChangeUserPasswordWhenLinkExpired() throws Exception {
+        // arrange
+        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
+                .thenReturn(of(new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
+
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
+                        .contentType(APPLICATION_JSON)
+                        .content("password123!"))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: Link expired.")));
+        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        Mockito.verifyNoMoreInteractions(resetPasswordService);
+    }
+
+    @Test
+    public void shouldSuccessfullyChangePasswordAndExpireLink() throws Exception {
+        // arrange
+        ResetPasswordLink link = new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), false);
+        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
+                .thenReturn(of(link));
+
+        // act & assert
+        mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
+                        .contentType(APPLICATION_JSON)
+                        .content("password123!"))
+                .andExpect(status().isOk());
+        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        verify(resetPasswordService, times(1)).expireLink(link);
+        Mockito.verifyNoMoreInteractions(resetPasswordService);
+        verify(userRepository, times(1)).save(Mockito.any(User.class));
+        Mockito.verifyNoMoreInteractions(userRepository);
     }
 }

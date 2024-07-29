@@ -174,7 +174,32 @@ public class AuthController {
         ResetPasswordLink resetPasswordLink = resetPasswordService.createLinkFor(user.get());
         resetPasswordLinkSender.send(new LinkMessage(email, resetPasswordLink.getLinkId().toString()));
         return new ResponseEntity<>(OK);
+    }
 
+    @PatchMapping("/account/password-change/{linkId}")
+    public ResponseEntity<?> updateUserPassword(@PathVariable UUID linkId, @RequestBody String password) {
+        if (password.isBlank()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
+        }
+        if (!validatePassword(password)) {
+            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is not valid."));
+        }
+        Optional<ResetPasswordLink> maybeResetPasswordLink = resetPasswordService.getById(linkId);
+        if (maybeResetPasswordLink.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        ResetPasswordLink resetPasswordLink = maybeResetPasswordLink.get();
+        if (resetPasswordLink.getExpired()) {
+            return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Link expired."));
+        }
+        updateUserPassword(password, resetPasswordLink.getUser());
+        resetPasswordService.expireLink(resetPasswordLink);
+        return new ResponseEntity<>(OK);
+    }
+
+    private void updateUserPassword(String password, User user) {
+        user.changePassword(encoder.encode(password));
+        userRepository.save(user);
     }
 
 

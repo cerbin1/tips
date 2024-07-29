@@ -46,7 +46,7 @@ public class ResetPasswordService {
         });
     }
 
-    private void expireLink(ResetPasswordLink link) {
+    public void expireLink(ResetPasswordLink link) {
         link.expire();
         resetPasswordLinkRepository.save(link);
     }

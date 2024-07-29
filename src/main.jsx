@@ -18,6 +18,7 @@ import { checkAuthLoader, tokenLoader } from "./util/auth.js";
 import { action as logoutAction } from "./components/user/Logout.jsx";
 import Profile from "./components/user/Profile.jsx";
 import PasswordReset from "./components/user/PasswordReset.jsx";
+import ChangePassword from "./components/user/PasswordChange.jsx";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
           { path: "password-reset", element: <PasswordReset /> },
+          { path: "password-change/:token", element: <ChangePassword /> },
         ],
       },
     ],

@@ -40,4 +40,8 @@ public class User {
     public void activate() {
         this.active = true;
     }
+
+    public void changePassword(String password) {
+        this.password = password;
+    }
 }
