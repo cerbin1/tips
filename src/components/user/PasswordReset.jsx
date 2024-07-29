@@ -38,7 +38,7 @@ export default function ResetPassword() {
     sendRequest();
   }
   return (
-    <ContainerSection data-testid="reset-password-section">
+    <ContainerSection data-testid="password-reset-section">
       <h1>Resetuj hasło</h1>
       {!submitFormSuccess && (
         <form

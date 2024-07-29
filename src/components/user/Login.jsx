@@ -24,7 +24,7 @@ export default function Login() {
 
         <div className="flex justify-between">
           <Link
-            to="/user/reset-password"
+            to="/user/password-reset"
             className="px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
           >
             Zresetuj hasło

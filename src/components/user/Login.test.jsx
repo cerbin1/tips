@@ -65,10 +65,10 @@ describe("Login", () => {
     expect(loginButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
     );
-    const resetPasswordButton = screen.getByText("Zresetuj hasło");
-    expect(resetPasswordButton).toBeInTheDocument();
-    expect(resetPasswordButton).toHaveAttribute("href", "/user/reset-password");
-    expect(resetPasswordButton).toHaveClass(
+    const passwordResetButton = screen.getByText("Zresetuj hasło");
+    expect(passwordResetButton).toBeInTheDocument();
+    expect(passwordResetButton).toHaveAttribute("href", "/user/password-reset");
+    expect(passwordResetButton).toHaveClass(
       "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
     );
   });

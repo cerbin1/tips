@@ -1,18 +1,18 @@
 import userEvent from "@testing-library/user-event";
-import ResetPassword from "./ResetPassword";
+import PasswordReset from "./PasswordReset";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import { beforeAll } from "vitest";
 
-describe("ResetPassword", () => {
+describe("PasswordReset", () => {
   beforeAll(() => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     import.meta.env.VITE_BACKEND_URL = "backend/";
   });
 
   test("should display form", () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
 
-    expect(screen.getByTestId("reset-password-section")).toBeInTheDocument();
+    expect(screen.getByTestId("password-reset-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Resetuj hasło"
     );
@@ -32,7 +32,7 @@ describe("ResetPassword", () => {
   });
 
   test("should not submit form when email is empty", async () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
 
     await userEvent.click(screen.getByRole("button"));
 
@@ -40,7 +40,7 @@ describe("ResetPassword", () => {
   });
 
   test("should not submit form when email is not valid", async () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "invalid" },
@@ -53,7 +53,7 @@ describe("ResetPassword", () => {
   });
 
   test("should display general error when request fails on backend", async () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "test@test" },
@@ -74,7 +74,7 @@ describe("ResetPassword", () => {
   });
 
   test("should display general error when request fails on backend", async () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "test@test" },
@@ -96,7 +96,7 @@ describe("ResetPassword", () => {
   });
 
   test("should block submit button and change text when submitting form", async () => {
-    await act(async () => render(<ResetPassword />));
+    await act(async () => render(<PasswordReset />));
     const submitButton = screen.getByRole("button");
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveTextContent("Wyślij");
@@ -116,7 +116,7 @@ describe("ResetPassword", () => {
   });
 
   test("should send form successfully", async () => {
-    render(<ResetPassword />);
+    render(<PasswordReset />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "test@test" },
