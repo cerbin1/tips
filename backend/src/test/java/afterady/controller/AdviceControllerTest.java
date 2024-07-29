@@ -72,7 +72,7 @@ class AdviceControllerTest {
     private TriggerSendingActivationLinkSender resetPasswordLinkSender;
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsNull() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -84,7 +84,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsEmpty() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamNameIsEmpty() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -96,7 +96,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamNameIsTooLong() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamNameIsTooLong() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -108,7 +108,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsNull() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsNull() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -120,7 +120,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsEmpty() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsEmpty() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -132,7 +132,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamCategoryIsNotValid() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsNotValid() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -144,7 +144,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsNull() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamContentIsNull() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -156,7 +156,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsEmpty() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamContentIsEmpty() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -168,7 +168,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenAdviceSuggestAdviceRequestParamContentIsTooLong() throws Exception {
+    public void shouldReturn400WhenSuggestAdviceRequestParamContentIsTooLong() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
