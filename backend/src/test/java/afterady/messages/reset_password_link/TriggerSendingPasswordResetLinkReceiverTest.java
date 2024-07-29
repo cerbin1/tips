@@ -35,6 +35,6 @@ public class TriggerSendingPasswordResetLinkReceiverTest {
 
         // assert
         verify(emailSendingService, times(1))
-                .sendEmail("email", "Afterady - password reset link", "http://localhost:8080/user/profile/password-reset/linkId?email=email");
+                .sendEmail("email", "Afterady - password reset link", "http://localhost:8080/user/password-change/linkId");
     }
 }

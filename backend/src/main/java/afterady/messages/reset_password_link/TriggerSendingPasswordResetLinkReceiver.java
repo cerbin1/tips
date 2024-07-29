@@ -23,7 +23,7 @@ public class TriggerSendingPasswordResetLinkReceiver {
     public void receive(LinkMessage message) {
         var subject = "Afterady - password reset link";
         String email = message.email();
-        var content = environment.getEnv(AFTERADY_FRONT_URL) + "user/profile/password-reset/" + message.linkId() + "?email=" + email;
+        var content = environment.getEnv(AFTERADY_FRONT_URL) + "user/password-change/" + message.linkId();
         emailSendingService.sendEmail(email, subject, content);
     }
 }
