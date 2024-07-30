@@ -3,13 +3,14 @@ package afterady.controller;
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.AdviceCategory;
-import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.service.activation_link.UserActivatorService;
+import afterady.service.advice.AdviceDetailsDto;
+import afterady.service.advice.AdviceService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,9 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -61,15 +64,17 @@ class AdviceControllerTest {
     @MockBean
     private AdviceRepository adviceRepository;
     @MockBean
-    private MongoDbConfig mongoDbConfig;
-    @MockBean
     private SuggestedAdviceRepository suggestedAdviceRepository;
+    @MockBean
+    private MongoDbConfig mongoDbConfig;
     @MockBean
     private RoleRepository roleRepository;
     @MockBean
     private ResetPasswordService resetPasswordService;
     @MockBean
     private TriggerSendingActivationLinkSender resetPasswordLinkSender;
+    @MockBean
+    private AdviceService adviceService;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
@@ -190,9 +195,6 @@ class AdviceControllerTest {
 
     @Test
     public void shouldCreateNewAdvice() throws Exception {
-        when(suggestedAdviceRepository.save(any(SuggestedAdvice.class)))
-                .thenReturn(new SuggestedAdvice("1", "name", AdviceCategory.HOME, "content"));
-
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -200,5 +202,18 @@ class AdviceControllerTest {
                                         new SuggestAdviceRequest("name", "HOME", "content")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(adviceService).createSuggestedAdvice(anyString(), eq("name"), eq(AdviceCategory.HOME), eq("content"));
     }
+
+    @Test
+    public void shouldGetRandomAdvice() throws Exception {
+        // arrange
+        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto("name", "Health", "content"));
+
+        // act & assert
+        mvc.perform(get("/advices/random"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"name\":\"name\", \"category\":\"Health\", \"content\":\"content\"}"));
+    }
+
 }

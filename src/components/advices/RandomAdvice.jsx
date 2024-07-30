@@ -1,31 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 
-const advices = [
-  "Pij dużo wody każdego dnia.",
-  "Regularnie uprawiaj sport.",
-  "Czytaj książki każdego dnia.",
-  "Spędzaj czas z rodziną i przyjaciółmi.",
-  "Ucz się nowych rzeczy.",
-  "Zadbaj o odpowiednią ilość snu.",
-  "Unikaj stresu i znajdź czas na relaks.",
-  "Jedz zdrowo i zbilansowane posiłki.",
-];
-
 export default function RandomAdvice() {
-  const [randomAdvice, setRandomAdvice] = useState(advices[0]);
+  const [randomAdvice, setRandomAdvice] = useState({});
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState(false);
+
+  async function fetchRandomAdvice() {
+    setLoading(true);
+    setError(null);
+    const url = import.meta.env.VITE_BACKEND_URL + "advices/random";
+    try {
+      const response = await fetch(url);
+      if (response.ok) {
+        const advice = await response.json();
+        setRandomAdvice(advice);
+      } else {
+        setError("Nie udało się wyświetlić porady!");
+      }
+    } catch (error) {
+      setError("Nie udało się wyświetlić porady!");
+    }
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchRandomAdvice();
+  }, []);
 
   return (
     <ContainerSection data-testid="random-advice-section">
-      <h1 className="text-center py-4">{randomAdvice}</h1>
-      <Button
-        onClick={() =>
-          setRandomAdvice(advices[Math.floor(Math.random() * advices.length)])
-        }
-      >
-        Wylosuj nową poradę
-      </Button>
+      {loading && <p>Ładowanie...</p>}
+      {!loading && !error && (
+        <div className="flex flex-col items-center py-6 gap-4">
+          <h1>{randomAdvice.name}</h1>
+          <h2>Kategoria: {randomAdvice.category}</h2>
+          <p>{randomAdvice.content}</p>
+          <Button onClick={fetchRandomAdvice}>Wylosuj nową poradę</Button>
+        </div>
+      )}
+      {!loading && error && (
+        <>
+          <p className="py-6 text-red-500">{error}</p>
+          <Button onClick={fetchRandomAdvice}>Spróbuj ponownie</Button>
+        </>
+      )}
     </ContainerSection>
   );
 }

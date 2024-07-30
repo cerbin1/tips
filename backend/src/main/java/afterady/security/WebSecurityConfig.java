@@ -25,7 +25,6 @@ import static afterady.config.EnvironmentWrapper.AFTERADY_FRONT_URL;
 @EnableMethodSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
 
-
     private final UserDetailsService userDetailsService;
     private final EnvironmentWrapper environment;
 
@@ -67,6 +66,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         auth
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/**").permitAll()
+                                .requestMatchers("/advices/random").permitAll()
                                 .anyRequest().authenticated()
                 );
 

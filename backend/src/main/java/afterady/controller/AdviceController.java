@@ -1,8 +1,8 @@
 package afterady.controller;
 
 import afterady.domain.advice.AdviceCategory;
-import afterady.domain.advice.SuggestedAdvice;
-import afterady.domain.repository.SuggestedAdviceRepository;
+import afterady.service.advice.AdviceDetailsDto;
+import afterady.service.advice.AdviceService;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,10 @@ import static org.springframework.http.ResponseEntity.unprocessableEntity;
 @RestController
 @RequestMapping("/advices")
 public class AdviceController {
+    private final AdviceService adviceService;
 
-    private final SuggestedAdviceRepository suggestedAdviceRepository;
-
-    public AdviceController(SuggestedAdviceRepository suggestedAdviceRepository) {
-        this.suggestedAdviceRepository = suggestedAdviceRepository;
+    public AdviceController(AdviceService adviceService) {
+        this.adviceService = adviceService;
     }
 
     @PostMapping
@@ -45,7 +44,7 @@ public class AdviceController {
         if (content.length() > 1000) {
             return unprocessableEntity().body(new MessageResponse("Error: content too long."));
         }
-        suggestedAdviceRepository.save(new SuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content));
+        adviceService.createSuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content);
 
         return ResponseEntity.ok().build();
     }
@@ -53,6 +52,11 @@ public class AdviceController {
     @GetMapping("/categories")
     public ResponseEntity<?> getAdviceCategories() {
         return ResponseEntity.ok(AdviceCategory.getCategories());
+    }
+
+    @GetMapping("/random")
+    public ResponseEntity<AdviceDetailsDto> getRandomAdvice() {
+        return ResponseEntity.ok(adviceService.getRandomAdvice());
     }
 
     private MessageResponse validationError() {
