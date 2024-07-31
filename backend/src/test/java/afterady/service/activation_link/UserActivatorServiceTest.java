@@ -16,7 +16,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;

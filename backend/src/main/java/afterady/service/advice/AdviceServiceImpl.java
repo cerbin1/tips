@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.sample;
 
 @Service
 public class AdviceServiceImpl implements AdviceService {
