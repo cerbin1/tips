@@ -12,7 +12,6 @@ import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSend
 import afterady.security.JwtUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.password_reset.ResetPasswordService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -45,7 +44,6 @@ public class AuthController {
     private final ResetPasswordService resetPasswordService;
     private final TriggerSendingPasswordResetLinkSender resetPasswordLinkSender;
 
-    @Autowired
     public AuthController(UserRepository userRepository,
                           UserActivatorService userActivatorService,
                           TriggerSendingActivationLinkSender activationLinkSender,

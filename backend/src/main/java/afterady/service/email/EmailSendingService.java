@@ -1,7 +1,6 @@
 package afterady.service.email;
 
 import afterady.config.EnvironmentWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static afterady.config.EnvironmentWrapper.AFTERADY_MAIL_PWD;
@@ -12,7 +11,6 @@ public class EmailSendingService {
     private final Sender sender;
     private final EnvironmentWrapper environment;
 
-    @Autowired
     public EmailSendingService(Sender sender, EnvironmentWrapper environment) {
         this.sender = sender;
         this.environment = environment;

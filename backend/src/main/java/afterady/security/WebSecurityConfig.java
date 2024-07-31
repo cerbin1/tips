@@ -1,7 +1,6 @@
 package afterady.security;
 
 import afterady.config.EnvironmentWrapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +27,6 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     private final UserDetailsService userDetailsService;
     private final EnvironmentWrapper environment;
 
-    @Autowired
     public WebSecurityConfig(UserDetailsService userDetailsService, EnvironmentWrapper environment) {
         this.userDetailsService = userDetailsService;
         this.environment = environment;
