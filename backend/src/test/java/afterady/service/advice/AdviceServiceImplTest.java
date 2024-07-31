@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.data.domain.Example;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -50,10 +51,9 @@ class AdviceServiceImplTest {
     @Test
     public void shouldGetRandomAdvice() {
         // arrange
-        AdviceDetailsDto adviceDetailsDto = new AdviceDetailsDto("name", "category", "content");
+        AdviceDetailsDto adviceDetailsDto = new AdviceDetailsDto("name", "category", "content", 1);
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(AdviceDetailsDto.class)))
                 .thenReturn(new AggregationResults<>(List.of(adviceDetailsDto), new Document()));
-
         // act
         AdviceDetailsDto advice = adviceService.getRandomAdvice();
 
@@ -62,7 +62,34 @@ class AdviceServiceImplTest {
         assertEquals("name", advice.name());
         assertEquals("category", advice.category());
         assertEquals("content", advice.content());
+        assertEquals(1, advice.rating());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(AdviceDetailsDto.class));
         verifyNoMoreInteractions(mongoTemplate);
+    }
+
+    @Test
+    public void shouldGetTopAdvices() {
+        // arrange
+        when(adviceRepository.findTop10ByOrderByRatingDesc())
+                .thenReturn(List.of(new AdviceDetailsDto("name 1", "HOME", "content 1", 5),
+                        new AdviceDetailsDto("name 2", "HOME", "content 2", 4),
+                        new AdviceDetailsDto("name 3", "HOME", "content 3", 3),
+                        new AdviceDetailsDto("name 4", "HOME", "content 4", 2),
+                        new AdviceDetailsDto("name 5", "HOME", "content 5", 1)
+                ));
+
+        // act
+        List<AdviceDetailsDto> topAdvices = adviceService.getTopTenAdvices();
+
+        // assert
+        assertEquals(5, topAdvices.size());
+        AdviceDetailsDto first = topAdvices.get(0);
+        AdviceDetailsDto last = topAdvices.get(4);
+        assertEquals("name 1", first.name());
+        assertEquals(5, first.rating());
+        assertEquals("name 5", last.name());
+        assertEquals(1, last.rating());
+        verify(adviceRepository, times(1)).findTop10ByOrderByRatingDesc();
+        verifyNoMoreInteractions(adviceRepository);
     }
 }

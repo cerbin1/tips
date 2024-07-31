@@ -12,6 +12,7 @@ import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.password_reset.ResetPasswordService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +25,19 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -208,7 +216,7 @@ class AdviceControllerTest {
     @Test
     public void shouldGetRandomAdvice() throws Exception {
         // arrange
-        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto("name", "Health", "content"));
+        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto("name", "Health", "content", 1));
 
         // act & assert
         mvc.perform(get("/advices/random"))
@@ -216,4 +224,44 @@ class AdviceControllerTest {
                 .andExpect(content().json("{\"name\":\"name\", \"category\":\"Health\", \"content\":\"content\"}"));
     }
 
+    @Test
+    public void shouldReturnEmptyRankingWhenNoAdvicesYet() throws Exception {
+        // arrange
+        when(adviceService.getTopTenAdvices()).thenReturn(Collections.emptyList());
+
+        // act & assert
+        mvc.perform(get("/advices/ranking"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    public void shouldReturnAdvicesRanking() throws Exception {
+        // arrange
+        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto("name 1", "HOME", "content 1", 10),
+                new AdviceDetailsDto("name 2", "HOME", "content 2", 9),
+                new AdviceDetailsDto("name 3", "HOME", "content 3", 8),
+                new AdviceDetailsDto("name 4", "HOME", "content 4", 7),
+                new AdviceDetailsDto("name 5", "HOME", "content 5", 6),
+                new AdviceDetailsDto("name 6", "HOME", "content 6", 5),
+                new AdviceDetailsDto("name 7", "HOME", "content 7", 4),
+                new AdviceDetailsDto("name 8", "HOME", "content 8", 3),
+                new AdviceDetailsDto("name 9", "HOME", "content 9", 2),
+                new AdviceDetailsDto("name 10", "HOME", "content 10", 1)
+        ));
+
+        // act & assert
+        String responseContent = mvc.perform(get("/advices/ranking"))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        List<AdviceDetailsDto> ranking = new ObjectMapper().readValue(responseContent, new TypeReference<>() {
+        });
+        assertEquals(10, ranking.size());
+        AdviceDetailsDto first = ranking.get(0);
+        AdviceDetailsDto last = ranking.get(9);
+        assertEquals("name 1", first.name());
+        assertEquals(10, first.rating());
+        assertEquals("name 10", last.name());
+        assertEquals(1, last.rating());
+    }
 }

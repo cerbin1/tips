@@ -7,6 +7,8 @@ import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static afterady.domain.advice.AdviceCategory.isValid;
 import static afterady.domain.advice.AdviceCategory.valueOf;
 import static org.springframework.http.ResponseEntity.badRequest;
@@ -57,6 +59,11 @@ public class AdviceController {
     @GetMapping("/random")
     public ResponseEntity<AdviceDetailsDto> getRandomAdvice() {
         return ResponseEntity.ok(adviceService.getRandomAdvice());
+    }
+
+    @GetMapping("/ranking")
+    public ResponseEntity<List<AdviceDetailsDto>> getTopTenAdvices() {
+        return ResponseEntity.ok(adviceService.getTopTenAdvices());
     }
 
     private MessageResponse validationError() {
