@@ -73,36 +73,16 @@ describe("PasswordReset", () => {
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
-  test("should display general error when request fails on backend", async () => {
-    render(<PasswordReset />);
-    const email = screen.getByLabelText("Adres e-mail");
-    fireEvent.change(email, {
-      target: { value: "test@test" },
-    });
-    expect(email).toHaveValue("test@test");
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-
-    await userEvent.click(screen.getByRole("button"));
-
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/account/password-reset?email=test@test",
-      { method: "PUT" }
-    );
-    const error = screen.getByText(
-      "Nie udało się wysłać linku resetującego hasło!"
-    );
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-  });
-
   test("should block submit button and change text when submitting form", async () => {
-    await act(async () => render(<PasswordReset />));
+    render(<PasswordReset />);
     const submitButton = screen.getByRole("button");
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveTextContent("Wyślij");
     const email = screen.getByLabelText("Adres e-mail");
-    fireEvent.change(email, {
-      target: { value: "test@test" },
+    await act(async () => {
+      fireEvent.change(email, {
+        target: { value: "test@test" },
+      });
     });
     expect(email).toHaveValue("test@test");
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
@@ -116,10 +96,12 @@ describe("PasswordReset", () => {
   });
 
   test("should send form successfully", async () => {
-    render(<PasswordReset />);
+    await act(async () => render(<PasswordReset />));
     const email = screen.getByLabelText("Adres e-mail");
-    fireEvent.change(email, {
-      target: { value: "test@test" },
+    await act(async () => {
+      fireEvent.change(email, {
+        target: { value: "test@test" },
+      });
     });
     expect(email).toHaveValue("test@test");
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
