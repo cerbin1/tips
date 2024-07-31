@@ -1,4 +1,3 @@
-import userEvent from "@testing-library/user-event";
 import AdviceDetails from "./AdviceDetails";
 
 describe("AdviceDetails", () => {

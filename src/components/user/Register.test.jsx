@@ -1,5 +1,4 @@
 import { fireEvent } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 import Register from "./Register";

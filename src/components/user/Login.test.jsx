@@ -1,6 +1,5 @@
-import { fireEvent, render } from "@testing-library/react";
+import { fireEvent } from "@testing-library/react";
 import Login from "./Login";
-import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
 import { useActionData, useNavigation } from "react-router";
 import { renderWithRouter } from "../../test-utils";

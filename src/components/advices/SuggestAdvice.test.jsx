@@ -1,6 +1,5 @@
-import userEvent from "@testing-library/user-event";
 import SuggestAdvice from "./SuggestAdvice";
-import { afterAll, beforeEach, expect } from "vitest";
+import { beforeEach, expect } from "vitest";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 
 beforeEach(() => {

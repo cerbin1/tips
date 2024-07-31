@@ -1,7 +1,6 @@
 import { act, waitFor } from "@testing-library/react";
 import RandomAdvice from "./RandomAdvice";
 import { expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
 
 describe("RandomAdvice", () => {
   test("should display error when response is not ok", async () => {

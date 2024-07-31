@@ -1,4 +1,3 @@
-import userEvent from "@testing-library/user-event";
 import PasswordReset from "./PasswordReset";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import { beforeAll } from "vitest";

@@ -1,6 +1,5 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import PasswordChange from "./PasswordChange";
-import userEvent from "@testing-library/user-event";
 import { renderWithRouter } from "../../test-utils";
 const mockedUseNavigate = vi.fn();
 

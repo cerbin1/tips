@@ -1,7 +1,6 @@
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
 import { vi } from "vitest";
-import userEvent from "@testing-library/user-event";
 import { useRouteLoaderData } from "react-router-dom";
 
 beforeAll(() => {
