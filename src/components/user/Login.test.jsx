@@ -100,7 +100,7 @@ describe("Login", () => {
     renderWithRouter(<Login />);
     await fillForm();
 
-    await userEvent.click(screen.getByText("Zaloguj"));
+    fireEvent.submit(screen.getByRole("form"));
 
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
