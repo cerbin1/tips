@@ -7,7 +7,6 @@ import { Form, Link, redirect } from "react-router-dom";
 export default function Login() {
   const data = useActionData();
   const navigation = useNavigation();
-  const navigate = useNavigation();
 
   const isSubmitting = navigation.state !== "idle";
 
