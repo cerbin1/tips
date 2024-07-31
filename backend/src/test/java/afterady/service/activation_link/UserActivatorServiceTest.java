@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static afterady.TestUtils.testUser;
+import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -89,7 +89,7 @@ public class UserActivatorServiceTest {
     public void shouldCreateSecondLinkWhenFirstIsExpired() {
         // arrange
         User user = userRepository.save(testUser());
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, true));
+        userActivationLinkRepository.save(new UserActivationLink(UUID_1, user, true));
         assertEquals(1, userActivationLinkRepository.count());
 
         // act
@@ -102,29 +102,24 @@ public class UserActivatorServiceTest {
     @Test
     public void shouldFindLinkById() {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
-        userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+        userActivationLinkRepository.save(new UserActivationLink(UUID_1, user, false));
 
         // act & assert
-        assertTrue(userActivatorService.getById(linkId).isPresent());
+        assertTrue(userActivatorService.getById(UUID_1).isPresent());
     }
 
     @Test
     public void shouldNotFindLinkById() {
-        // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-
         // act & assert
-        assertTrue(userActivatorService.getById(linkId).isEmpty());
+        assertTrue(userActivatorService.getById(UUID_1).isEmpty());
     }
 
     @Test
     public void shouldActivateUser() {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
-        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(UUID_1, user, false));
         assertFalse(user.getActive());
         assertFalse(link.getExpired());
 
@@ -132,7 +127,7 @@ public class UserActivatorServiceTest {
         userActivatorService.activateUserByLink(link);
 
         // assert
-        Optional<UserActivationLink> activatedLink = userActivatorService.getById(linkId);
+        Optional<UserActivationLink> activatedLink = userActivatorService.getById(UUID_1);
         assertTrue(activatedLink.isPresent());
         assertTrue(activatedLink.get().getExpired());
         Optional<User> activatedUser = userRepository.findById(user.getId());
@@ -143,9 +138,8 @@ public class UserActivatorServiceTest {
     @Test
     public void shouldResendLink() {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
-        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(linkId, user, false));
+        UserActivationLink link = userActivationLinkRepository.save(new UserActivationLink(UUID_1, user, false));
         assertFalse(user.getActive());
         assertFalse(link.getExpired());
         assertEquals(userActivationLinkRepository.count(), 1);
@@ -156,7 +150,7 @@ public class UserActivatorServiceTest {
         // assert
         assertEquals(userActivationLinkRepository.count(), 2);
         userActivationLinkRepository.findAllByUser(user).forEach(activationLink -> {
-            if (activationLink.getLinkId().equals(linkId)) {
+            if (activationLink.getLinkId().equals(UUID_1)) {
                 assertTrue(activationLink.getExpired());
             } else {
                 assertFalse(activationLink.getExpired());
@@ -168,8 +162,8 @@ public class UserActivatorServiceTest {
     public void shouldExpireOldLinks() {
         // arrange
         User user = userRepository.save(testUser());
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
-        userActivationLinkRepository.save(new UserActivationLink(UUID.fromString("123b407b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
+        userActivationLinkRepository.save(new UserActivationLink(UUID_1, user, false, LocalDateTime.now().minusHours(1)));
+        userActivationLinkRepository.save(new UserActivationLink(UUID_2, user, false, LocalDateTime.now().minusHours(1)));
         assertEquals(2, userActivationLinkRepository.count());
         userActivationLinkRepository.findAll().forEach(link -> assertFalse(link.getExpired()));
 

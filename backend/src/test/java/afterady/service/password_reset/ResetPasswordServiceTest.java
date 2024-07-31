@@ -17,7 +17,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static afterady.TestUtils.testUser;
+import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -88,7 +88,7 @@ class ResetPasswordServiceTest {
     public void shouldCreateSecondLinkWhenFirstIsExpired() {
         // arrange
         User user = userRepository.save(testUser());
-        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, true));
+        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID_1, user, true));
         assertEquals(1, resetPasswordLinkRepository.count());
 
         // act
@@ -101,20 +101,19 @@ class ResetPasswordServiceTest {
     @Test
     public void shouldFindLinkById() {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
         User user = userRepository.save(testUser());
-        resetPasswordLinkRepository.save(new ResetPasswordLink(linkId, user, false));
+        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID_1, user, false));
 
         // act & assert
-        assertTrue(resetPasswordService.getById(linkId).isPresent());
+        assertTrue(resetPasswordService.getById(UUID_1).isPresent());
     }
 
     @Test
     public void shouldExpireOldLinks() {
         // arrange
         User user = userRepository.save(testUser());
-        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
-        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID.fromString("123b407b-b8c8-4f9a-acf4-76d0948adc6e"), user, false, LocalDateTime.now().minusHours(1)));
+        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID_1, user, false, LocalDateTime.now().minusHours(1)));
+        resetPasswordLinkRepository.save(new ResetPasswordLink(UUID_2, user, false, LocalDateTime.now().minusHours(1)));
         assertEquals(2, resetPasswordLinkRepository.count());
         resetPasswordLinkRepository.findAll().forEach(link -> assertFalse(link.getExpired()));
 

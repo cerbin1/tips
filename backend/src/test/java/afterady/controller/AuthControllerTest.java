@@ -34,6 +34,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Set;
 import java.util.UUID;
 
+import static afterady.TestUtils.UUID_1;
+import static afterady.TestUtils.UUID_2;
 import static afterady.domain.user.RoleName.ROLE_USER;
 import static java.util.Collections.emptySet;
 import static java.util.Optional.empty;
@@ -283,7 +285,7 @@ public class AuthControllerTest {
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
-                .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
+                .thenReturn(new UserActivationLink(UUID_1, createdUser, false));
         when(roleRepository.findByName(ROLE_USER)).thenReturn(empty());
 
         // act & assert
@@ -304,7 +306,7 @@ public class AuthControllerTest {
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(Mockito.any(User.class)))
-                .thenReturn(new UserActivationLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), createdUser, false));
+                .thenReturn(new UserActivationLink(UUID_2, createdUser, false));
         when(roleRepository.findByName(ROLE_USER)).thenReturn(of(new Role(ROLE_USER)));
 
         // act & assert
@@ -325,7 +327,7 @@ public class AuthControllerTest {
     @Test
     public void shouldNotActivateUserWhenLinkNotExists() throws Exception {
         // arrange
-        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(empty());
+        when(userActivatorService.getById(UUID_1)).thenReturn(empty());
 
         // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -335,8 +337,8 @@ public class AuthControllerTest {
     @Test
     public void shouldNotActivateUserWhenLinkExpired() throws Exception {
         // arrange
-        when(userActivatorService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
-                .thenReturn(of(new UserActivationLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
+        when(userActivatorService.getById(UUID_1))
+                .thenReturn(of(new UserActivationLink(UUID_1, TestUtils.testUser(), true)));
 
         // act & assert
         mvc.perform(get("/auth/activate/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))
@@ -346,7 +348,7 @@ public class AuthControllerTest {
     @Test
     public void shouldActivateUser() throws Exception {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        UUID linkId = UUID_1;
         UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
         when(userActivatorService.getById(linkId))
                 .thenReturn(of(link));
@@ -362,7 +364,7 @@ public class AuthControllerTest {
     @Test
     public void shouldNotResendNotExistingLink() throws Exception {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        UUID linkId = UUID_1;
         when(userActivatorService.getById(linkId)).thenReturn(empty());
 
         // act
@@ -377,7 +379,7 @@ public class AuthControllerTest {
     @Test
     public void shouldResendLink() throws Exception {
         // arrange
-        UUID linkId = UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+        UUID linkId = UUID_1;
         UserActivationLink link = new UserActivationLink(linkId, TestUtils.testUser(), false);
         when(userActivatorService.getById(linkId)).thenReturn(of(link));
 
@@ -509,7 +511,7 @@ public class AuthControllerTest {
         User user = TestUtils.testUser();
         when(userRepository.findByEmail("email@test.com")).thenReturn(of(user));
         when(resetPasswordService.createLinkFor(Mockito.any(User.class)))
-                .thenReturn(new ResetPasswordLink(UUID.fromString("d4645e88-0d23-4946-a75d-694fc475ceba"), user, false));
+                .thenReturn(new ResetPasswordLink(UUID_2, user, false));
 
         // act
         mvc.perform(put("/auth/account/password-reset?email=email@test.com"))
@@ -559,22 +561,22 @@ public class AuthControllerTest {
     @Test
     public void shouldNotChangeUserPasswordWhenLinkNotExists() throws Exception {
         // arrange
-        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"))).thenReturn(empty());
+        when(resetPasswordService.getById(UUID_1)).thenReturn(empty());
 
         // act & assert
         mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
                         .contentType(APPLICATION_JSON)
                         .content("password123!"))
                 .andExpect(status().isBadRequest());
-        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        verify(resetPasswordService, times(1)).getById(UUID_1);
         Mockito.verifyNoMoreInteractions(resetPasswordService);
     }
 
     @Test
     public void shouldNotChangeUserPasswordWhenLinkExpired() throws Exception {
         // arrange
-        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
-                .thenReturn(of(new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), true)));
+        when(resetPasswordService.getById(UUID_1))
+                .thenReturn(of(new ResetPasswordLink(UUID_1, TestUtils.testUser(), true)));
 
         // act & assert
         mvc.perform(patch("/auth/account/password-change/63b4072b-b8c8-4f9a-acf4-76d0948adc6e")
@@ -582,15 +584,15 @@ public class AuthControllerTest {
                         .content("password123!"))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Link expired.")));
-        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        verify(resetPasswordService, times(1)).getById(UUID_1);
         Mockito.verifyNoMoreInteractions(resetPasswordService);
     }
 
     @Test
     public void shouldSuccessfullyChangePasswordAndExpireLink() throws Exception {
         // arrange
-        ResetPasswordLink link = new ResetPasswordLink(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), TestUtils.testUser(), false);
-        when(resetPasswordService.getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e")))
+        ResetPasswordLink link = new ResetPasswordLink(UUID_1, TestUtils.testUser(), false);
+        when(resetPasswordService.getById(UUID_1))
                 .thenReturn(of(link));
 
         // act & assert
@@ -598,7 +600,7 @@ public class AuthControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content("password123!"))
                 .andExpect(status().isOk());
-        verify(resetPasswordService, times(1)).getById(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"));
+        verify(resetPasswordService, times(1)).getById(UUID_1);
         verify(resetPasswordService, times(1)).expireLink(link);
         Mockito.verifyNoMoreInteractions(resetPasswordService);
         verify(userRepository, times(1)).save(Mockito.any(User.class));
