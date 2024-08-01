@@ -81,6 +81,17 @@ describe("Login", () => {
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
+  test("should not send form when email is empty after trimming", async () => {
+    renderWithRouter(<Login />);
+    fireEvent.change(screen.getByLabelText("Adres e-mail"), {
+      target: { value: "   " },
+    });
+
+    const submitButton = screen.getByText("Zaloguj");
+    await userEvent.click(submitButton);
+    expect(globalThis.fetch).toBeCalledTimes(0);
+  });
+
   test("should not send form when password is empty", async () => {
     renderWithRouter(<Login />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {

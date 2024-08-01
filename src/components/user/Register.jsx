@@ -21,10 +21,20 @@ export default function Register() {
       setPasswordsAreNotEqual(false);
       setUserCreateError(undefined);
       const formData = new FormData(event.target);
-      const email = formData.get("email");
+      const email = formData.get("email").trim();
       const username = formData.get("username");
       const password = formData.get("password");
       const passwordRepeat = formData.get("password-repeat");
+
+      if (email === "") {
+        setUserCreateError("Email nie może być pusty!");
+        return;
+      }
+
+      if (username === "") {
+        setUserCreateError("Nazwa użytkownika nie może być pusta!");
+        return;
+      }
 
       if (password !== passwordRepeat) {
         setPasswordsAreNotEqual(true);

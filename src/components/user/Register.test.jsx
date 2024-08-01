@@ -1,5 +1,5 @@
-import { fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
+import { act, fireEvent } from "@testing-library/react";
+import { expect, vi } from "vitest";
 import { renderWithRouter } from "../../test-utils";
 import Register from "./Register";
 
@@ -64,10 +64,37 @@ describe("Register", () => {
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
+  test("should not send form when email is empty after triming", async () => {
+    render(<Register />);
+    fireEvent.change(screen.getByLabelText("Adres e-mail"), {
+      target: { value: "   " },
+    });
+
+    const submitButton = screen.getByText("Wyślij");
+    await userEvent.click(submitButton);
+
+    expect(globalThis.fetch).toBeCalledTimes(0);
+  });
+
   test("should not send form when username is empty", async () => {
     render(<Register />);
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
+    });
+
+    const submitButton = screen.getByText("Wyślij");
+    await userEvent.click(submitButton);
+
+    expect(globalThis.fetch).toBeCalledTimes(0);
+  });
+
+  test("should not send form when username is empty after triming", async () => {
+    render(<Register />);
+    fireEvent.change(screen.getByLabelText("Adres e-mail"), {
+      target: { value: "test@email" },
+    });
+    fireEvent.change(screen.getByLabelText("Nazwa użytkownika"), {
+      target: { value: "   " },
     });
 
     const submitButton = screen.getByText("Wyślij");
@@ -351,6 +378,10 @@ function fillForm() {
   fireEvent.change(screen.getByLabelText("Powtórz hasło"), {
     target: { value: "password" },
   });
+  expect(screen.getByLabelText("Adres e-mail")).toHaveValue("test@email");
+  expect(screen.getByLabelText("Nazwa użytkownika")).toHaveValue("username");
+  expect(screen.getByLabelText("Hasło")).toHaveValue("password");
+  expect(screen.getByLabelText("Powtórz hasło")).toHaveValue("password");
 }
 
 async function fillAndSubmitForm() {
