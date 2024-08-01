@@ -109,7 +109,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenSuggestAdviceRequestParamNameIsTooLong() throws Exception {
+    public void shouldReturn422WhenSuggestAdviceRequestParamNameIsTooLong() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
@@ -181,7 +181,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenSuggestAdviceRequestParamContentIsTooLong() throws Exception {
+    public void shouldReturn422WhenSuggestAdviceRequestParamContentIsTooLong() throws Exception {
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
