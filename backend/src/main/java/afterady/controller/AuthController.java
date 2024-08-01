@@ -69,13 +69,22 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest request) {
         String email = request.getEmail();
-        if (email == null || email.isBlank()) {
+        if (email == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
+        }
+        email = email.trim();
+        if (email.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
         }
         if (!validateEmail(email)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Email is not valid."));
         }
-        if (request.getUsername() == null || request.getUsername().isEmpty()) {
+        String username = request.getUsername();
+        if (username == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is required."));
+        }
+        username = username.trim();
+        if (username.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is required."));
         }
         String password = request.getPassword();
@@ -92,7 +101,6 @@ public class AuthController {
         if (!validatePassword(password)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Password is not valid."));
         }
-        String username = request.getUsername();
         if (userRepository.existsByUsername(username)) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: Username is already taken."));
         }
@@ -142,19 +150,24 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest request) {
-        if (request.getEmail() == null || request.getEmail().isBlank()) {
+        String email = request.getEmail();
+        if (email == null) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
+        }
+        email = email.trim();
+        if (email.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is required."));
         }
         if (request.getPassword() == null || request.getPassword().isEmpty()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Password is required."));
         }
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
         if (!userDetails.isEnabled()) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: User is not activated!"));
         }
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
         return ResponseEntity.ok(new LoginResponse(jwt, extractRolesFrom(userDetails)));
     }

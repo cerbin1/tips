@@ -299,13 +299,37 @@ public class AuthControllerTest {
     }
 
     @Test
+    public void shouldTrimEmailAndUsernameInRegistration() throws Exception {
+        // arrange
+        when(userRepository.existsByUsername("username")).thenReturn(false);
+        when(userRepository.existsByEmail("email@test.com")).thenReturn(false);
+        User createdUser = TestUtils.testUser();
+        when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
+        when(userActivatorService.createLinkFor(createdUser))
+                .thenReturn(new UserActivationLink(UUID_1, TestUtils.testUser(), false));
+        when(roleRepository.findByName(ROLE_USER)).thenReturn(of(new Role(ROLE_USER)));
+
+        // act & assert
+        mvc.perform(post("/auth/register")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new RegistrationRequest(" email@test.com ", " username ", "password123!", "password123!", emptySet())))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(userRepository, times(1)).save(Mockito.any(User.class));
+        verify(userRepository, times(1)).existsByUsername("username");
+        verify(userRepository, times(1)).existsByEmail("email@test.com");
+        Mockito.verifyNoMoreInteractions(userRepository);
+    }
+
+    @Test
     public void shouldReturn200WhenUserIsRegisteredSuccessfully() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(false);
-        when(userRepository.existsByEmail("email")).thenReturn(false);
+        when(userRepository.existsByEmail("email@test.com")).thenReturn(false);
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
-        when(userActivatorService.createLinkFor(Mockito.any(User.class)))
+        when(userActivatorService.createLinkFor(createdUser))
                 .thenReturn(new UserActivationLink(UUID_2, createdUser, false));
         when(roleRepository.findByName(ROLE_USER)).thenReturn(of(new Role(ROLE_USER)));
 
@@ -480,6 +504,25 @@ public class AuthControllerTest {
         Mockito.verifyNoMoreInteractions(authenticationManager);
         verify(jwtUtil).generateToken("email");
         Mockito.verifyNoMoreInteractions(jwtUtil);
+    }
+
+    @Test
+    public void shouldTrimEmailInLogin() throws Exception {
+        // arrange
+        when(userDetailsService.loadUserByUsername("email"))
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+        when(jwtUtil.generateToken("email")).thenReturn("token");
+
+        // act
+        ResultActions result = mvc.perform(post("/auth/login")
+                .content(new ObjectMapper()
+                        .writeValueAsString(
+                                new LoginRequest(" email ", "password")))
+                .contentType(APPLICATION_JSON));
+
+        // assert
+        verify(userDetailsService, times(1)).loadUserByUsername("email");
+        Mockito.verifyNoMoreInteractions(userDetailsService);
     }
 
     @Test
