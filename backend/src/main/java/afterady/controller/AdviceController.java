@@ -3,6 +3,7 @@ package afterady.controller;
 import afterady.domain.advice.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
+import afterady.service.captcha.CaptchaService;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,11 @@ import static org.springframework.http.ResponseEntity.unprocessableEntity;
 @RequestMapping("/advices")
 public class AdviceController {
     private final AdviceService adviceService;
+    private final CaptchaService captchaService;
 
-    public AdviceController(AdviceService adviceService) {
+    public AdviceController(AdviceService adviceService, CaptchaService captchaService) {
         this.adviceService = adviceService;
+        this.captchaService = captchaService;
     }
 
     @PostMapping
@@ -40,11 +43,18 @@ public class AdviceController {
         if (content == null || content.isBlank()) {
             return badRequest().body(validationError());
         }
+        String captchaToken = request.captchaToken();
+        if (captchaToken == null || captchaToken.isBlank()) {
+            return badRequest().body(validationError());
+        }
         if (name.length() > 30) {
             return unprocessableEntity().body(new MessageResponse("Error: name too long."));
         }
         if (content.length() > 1000) {
             return unprocessableEntity().body(new MessageResponse("Error: content too long."));
+        }
+        if (!captchaService.isCaptchaTokenValid(captchaToken)) {
+            return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
         adviceService.createSuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content);
 

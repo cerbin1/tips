@@ -2,6 +2,7 @@ import ContainerSection from "../common/ContainerSection";
 import Button from "../common/Button";
 import { useEffect, useState } from "react";
 import { getAuthToken } from "../../util/auth";
+import Captcha from "../common/Captcha";
 
 export default function SuggestAdvice() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
@@ -10,6 +11,7 @@ export default function SuggestAdvice() {
   const [submitFormLoading, setSubmitFormLoading] = useState(false);
   const [submitFormError, setSubmitFormError] = useState();
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState();
 
   useEffect(() => {
     async function sendRequest() {
@@ -39,8 +41,13 @@ export default function SuggestAdvice() {
     sendRequest();
   }, []);
 
+  function handleCaptchaChange(token) {
+    setCaptchaToken(token);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
+    setSubmitFormError();
 
     const formData = new FormData(event.target);
     const name = formData.get("name");
@@ -53,7 +60,14 @@ export default function SuggestAdvice() {
       setSubmitFormError("Treść jest zbyt długa!");
       return;
     }
+
+    if (!captchaToken) {
+      setSubmitFormError("Captcha nie została rozwiązana poprawnie!");
+      return;
+    }
+
     const data = Object.fromEntries(formData.entries());
+    data["captchaToken"] = captchaToken;
 
     setSubmitFormLoading(true);
     async function sendRequest() {
@@ -72,10 +86,15 @@ export default function SuggestAdvice() {
         if (response.ok) {
           setSubmitFormSuccess(true);
         } else {
+          const responseError = await response.json();
           if (response.status === 422) {
-            setSubmitFormError(
-              "Nie udało się zapisć propozycji. Walidacja nieudana."
-            );
+            if (responseError.message === "Error: captcha is not valid.") {
+              setSubmitFormError("Wystąpił problem z walidacją Captcha!");
+            } else {
+              setSubmitFormError(
+                "Nie udało się zapisć propozycji. Walidacja nieudana."
+              );
+            }
           } else {
             throw new Error(response);
           }
@@ -122,7 +141,6 @@ export default function SuggestAdvice() {
               maxLength={30}
             />
           </div>
-
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="category">Kategoria</label>
             {categoriesLoading && <p>Ładowanie kategorii...</p>}
@@ -146,7 +164,6 @@ export default function SuggestAdvice() {
               <p className="text-red-500">{categoriesLoadingError}</p>
             )}
           </div>
-
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="content">Treść</label>
             <textarea
@@ -157,6 +174,8 @@ export default function SuggestAdvice() {
               maxLength={1000}
             ></textarea>
           </div>
+
+          <Captcha onCaptchaChange={handleCaptchaChange} />
           <Button disabled={submitFormLoading}>
             {submitFormLoading ? "Wysyłanie..." : "Wyślij propozycję"}
           </Button>

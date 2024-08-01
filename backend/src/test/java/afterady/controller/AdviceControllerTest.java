@@ -11,6 +11,7 @@ import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
+import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +26,8 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
@@ -83,6 +82,8 @@ class AdviceControllerTest {
     private TriggerSendingActivationLinkSender resetPasswordLinkSender;
     @MockBean
     private AdviceService adviceService;
+    @MockBean
+    private CaptchaService captchaService;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
@@ -90,7 +91,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest(null, "HOME", "content")))
+                                        new SuggestAdviceRequest(null, "HOME", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -102,7 +103,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("", "HOME", "content")))
+                                        new SuggestAdviceRequest("", "HOME", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -114,7 +115,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content")))
+                                        new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: name too long.")));
@@ -126,7 +127,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", null, "content")))
+                                        new SuggestAdviceRequest("name", null, "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -138,7 +139,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "", "content")))
+                                        new SuggestAdviceRequest("name", "", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -150,7 +151,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "category", "content")))
+                                        new SuggestAdviceRequest("name", "category", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -162,7 +163,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", null)))
+                                        new SuggestAdviceRequest("name", "HOME", null, "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -174,10 +175,49 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "")))
+                                        new SuggestAdviceRequest("name", "HOME", "", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content", null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content", "")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenCaptchaIsNotValidInSuggestAdvice() throws Exception {
+        // arrange
+        when(captchaService.isCaptchaTokenValid("not-valid-captcha-token")).thenReturn(false);
+
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content", "not-valid-captcha-token")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: captcha is not valid.")));
     }
 
     @Test
@@ -186,7 +226,7 @@ class AdviceControllerTest {
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001))))
+                                        new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001), "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: content too long.")));
@@ -203,11 +243,14 @@ class AdviceControllerTest {
 
     @Test
     public void shouldCreateNewAdvice() throws Exception {
+        // arrange
+        when(captchaService.isCaptchaTokenValid("captchaToken")).thenReturn(true);
+
         // act & assert
         mvc.perform(post("/advices")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content")))
+                                        new SuggestAdviceRequest("name", "HOME", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(adviceService).createSuggestedAdvice(anyString(), eq("name"), eq(AdviceCategory.HOME), eq("content"));
