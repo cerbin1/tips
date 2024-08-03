@@ -1,5 +1,6 @@
 package afterady.service.advice;
 
+import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
@@ -10,6 +11,8 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
@@ -44,5 +47,15 @@ public class AdviceServiceImpl implements AdviceService {
     @Override
     public List<AdviceDetailsDto> getTopTenAdvices() {
         return adviceRepository.findTop10ByOrderByRatingDesc();
+    }
+
+    @Override
+    public Optional<AdviceDetailsDto> getAdviceById(UUID id) {
+        Optional<Advice> maybeAdvice = adviceRepository.findById(id);
+        if (maybeAdvice.isEmpty()) {
+            return Optional.empty();
+        }
+        Advice advice = maybeAdvice.get();
+        return Optional.of(new AdviceDetailsDto(advice.name(), advice.category().getDisplayName(), advice.content(), advice.rating()));
     }
 }

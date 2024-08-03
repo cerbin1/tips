@@ -32,7 +32,9 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import static afterady.TestUtils.UUID_1;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -305,5 +307,30 @@ class AdviceControllerTest {
         assertEquals(10, first.rating());
         assertEquals("name 10", last.name());
         assertEquals(1, last.rating());
+    }
+
+    @Test
+    public void shouldReturn400IfAdviceByIdNotExists() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/" + UUID_1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+    }
+
+    @Test
+    public void shouldReturnAdviceById() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new AdviceDetailsDto("name", "HOME", "content", 1)));
+
+        // act & assert
+        mvc.perform(get("/advices/" + UUID_1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.category", is("HOME")))
+                .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.rating", is(1)));
     }
 }

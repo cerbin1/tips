@@ -9,9 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static afterady.domain.advice.AdviceCategory.isValid;
 import static afterady.domain.advice.AdviceCategory.valueOf;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
@@ -74,6 +77,15 @@ public class AdviceController {
     @GetMapping("/ranking")
     public ResponseEntity<List<AdviceDetailsDto>> getTopTenAdvices() {
         return ResponseEntity.ok(adviceService.getTopTenAdvices());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getAdviceById(@PathVariable UUID id) {
+        Optional<AdviceDetailsDto> maybeAdvice = adviceService.getAdviceById(id);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", id.toString())), NOT_FOUND);
+        }
+        return ResponseEntity.ok(maybeAdvice.get());
     }
 
     private MessageResponse validationError() {

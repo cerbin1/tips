@@ -1,5 +1,6 @@
 package afterady.service.advice;
 
+import afterady.domain.advice.Advice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import org.bson.Document;
@@ -13,11 +14,12 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
+import static afterady.TestUtils.UUID_1;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
 import static afterady.domain.advice.AdviceCategory.HOME;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -89,6 +91,26 @@ class AdviceServiceImplTest {
         assertEquals("name 5", last.name());
         assertEquals(1, last.rating());
         verify(adviceRepository, times(1)).findTop10ByOrderByRatingDesc();
+        verifyNoMoreInteractions(adviceRepository);
+    }
+
+    @Test
+    public void shouldGetAdviceById() {
+        // arrange
+        when(adviceRepository.findById(eq(UUID_1)))
+                .thenReturn(Optional.of(new Advice("63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name", HOME, "content", 1)));
+
+        // act
+        Optional<AdviceDetailsDto> maybeAdvice = adviceService.getAdviceById(UUID_1);
+
+        // assert
+        assertTrue(maybeAdvice.isPresent());
+        AdviceDetailsDto adviceDetailsDto = maybeAdvice.get();
+        assertEquals("name", adviceDetailsDto.name());
+        assertEquals("Dom", adviceDetailsDto.category());
+        assertEquals("content", adviceDetailsDto.content());
+        assertEquals(1, adviceDetailsDto.rating());
+        verify(adviceRepository, times(1)).findById(eq(UUID_1));
         verifyNoMoreInteractions(adviceRepository);
     }
 }
