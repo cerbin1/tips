@@ -15,6 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static afterady.TestUtils.UUID_1;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
@@ -52,7 +53,7 @@ class AdviceServiceImplTest {
     @Test
     public void shouldGetRandomAdvice() {
         // arrange
-        AdviceDetailsDto adviceDetailsDto = new AdviceDetailsDto("name", "category", "content", 1);
+        AdviceDetailsDto adviceDetailsDto = new AdviceDetailsDto(UUID_1, "name", "category", "content", 1);
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(AdviceDetailsDto.class)))
                 .thenReturn(new AggregationResults<>(List.of(adviceDetailsDto), new Document()));
         // act
@@ -72,11 +73,11 @@ class AdviceServiceImplTest {
     public void shouldGetTopAdvices() {
         // arrange
         when(adviceRepository.findTop10ByOrderByRatingDesc())
-                .thenReturn(List.of(new AdviceDetailsDto("name 1", "HOME", "content 1", 5),
-                        new AdviceDetailsDto("name 2", "HOME", "content 2", 4),
-                        new AdviceDetailsDto("name 3", "HOME", "content 3", 3),
-                        new AdviceDetailsDto("name 4", "HOME", "content 4", 2),
-                        new AdviceDetailsDto("name 5", "HOME", "content 5", 1)
+                .thenReturn(List.of(new AdviceDetailsDto(UUID.randomUUID(), "name 1", "HOME", "content 1", 5),
+                        new AdviceDetailsDto(UUID.randomUUID(), "name 2", "HOME", "content 2", 4),
+                        new AdviceDetailsDto(UUID.randomUUID(), "name 3", "HOME", "content 3", 3),
+                        new AdviceDetailsDto(UUID.randomUUID(), "name 4", "HOME", "content 4", 2),
+                        new AdviceDetailsDto(UUID.randomUUID(), "name 5", "HOME", "content 5", 1)
                 ));
 
         // act
@@ -98,7 +99,7 @@ class AdviceServiceImplTest {
     public void shouldGetAdviceById() {
         // arrange
         when(adviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(new Advice("63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name", HOME, "content", 1)));
+                .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", 1)));
 
         // act
         Optional<AdviceDetailsDto> maybeAdvice = adviceService.getAdviceById(UUID_1);

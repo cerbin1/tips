@@ -1,4 +1,6 @@
 package afterady.service.advice;
 
-public record AdviceDetailsDto(String name, String category, String content, Integer rating) {
+import java.util.UUID;
+
+public record AdviceDetailsDto(UUID id, String name, String category, String content, Integer rating) {
 }

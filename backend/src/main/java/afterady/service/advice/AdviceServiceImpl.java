@@ -56,6 +56,6 @@ public class AdviceServiceImpl implements AdviceService {
             return Optional.empty();
         }
         Advice advice = maybeAdvice.get();
-        return Optional.of(new AdviceDetailsDto(advice.name(), advice.category().getDisplayName(), advice.content(), advice.rating()));
+        return Optional.of(new AdviceDetailsDto(advice.id(), advice.name(), advice.category().getDisplayName(), advice.content(), advice.rating()));
     }
 }

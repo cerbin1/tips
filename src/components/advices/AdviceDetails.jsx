@@ -1,28 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ContainerSection from "../common/ContainerSection";
 import Button from "../common/Button";
+import { useParams } from "react-router";
 
 export default function AdviceDetails() {
-  const [rating, setRating] = useState(5);
+  const [loading, setLoading] = useState(false);
+  const [advice, setAdvice] = useState();
+  const [error, setError] = useState();
+  const { adviceId } = useParams();
 
-  function increaseRating() {
-    setRating((previousRating) => previousRating + 1);
-  }
+  useEffect(() => {
+    async function fetchAdvice() {
+      setError(null);
+      setLoading(true);
+      const url = import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
+      try {
+        const response = await fetch(url);
+        if (response.ok) {
+          const advice = await response.json();
+          setAdvice(advice);
+        } else {
+          if (response.status === 404) {
+            setError("Nie znaleziono porady!");
+          } else {
+            setError("Nie udało się wyświetlić porady!");
+          }
+        }
+      } catch (error) {
+        setError("Nie udało się wyświetlić porady!");
+      }
+      setLoading(false);
+    }
+    fetchAdvice();
+  }, [adviceId]);
 
   return (
     <ContainerSection data-testid="advice-details-section">
-      <h1>Nazwa porady</h1>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </p>
-      <p>Ocena przydatności: {rating}</p>
-      <Button onClick={increaseRating}>Oceń jako przydatne</Button>
+      {loading && <p>Ładowanie...</p>}
+      {!loading && advice && (
+        <>
+          <h1>{advice.name}</h1>
+          <h2>Kategoria: {advice.category}</h2>
+          <p>{advice.content}</p>
+          <p>Ocena przydatności: {advice.rating}</p>
+          <Button>Oceń jako przydatne</Button>
+        </>
+      )}
+
+      {error && <p className="py-6 text-red-500">{error}</p>}
     </ContainerSection>
   );
 }

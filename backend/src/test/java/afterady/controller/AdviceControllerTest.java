@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static afterady.TestUtils.UUID_1;
+import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -260,7 +261,7 @@ class AdviceControllerTest {
     @Test
     public void shouldGetRandomAdvice() throws Exception {
         // arrange
-        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto("name", "Health", "content", 1));
+        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto(UUID_1, "name", "Health", "content", 1));
 
         // act & assert
         mvc.perform(get("/advices/random"))
@@ -282,16 +283,16 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdvicesRanking() throws Exception {
         // arrange
-        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto("name 1", "HOME", "content 1", 10),
-                new AdviceDetailsDto("name 2", "HOME", "content 2", 9),
-                new AdviceDetailsDto("name 3", "HOME", "content 3", 8),
-                new AdviceDetailsDto("name 4", "HOME", "content 4", 7),
-                new AdviceDetailsDto("name 5", "HOME", "content 5", 6),
-                new AdviceDetailsDto("name 6", "HOME", "content 6", 5),
-                new AdviceDetailsDto("name 7", "HOME", "content 7", 4),
-                new AdviceDetailsDto("name 8", "HOME", "content 8", 3),
-                new AdviceDetailsDto("name 9", "HOME", "content 9", 2),
-                new AdviceDetailsDto("name 10", "HOME", "content 10", 1)
+        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "content 1", 10),
+                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "content 2", 9),
+                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "content 3", 8),
+                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "content 4", 7),
+                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "content 5", 6),
+                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "content 6", 5),
+                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "content 7", 4),
+                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "content 8", 3),
+                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "content 9", 2),
+                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "content 10", 1)
         ));
 
         // act & assert
@@ -323,7 +324,7 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new AdviceDetailsDto("name", "HOME", "content", 1)));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new AdviceDetailsDto(UUID_1,"name", "HOME", "content", 1)));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))

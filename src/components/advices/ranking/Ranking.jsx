@@ -40,7 +40,10 @@ export default function rating() {
       <td className="py-3 px-6 border border-slate-400">{advice.category}</td>
       <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
       <td className="py-3 px-6 border border-slate-400">
-        <Link className="text-blue-to-dark text-lg" to="/TODO">
+        <Link
+          className="text-blue-to-dark text-lg"
+          to={"/advices/" + advice.id}
+        >
           Wyświetl szczegóły
         </Link>
       </td>

@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     loader: tokenLoader,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/advices", element: <AdviceDetails /> },
+      { path: "/advices/:adviceId", element: <AdviceDetails /> },
       { path: "/categories", element: <Categories /> },
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:id", element: <CategoryDetails /> },
