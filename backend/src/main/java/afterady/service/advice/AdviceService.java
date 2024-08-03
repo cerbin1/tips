@@ -1,6 +1,5 @@
 package afterady.service.advice;
 
-import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
 
 import java.util.List;
