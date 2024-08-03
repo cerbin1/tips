@@ -6,8 +6,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +21,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import static afterady.config.EnvironmentWrapper.AFTERADY_FRONT_URL;
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
 
     private final UserDetailsService userDetailsService;
@@ -55,6 +55,13 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return new BCryptPasswordEncoder();
     }
 
+   @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins(environment.getEnv(AFTERADY_FRONT_URL))
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -76,10 +83,4 @@ public class WebSecurityConfig implements WebMvcConfigurer {
         return http.build();
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(environment.getEnv(AFTERADY_FRONT_URL))
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
-    }
 }
