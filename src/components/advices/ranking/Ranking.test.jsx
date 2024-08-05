@@ -27,61 +27,71 @@ describe("Ranking", () => {
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 1",
-            category: "HOME",
+            categoryName: "HOME",
+            categoryDisplayName: "Dom",
             rating: 10,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 2",
-            category: "HOME",
+            categoryName: "HOME",
+            categoryDisplayName: "Dom",
             rating: 9,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 3",
-            category: "HOME",
+            categoryName: "HOME",
+            categoryDisplayName: "Dom",
             rating: 8,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 4",
-            category: "HEALTH",
+            categoryName: "HEALTH",
+            categoryDisplayName: "Zdrowie",
             rating: 7,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 5",
-            category: "HEALTH",
+            categoryName: "HEALTH",
+            categoryDisplayName: "Zdrowie",
             rating: 6,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 6",
-            category: "HEALTH",
+            categoryName: "HEALTH",
+            categoryDisplayName: "Zdrowie",
             rating: 5,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 7",
-            category: "HEALTH",
+            categoryName: "HEALTH",
+            categoryDisplayName: "Zdrowie",
             rating: 4,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 8",
-            category: "FINANCES",
+            categoryName: "FINANCES",
+            categoryDisplayName: "Finanse",
             rating: 3,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 9",
-            category: "FINANCES",
+            categoryName: "FINANCES",
+            categoryDisplayName: "Finanse",
             rating: 2,
           },
           {
             id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
             name: "name 10",
-            category: "FINANCES",
+            categoryName: "FINANCES",
+            categoryDisplayName: "Finanse",
             rating: 1,
           },
         ],
@@ -104,7 +114,7 @@ describe("Ranking", () => {
     const cells = screen.getAllByRole("cell");
     expect(cells).toHaveLength(40);
     expect(cells[0]).toHaveTextContent("name 1");
-    expect(cells[1]).toHaveTextContent("HOME");
+    expect(cells[1]).toHaveTextContent("Dom");
     expect(cells[2]).toHaveTextContent("10");
     expect(cells[3]).toHaveTextContent("Wyświetl szczegóły");
     expect(cells[3].querySelector("a")).toHaveAttribute(
@@ -112,7 +122,7 @@ describe("Ranking", () => {
       "/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
     expect(cells[36]).toHaveTextContent("name 10");
-    expect(cells[37]).toHaveTextContent("FINANCES");
+    expect(cells[37]).toHaveTextContent("Finanse");
     expect(cells[38]).toHaveTextContent("1");
     expect(cells[39]).toHaveTextContent("Wyświetl szczegóły");
     expect(cells[39].querySelector("a")).toHaveAttribute(

@@ -1,5 +1,6 @@
 package afterady.controller;
 
+import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 import static afterady.domain.advice.AdviceCategory.isValid;
 import static afterady.domain.advice.AdviceCategory.valueOf;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
@@ -81,11 +82,25 @@ public class AdviceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getAdviceById(@PathVariable UUID id) {
-        Optional<AdviceDetailsDto> maybeAdvice = adviceService.getAdviceById(id);
+        Optional<Advice> maybeAdvice = adviceService.getAdviceById(id);
         if (maybeAdvice.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", id.toString())), NOT_FOUND);
         }
-        return ResponseEntity.ok(maybeAdvice.get());
+        return ResponseEntity.ok(maybeAdvice.get().toAdviceDetailsDto());
+    }
+
+    @PostMapping("/{adviceId}/rate")
+    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId) {
+        Optional<Advice> maybeAdvice = adviceService.getAdviceById(adviceId);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
+        }
+        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId);
+        if (updatedAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(updatedAdvice.get().toAdviceDetailsDto(), OK);
+        }
     }
 
     private MessageResponse validationError() {

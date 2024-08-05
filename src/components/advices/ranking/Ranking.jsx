@@ -37,7 +37,9 @@ export default function rating() {
   const rows = topAdvices.map((advice) => (
     <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">{advice.category}</td>
+      <td className="py-3 px-6 border border-slate-400">
+        {advice.categoryDisplayName}
+      </td>
       <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
       <td className="py-3 px-6 border border-slate-400">
         <Link

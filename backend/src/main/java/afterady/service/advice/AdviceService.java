@@ -1,5 +1,6 @@
 package afterady.service.advice;
 
+import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
 
 import java.util.List;
@@ -14,5 +15,7 @@ public interface AdviceService {
 
     List<AdviceDetailsDto> getTopTenAdvices();
 
-    Optional<AdviceDetailsDto> getAdviceById(UUID id);
+    Optional<Advice> getAdviceById(UUID id);
+
+    Optional<Advice> increaseAdviceRating(UUID adviceId);
 }

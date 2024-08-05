@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
@@ -53,31 +54,32 @@ class AdviceServiceImplTest {
     @Test
     public void shouldGetRandomAdvice() {
         // arrange
-        AdviceDetailsDto adviceDetailsDto = new AdviceDetailsDto(UUID_1, "name", "category", "content", 1);
-        when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(AdviceDetailsDto.class)))
-                .thenReturn(new AggregationResults<>(List.of(adviceDetailsDto), new Document()));
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
+                .thenReturn(new AggregationResults<>(List.of(new Advice(UUID_1, "name", HOME, "content", 1)), new Document()));
         // act
         AdviceDetailsDto advice = adviceService.getRandomAdvice();
 
         // assert
         assertNotNull(advice);
         assertEquals("name", advice.name());
-        assertEquals("category", advice.category());
+        assertEquals("HOME", advice.categoryName());
+        assertEquals("Dom", advice.categoryDisplayName());
         assertEquals("content", advice.content());
         assertEquals(1, advice.rating());
-        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(AdviceDetailsDto.class));
+        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
     }
 
     @Test
     public void shouldGetTopAdvices() {
         // arrange
-        when(adviceRepository.findTop10ByOrderByRatingDesc())
-                .thenReturn(List.of(new AdviceDetailsDto(UUID.randomUUID(), "name 1", "HOME", "content 1", 5),
-                        new AdviceDetailsDto(UUID.randomUUID(), "name 2", "HOME", "content 2", 4),
-                        new AdviceDetailsDto(UUID.randomUUID(), "name 3", "HOME", "content 3", 3),
-                        new AdviceDetailsDto(UUID.randomUUID(), "name 4", "HOME", "content 4", 2),
-                        new AdviceDetailsDto(UUID.randomUUID(), "name 5", "HOME", "content 5", 1)
+        when(mongoTemplate.find((any(Query.class)), eq(Advice.class)))
+                .thenReturn(List.of(
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", 5),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", 4),
+                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", 3),
+                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", 2),
+                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", 1)
                 ));
 
         // act
@@ -91,7 +93,7 @@ class AdviceServiceImplTest {
         assertEquals(5, first.rating());
         assertEquals("name 5", last.name());
         assertEquals(1, last.rating());
-        verify(adviceRepository, times(1)).findTop10ByOrderByRatingDesc();
+        verify(mongoTemplate, times(1)).find((any(Query.class)), eq(Advice.class));
         verifyNoMoreInteractions(adviceRepository);
     }
 
@@ -102,16 +104,36 @@ class AdviceServiceImplTest {
                 .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", 1)));
 
         // act
-        Optional<AdviceDetailsDto> maybeAdvice = adviceService.getAdviceById(UUID_1);
+        Optional<Advice> maybeAdvice = adviceService.getAdviceById(UUID_1);
 
         // assert
         assertTrue(maybeAdvice.isPresent());
-        AdviceDetailsDto adviceDetailsDto = maybeAdvice.get();
-        assertEquals("name", adviceDetailsDto.name());
-        assertEquals("Dom", adviceDetailsDto.category());
-        assertEquals("content", adviceDetailsDto.content());
-        assertEquals(1, adviceDetailsDto.rating());
+        Advice adviceDetails = maybeAdvice.get();
+        assertEquals(UUID_1, adviceDetails.getId());
+        assertEquals("name", adviceDetails.getName());
+        assertEquals("Dom", adviceDetails.getCategory().getDisplayName());
+        assertEquals("HOME", adviceDetails.getCategory().name());
+        assertEquals("content", adviceDetails.getContent());
+        assertEquals(1, adviceDetails.getRating());
         verify(adviceRepository, times(1)).findById(eq(UUID_1));
+        verifyNoMoreInteractions(adviceRepository);
+    }
+
+    @Test
+    public void shouldIncreaseAdviceRating() {
+        // arrange
+        Advice advice = new Advice(UUID_1, "name", HOME, "content", 1);
+        when(adviceRepository.findById(eq(UUID_1)))
+                .thenReturn(Optional.of(advice));
+        when(adviceRepository.save(advice)).thenReturn(advice);
+
+        // act
+        adviceService.increaseAdviceRating(UUID_1);
+
+        // assert
+        assertEquals(2, advice.getRating());
+        verify(adviceRepository, times(1)).findById(eq(UUID_1));
+        verify(adviceRepository, times(1)).save(advice);
         verifyNoMoreInteractions(adviceRepository);
     }
 }

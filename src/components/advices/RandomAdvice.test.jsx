@@ -49,7 +49,7 @@ describe("RandomAdvice", () => {
         ok: true,
         json: async () =>
           JSON.parse(
-            `{"name": "Woda", "category": "HOME", "content": "Pij dużo wody"}`
+            `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
           ),
       });
     await act(async () => render(<RandomAdvice />));
@@ -71,7 +71,7 @@ describe("RandomAdvice", () => {
       screen.queryByRole("button", { name: "Wylosuj nową poradę" })
     ).toBeInTheDocument();
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: HOME")).toBeInTheDocument();
+    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
@@ -80,7 +80,7 @@ describe("RandomAdvice", () => {
       ok: true,
       json: () =>
         JSON.parse(
-          `{"name": "Woda", "category": "HOME", "content": "Pij dużo wody"}`
+          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
         ),
     });
 
@@ -92,7 +92,7 @@ describe("RandomAdvice", () => {
     });
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: HOME")).toBeInTheDocument();
+    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
@@ -101,7 +101,7 @@ describe("RandomAdvice", () => {
       ok: true,
       json: () =>
         JSON.parse(
-          `{"name": "Woda", "category": "HOME", "content": "Pij dużo wody"}`
+          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
         ),
     });
     await act(async () => render(<RandomAdvice />));
@@ -120,7 +120,7 @@ describe("RandomAdvice", () => {
     expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: HOME")).toBeInTheDocument();
+    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
@@ -149,7 +149,7 @@ describe("RandomAdvice", () => {
       ok: true,
       json: () =>
         JSON.parse(
-          `{"name": "Woda", "category": "HOME", "content": "Pij dużo wody"}`
+          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
         ),
     });
 
@@ -160,7 +160,7 @@ describe("RandomAdvice", () => {
     const adviceName = screen.getByRole("heading", { level: 1 });
     expect(adviceName).toHaveTextContent("Woda");
     const adviceCategory = screen.getByRole("heading", { level: 2 });
-    expect(adviceCategory).toHaveTextContent("Kategoria: HOME");
+    expect(adviceCategory).toHaveTextContent("Kategoria: Dom");
     expect(screen.getByRole("paragraph")).toHaveTextContent("Pij dużo wody");
     expect(
       screen.getByRole("button", {
@@ -176,25 +176,25 @@ describe("RandomAdvice", () => {
         ok: true,
         json: () =>
           JSON.parse(
-            `{"name": "Woda", "category": "HOME", "content": "Pij dużo wody"}`
+            `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
           ),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: async () =>
           JSON.parse(
-            `{"name": "Słońce", "category": "HEALTH", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
+            `{"name": "Słońce", "categoryName": "HEALTH", "categoryDisplayName": "Zdrowie", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
           ),
       });
     await act(async () => render(<RandomAdvice />));
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: HOME")).toBeInTheDocument();
+    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button"));
 
     expect(screen.getByText("Słońce")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: HEALTH")).toBeInTheDocument();
+    expect(screen.getByText("Kategoria: Zdrowie")).toBeInTheDocument();
     expect(
       screen.getByText("Korzystaj przynajmniej 15 minut dziennie ze słońca")
     ).toBeInTheDocument();

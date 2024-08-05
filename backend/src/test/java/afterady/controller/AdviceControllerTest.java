@@ -2,6 +2,7 @@ package afterady.controller;
 
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
+import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.RoleRepository;
@@ -16,6 +17,7 @@ import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -36,8 +38,7 @@ import java.util.Optional;
 
 import static afterady.TestUtils.UUID_1;
 import static java.util.UUID.randomUUID;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -261,12 +262,12 @@ class AdviceControllerTest {
     @Test
     public void shouldGetRandomAdvice() throws Exception {
         // arrange
-        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto(UUID_1, "name", "Health", "content", 1));
+        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto(UUID_1, "name", "Health", "Zdrowie", "content", 1));
 
         // act & assert
         mvc.perform(get("/advices/random"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"name\":\"name\", \"category\":\"Health\", \"content\":\"content\"}"));
+                .andExpect(content().json("{\"name\":\"name\", \"categoryName\":\"Health\", \"categoryDisplayName\":\"Zdrowie\", \"content\":\"content\"}"));
     }
 
     @Test
@@ -283,16 +284,16 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdvicesRanking() throws Exception {
         // arrange
-        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "content 1", 10),
-                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "content 2", 9),
-                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "content 3", 8),
-                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "content 4", 7),
-                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "content 5", 6),
-                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "content 6", 5),
-                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "content 7", 4),
-                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "content 8", 3),
-                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "content 9", 2),
-                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "content 10", 1)
+        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "Dom", "content 1", 10),
+                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "Dom", "content 2", 9),
+                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "Dom", "content 3", 8),
+                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "Dom", "content 4", 7),
+                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "Dom", "content 5", 6),
+                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "Dom", "content 6", 5),
+                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "Dom", "content 7", 4),
+                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "Dom", "content 8", 3),
+                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "Dom", "content 9", 2),
+                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "Dom", "content 10", 1)
         ));
 
         // act & assert
@@ -324,14 +325,45 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new AdviceDetailsDto(UUID_1,"name", "HOME", "content", 1)));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", 1)));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(UUID_1.toString())))
                 .andExpect(jsonPath("$.name", is("name")))
-                .andExpect(jsonPath("$.category", is("HOME")))
+                .andExpect(jsonPath("$.categoryName", is("HOME")))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
                 .andExpect(jsonPath("$.rating", is(1)));
+    }
+
+    @Test
+    public void shouldRReturn404WhenRatingAdviceThatDoesNotExist() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(post("/advices/" + UUID_1 + "/rate")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+    }
+
+    @Test
+    public void shouldRateAdvice() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", 1)));
+        when(adviceService.increaseAdviceRating(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", 2)));
+
+        // act & assert
+        mvc.perform(post("/advices/" + UUID_1 + "/rate")
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.categoryName", is("HOME")))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.rating", is(2)));
     }
 }

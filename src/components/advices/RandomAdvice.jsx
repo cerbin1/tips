@@ -35,7 +35,7 @@ export default function RandomAdvice() {
       {!loading && !error && (
         <div className="flex flex-col items-center py-6 gap-4">
           <h1>{randomAdvice.name}</h1>
-          <h2>Kategoria: {randomAdvice.category}</h2>
+          <h2>Kategoria: {randomAdvice.categoryDisplayName}</h2>
           <p>{randomAdvice.content}</p>
           <Button onClick={fetchRandomAdvice}>Wylosuj nową poradę</Button>
         </div>
