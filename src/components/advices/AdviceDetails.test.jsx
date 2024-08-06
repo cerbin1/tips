@@ -170,7 +170,7 @@ describe("AdviceDetails", () => {
       expect(screen.getByText("Wysyłanie oceny...")).toBeDisabled();
       expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
     });
-    expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
+    expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
   });
 
   test("should successfully rate advice and display info", async () => {
@@ -201,5 +201,7 @@ describe("AdviceDetails", () => {
     const rateSuccess = screen.getByText("Oceniono poradę.");
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
   });
 });

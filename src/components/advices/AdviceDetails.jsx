@@ -80,7 +80,10 @@ export default function AdviceDetails() {
           <p>{advice.content}</p>
           <p className="py-6">Ocena przydatności: {advice.rating}</p>
           {token && (
-            <Button disabled={rateAdviceLoading} onClick={handleRateAdvice}>
+            <Button
+              disabled={rateAdviceLoading || rateAdviceSuccess}
+              onClick={handleRateAdvice}
+            >
               {rateAdviceLoading ? "Wysyłanie oceny..." : "Oceń jako przydatne"}
             </Button>
           )}
