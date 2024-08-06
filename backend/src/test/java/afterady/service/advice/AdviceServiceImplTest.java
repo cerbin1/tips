@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static afterady.TestUtils.UUID_1;
+import static afterady.TestUtils.*;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
 import static afterady.domain.advice.AdviceCategory.HOME;
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,7 +55,7 @@ class AdviceServiceImplTest {
     public void shouldGetRandomAdvice() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
-                .thenReturn(new AggregationResults<>(List.of(new Advice(UUID_1, "name", HOME, "content", 1)), new Document()));
+                .thenReturn(new AggregationResults<>(List.of(new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1))), new Document()));
         // act
         AdviceDetailsDto advice = adviceService.getRandomAdvice();
 
@@ -73,14 +73,14 @@ class AdviceServiceImplTest {
     @Test
     public void shouldGetTopAdvices() {
         // arrange
-        when(mongoTemplate.find((any(Query.class)), eq(Advice.class)))
-                .thenReturn(List.of(
-                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", 5),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", 4),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", 3),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", 2),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", 1)
-                ));
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
+                .thenReturn(new AggregationResults<>(List.of(
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", generateTestVotes(5)),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
+                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
+                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
+                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))
+                ), new Document()));
 
         // act
         List<AdviceDetailsDto> topAdvices = adviceService.getTopTenAdvices();
@@ -93,7 +93,7 @@ class AdviceServiceImplTest {
         assertEquals(5, first.rating());
         assertEquals("name 5", last.name());
         assertEquals(1, last.rating());
-        verify(mongoTemplate, times(1)).find((any(Query.class)), eq(Advice.class));
+        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(adviceRepository);
     }
 
@@ -101,7 +101,7 @@ class AdviceServiceImplTest {
     public void shouldGetAdviceById() {
         // arrange
         when(adviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", 1)));
+                .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1))));
 
         // act
         Optional<Advice> maybeAdvice = adviceService.getAdviceById(UUID_1);
@@ -122,13 +122,13 @@ class AdviceServiceImplTest {
     @Test
     public void shouldIncreaseAdviceRating() {
         // arrange
-        Advice advice = new Advice(UUID_1, "name", HOME, "content", 1);
+        Advice advice = new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1));
         when(adviceRepository.findById(eq(UUID_1)))
                 .thenReturn(Optional.of(advice));
         when(adviceRepository.save(advice)).thenReturn(advice);
 
         // act
-        adviceService.increaseAdviceRating(UUID_1);
+        adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL);
 
         // assert
         assertEquals(2, advice.getRating());

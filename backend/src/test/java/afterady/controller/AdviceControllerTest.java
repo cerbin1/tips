@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static afterady.TestUtils.UUID_1;
+import static afterady.TestUtils.*;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -325,7 +325,7 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", 1)));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))
@@ -339,12 +339,12 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldRReturn404WhenRatingAdviceThatDoesNotExist() throws Exception {
+    public void shouldReturn404WhenRatingAdviceThatDoesNotExist() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(post("/advices/" + UUID_1 + "/rate")
+        mvc.perform(post("/advices/" + UUID_1 + "/rate").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
@@ -353,11 +353,11 @@ class AdviceControllerTest {
     @Test
     public void shouldRateAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", 1)));
-        when(adviceService.increaseAdviceRating(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", 2)));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+        when(adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(2))));
 
         // act & assert
-        mvc.perform(post("/advices/" + UUID_1 + "/rate")
+        mvc.perform(post("/advices/" + UUID_1 + "/rate").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("name")))

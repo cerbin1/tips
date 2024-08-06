@@ -34,8 +34,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Set;
 import java.util.UUID;
 
-import static afterady.TestUtils.UUID_1;
-import static afterady.TestUtils.UUID_2;
+import static afterady.TestUtils.*;
 import static afterady.domain.user.RoleName.ROLE_USER;
 import static java.util.Collections.emptySet;
 import static java.util.Optional.empty;
@@ -121,7 +120,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", null, "password", "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, null, "password", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Username is required.")));
@@ -133,7 +132,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "", "password", "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "", "password", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Username is required.")));
@@ -145,7 +144,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", null, "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", null, "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password is required.")));
@@ -157,7 +156,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "", "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password is required.")));
@@ -169,7 +168,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", null, emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password", null, emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password repeat is required.")));
@@ -181,7 +180,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", "", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password", "", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: Password repeat is required.")));
@@ -193,7 +192,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "qwe123", "qwe123", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "qwe123", "qwe123", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
@@ -205,7 +204,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "12345678", "12345678", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "12345678", "12345678", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
@@ -217,7 +216,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
@@ -229,7 +228,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password", "password", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password", "password", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Password is not valid.")));
@@ -241,7 +240,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password123!", "!password123", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password123!", "!password123", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Passwords do not match.")));
@@ -256,7 +255,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password123!", "password123!", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password123!", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Username is already taken.")));
@@ -265,13 +264,13 @@ public class AuthControllerTest {
     @Test
     public void shouldReturn422WhenEmailAlreadyExists() throws Exception {
         // arrange
-        when(userRepository.existsByEmail("email@test.com")).thenReturn(true);
+        when(userRepository.existsByEmail(VALID_TEST_EMAIL)).thenReturn(true);
 
         // act & assert
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password123!", "password123!", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password123!", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: Email is already in use.")));
@@ -292,7 +291,7 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password123!", "password123!", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password123!", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message", is("Error: Role user not found.")));
@@ -302,7 +301,7 @@ public class AuthControllerTest {
     public void shouldTrimEmailAndUsernameInRegistration() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(false);
-        when(userRepository.existsByEmail("email@test.com")).thenReturn(false);
+        when(userRepository.existsByEmail(VALID_TEST_EMAIL)).thenReturn(false);
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(createdUser))
@@ -318,7 +317,7 @@ public class AuthControllerTest {
                 .andExpect(status().isOk());
         verify(userRepository, times(1)).save(Mockito.any(User.class));
         verify(userRepository, times(1)).existsByUsername("username");
-        verify(userRepository, times(1)).existsByEmail("email@test.com");
+        verify(userRepository, times(1)).existsByEmail(VALID_TEST_EMAIL);
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 
@@ -326,7 +325,7 @@ public class AuthControllerTest {
     public void shouldReturn200WhenUserIsRegisteredSuccessfully() throws Exception {
         // arrange
         when(userRepository.existsByUsername("username")).thenReturn(false);
-        when(userRepository.existsByEmail("email@test.com")).thenReturn(false);
+        when(userRepository.existsByEmail(VALID_TEST_EMAIL)).thenReturn(false);
         User createdUser = TestUtils.testUser();
         when(userRepository.save(Mockito.any(User.class))).thenReturn(createdUser);
         when(userActivatorService.createLinkFor(createdUser))
@@ -337,14 +336,14 @@ public class AuthControllerTest {
         mvc.perform(post("/auth/register")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new RegistrationRequest("email@test.com", "username", "password123!", "password123!", emptySet())))
+                                        new RegistrationRequest(VALID_TEST_EMAIL, "username", "password123!", "password123!", emptySet())))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(userRepository, times(1)).save(Mockito.any(User.class));
         verify(userRepository, times(1)).existsByUsername("username");
-        verify(userRepository, times(1)).existsByEmail("email@test.com");
+        verify(userRepository, times(1)).existsByEmail(VALID_TEST_EMAIL);
         verify(userActivatorService, times(1)).createLinkFor(createdUser);
-        verify(activationLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
+        verify(activationLinkSender, times(1)).send(new LinkMessage(VALID_TEST_EMAIL, "d4645e88-0d23-4946-a75d-694fc475ceba"));
         Mockito.verifyNoMoreInteractions(userRepository);
     }
 
@@ -553,7 +552,7 @@ public class AuthControllerTest {
     @Test
     public void shouldSendRestartPasswordLink() throws Exception {
         User user = TestUtils.testUser();
-        when(userRepository.findByEmail("email@test.com")).thenReturn(of(user));
+        when(userRepository.findByEmail(VALID_TEST_EMAIL)).thenReturn(of(user));
         when(resetPasswordService.createLinkFor(Mockito.any(User.class)))
                 .thenReturn(new ResetPasswordLink(UUID_2, user, false));
 
@@ -562,12 +561,12 @@ public class AuthControllerTest {
                 .andExpect(status().isOk());
 
         // assert
-        verify(userRepository, times(1)).findByEmail("email@test.com");
+        verify(userRepository, times(1)).findByEmail(VALID_TEST_EMAIL);
         verify(resetPasswordService, times(1)).createLinkFor(Mockito.any(User.class));
         Mockito.verifyNoMoreInteractions(userRepository);
         Mockito.verifyNoMoreInteractions(resetPasswordService);
         verify(resetPasswordService, times(1)).createLinkFor(user);
-        verify(resetPasswordLinkSender, times(1)).send(new LinkMessage("email@test.com", "d4645e88-0d23-4946-a75d-694fc475ceba"));
+        verify(resetPasswordLinkSender, times(1)).send(new LinkMessage(VALID_TEST_EMAIL, "d4645e88-0d23-4946-a75d-694fc475ceba"));
     }
 
     @Test

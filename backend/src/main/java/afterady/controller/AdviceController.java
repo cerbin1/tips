@@ -90,12 +90,12 @@ public class AdviceController {
     }
 
     @PostMapping("/{adviceId}/rate")
-    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId) {
+    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail) {
         Optional<Advice> maybeAdvice = adviceService.getAdviceById(adviceId);
         if (maybeAdvice.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
         }
-        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId);
+        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId, userEmail);
         if (updatedAdvice.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
         } else {

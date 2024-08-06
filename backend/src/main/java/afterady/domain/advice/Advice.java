@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
@@ -22,13 +23,17 @@ public class Advice {
     private String name;
     private AdviceCategory category;
     private String content;
-    private int rating;
+    private Set<String> userEmailVotes;
 
-    public void increaseRating() {
-        this.rating++;
+    public void addUserVote(String userEmail) {
+        userEmailVotes.add(userEmail);
     }
 
     public AdviceDetailsDto toAdviceDetailsDto() {
-        return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, rating);
+        return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, getRating());
+    }
+
+    public Integer getRating() {
+        return userEmailVotes.size();
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
+import org.springframework.data.mongodb.core.aggregation.SortOperation;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.sample;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
 public class AdviceServiceImpl implements AdviceService {
@@ -49,12 +50,18 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     public List<AdviceDetailsDto> getTopTenAdvices() {
-        Query query = new Query();
-        query.with(Sort.by(Sort.Direction.DESC, "rating"));
-        query.limit(10);
-        List<Advice> objects = mongoTemplate.find(query, Advice.class);
-        return objects.stream().map(Advice::toAdviceDetailsDto).toList();
+        ProjectionOperation projectStage = project("name", "category", "content", "userEmailVotes")
+                .andExpression("size(userEmailVotes)").as("rating");
+        SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "rating"));
+        Aggregation aggregation = newAggregation(
+                projectStage,
+                sortStage,
+                limit(10)
+        );
+        AggregationResults<Advice> topAdvices = mongoTemplate.aggregate(aggregation, ADVICE_COLLECTION, Advice.class);
+        return topAdvices.getMappedResults().stream().map(Advice::toAdviceDetailsDto).toList();
     }
+//    }
 
     @Override
     public Optional<Advice> getAdviceById(UUID id) {
@@ -62,11 +69,11 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public Optional<Advice> increaseAdviceRating(UUID adviceId) {
+    public Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail) {
         Optional<Advice> maybeAdvice = adviceRepository.findById(adviceId);
         if (maybeAdvice.isPresent()) {
             Advice advice = maybeAdvice.get();
-            advice.increaseRating();
+            advice.addUserVote(userEmail);
             return Optional.of(adviceRepository.save(advice));
         }
         return Optional.empty();

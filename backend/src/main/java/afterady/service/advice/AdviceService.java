@@ -17,5 +17,5 @@ public interface AdviceService {
 
     Optional<Advice> getAdviceById(UUID id);
 
-    Optional<Advice> increaseAdviceRating(UUID adviceId);
+    Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail);
 }

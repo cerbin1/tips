@@ -3,6 +3,7 @@ import ContainerSection from "../common/ContainerSection";
 import Button from "../common/Button";
 import { useParams } from "react-router";
 import { useRouteLoaderData } from "react-router-dom";
+import { getUserEmail } from "../../util/auth";
 
 export default function AdviceDetails() {
   const [loading, setLoading] = useState(false);
@@ -48,6 +49,7 @@ export default function AdviceDetails() {
       try {
         const response = await fetch(url, {
           method: "POST",
+          body: getUserEmail(),
           headers: {
             "Content-Type": "application/json",
             Authorization: "Bearer " + token,
