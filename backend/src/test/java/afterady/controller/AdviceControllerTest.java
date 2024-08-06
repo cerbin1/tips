@@ -35,6 +35,7 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static afterady.TestUtils.*;
 import static java.util.UUID.randomUUID;
@@ -365,5 +366,37 @@ class AdviceControllerTest {
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
                 .andExpect(jsonPath("$.rating", is(2)));
+    }
+
+    @Test
+    public void shouldReturn400WhenGettingUserAdviceRateInfoAndAdviceNotExist() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUserNotRatedAdvice() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+
+        // act & assert
+        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(false)));
+    }
+
+    @Test
+    public void shouldReturnTrueWhenUserRatedAdvice() throws Exception {
+        // arrange
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", Set.of(TEST_EMAIL))));
+
+        // act & assert
+        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(true)));
     }
 }

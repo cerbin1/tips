@@ -61,7 +61,6 @@ public class AdviceServiceImpl implements AdviceService {
         AggregationResults<Advice> topAdvices = mongoTemplate.aggregate(aggregation, ADVICE_COLLECTION, Advice.class);
         return topAdvices.getMappedResults().stream().map(Advice::toAdviceDetailsDto).toList();
     }
-//    }
 
     @Override
     public Optional<Advice> getAdviceById(UUID id) {

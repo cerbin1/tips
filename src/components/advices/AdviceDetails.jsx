@@ -6,19 +6,19 @@ import { useRouteLoaderData } from "react-router-dom";
 import { getUserEmail } from "../../util/auth";
 
 export default function AdviceDetails() {
-  const [loading, setLoading] = useState(false);
+  const [adviceDetailsloading, setAdviceDetailsloading] = useState(false);
   const [advice, setAdvice] = useState();
   const [adviceFetchError, setAdviceFetchError] = useState();
   const [rateAdviceLoading, setRateAdviceLoading] = useState(false);
   const [rateAdviceError, setRateAdviceError] = useState();
   const [rateAdviceSuccess, setRateAdviceSuccess] = useState();
+  const [userVoted, setUserVoted] = useState(false);
   const { adviceId } = useParams();
   const token = useRouteLoaderData("root");
 
   useEffect(() => {
     async function fetchAdvice() {
       setAdviceFetchError(null);
-      setLoading(true);
       const url = import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
       try {
         const response = await fetch(url);
@@ -35,9 +35,34 @@ export default function AdviceDetails() {
       } catch (error) {
         setAdviceFetchError("Nie udało się wyświetlić porady!");
       }
-      setLoading(false);
     }
-    fetchAdvice();
+
+    async function fetchUserRatedAdvice() {
+      const url =
+        import.meta.env.VITE_BACKEND_URL +
+        "advices/" +
+        adviceId +
+        "/rated?userEmail=" +
+        getUserEmail();
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+      if (response.ok) {
+        const responseData = await response.json();
+        setUserVoted(responseData.rated);
+      }
+    }
+    async function fetchAdviceDetails() {
+      setAdviceDetailsloading(true);
+      await fetchAdvice();
+      await fetchUserRatedAdvice();
+      setAdviceDetailsloading(false);
+    }
+    fetchAdviceDetails();
   }, [adviceId]);
 
   function handleRateAdvice() {
@@ -72,8 +97,8 @@ export default function AdviceDetails() {
 
   return (
     <ContainerSection data-testid="advice-details-section">
-      {loading && <p>Ładowanie...</p>}
-      {!loading && advice && (
+      {adviceDetailsloading && <p>Ładowanie...</p>}
+      {!adviceDetailsloading && advice && (
         <>
           <h1>{advice.name}</h1>
           <h2 className="py-6">
@@ -83,10 +108,14 @@ export default function AdviceDetails() {
           <p className="py-6">Ocena przydatności: {advice.rating}</p>
           {token && (
             <Button
-              disabled={rateAdviceLoading || rateAdviceSuccess}
+              disabled={rateAdviceLoading || rateAdviceSuccess || userVoted}
               onClick={handleRateAdvice}
             >
-              {rateAdviceLoading ? "Wysyłanie oceny..." : "Oceń jako przydatne"}
+              {rateAdviceLoading
+                ? "Wysyłanie oceny..."
+                : userVoted
+                ? "Oceniono"
+                : "Oceń jako przydatne"}
             </Button>
           )}
           {!token && <p className="py-6">Zaloguj się aby zagłosować</p>}

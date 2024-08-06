@@ -103,6 +103,17 @@ public class AdviceController {
         }
     }
 
+    @GetMapping("/{adviceId}/rated")
+    public ResponseEntity<UserRatingResultResponse> checkUserRatedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
+        Optional<Advice> adviceById = adviceService.getAdviceById(adviceId);
+        if (adviceById.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Advice advice = adviceById.get();
+        boolean userRatedAdvice = advice.getUserEmailVotes().contains(userEmail);
+        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+    }
+
     private MessageResponse validationError() {
         return new MessageResponse("Error: validation failed.");
     }

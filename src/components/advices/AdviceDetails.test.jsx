@@ -33,7 +33,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => render(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie znaleziono porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -44,20 +44,26 @@ describe("AdviceDetails", () => {
 
     await act(async () => render(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
-  test("should display info when advice is loading", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-        ),
-    });
+  test("should display info when advice details are loading", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse(`{"rated": false}`),
+      });
 
     render(<AdviceDetails />);
 
@@ -65,18 +71,24 @@ describe("AdviceDetails", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
   });
 
   test("should display advice details", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-        ),
-    });
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse(`{"rated": false}`),
+      });
     useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
 
     await act(async () => render(<AdviceDetails />));
@@ -97,13 +109,19 @@ describe("AdviceDetails", () => {
   });
 
   test("should rating button not appear when user is not logged in", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-        ),
-    });
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse(`{"rated": false}`),
+      });
     useRouteLoaderData.mockReturnValue(null);
 
     await act(async () => renderWithRouter(<AdviceDetails />));
@@ -138,7 +156,7 @@ describe("AdviceDetails", () => {
     const error = screen.getByText("Nie udało się ocenić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 
   test("should block button and change text when rating advice", async () => {
@@ -152,6 +170,9 @@ describe("AdviceDetails", () => {
           ),
       })
       .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
         ok: true,
         json: () =>
           JSON.parse(
@@ -160,7 +181,7 @@ describe("AdviceDetails", () => {
       });
     useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     await act(async () => renderWithRouter(<AdviceDetails />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
     expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
 
@@ -171,6 +192,7 @@ describe("AdviceDetails", () => {
       expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
     });
     expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 
   test("should successfully rate advice and display info", async () => {
@@ -185,14 +207,19 @@ describe("AdviceDetails", () => {
       })
       .mockResolvedValueOnce({
         ok: true,
+        json: () => JSON.parse(`{"rated": false}`),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
         json: () =>
           JSON.parse(
             `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
           ),
       });
+    localStorage.setItem("userEmail", "email@test");
     useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     await act(async () => renderWithRouter(<AdviceDetails />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button"));
@@ -201,7 +228,57 @@ describe("AdviceDetails", () => {
     const rateSuccess = screen.getByText("Oceniono poradę.");
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
+  });
+
+  test("should button be enabled when user did not rate advice", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse(`{"rated": false}`),
+      });
+    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+
+    await act(async () => renderWithRouter(<AdviceDetails />));
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    const rateButton = screen.getByRole("button");
+    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
+    expect(rateButton).toBeEnabled();
+    expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
+  });
+
+  test("should button be disabled and have changed text when user rated advice", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
+          ),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse(`{"rated": true}`),
+      });
+    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+
+    await act(async () => renderWithRouter(<AdviceDetails />));
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    const rateButton = screen.getByRole("button");
+    expect(rateButton).toHaveTextContent("Oceniono");
+    expect(rateButton).toBeDisabled();
+    expect(screen.getByText("Ocena przydatności: 6")).toBeInTheDocument();
   });
 });
