@@ -169,7 +169,7 @@ public class AuthController {
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
-        return ResponseEntity.ok(new LoginResponse(jwt, extractRolesFrom(userDetails)));
+        return ResponseEntity.ok(new LoginResponse(jwt, email, extractRolesFrom(userDetails)));
     }
 
     @PutMapping("/account/password-reset")
@@ -220,6 +220,6 @@ public class AuthController {
     record MessageResponse(String message) {
     }
 
-    public record LoginResponse(String jwt, String[] roles) {
+    public record LoginResponse(String jwt, String userEmail, String[] roles) {
     }
 }

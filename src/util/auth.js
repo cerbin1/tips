@@ -32,3 +32,7 @@ export function getUserRoles() {
 
   return roles;
 }
+
+export function getUserEmail() {
+  return localStorage.getItem("userEmail");
+}

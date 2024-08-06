@@ -498,6 +498,7 @@ public class AuthControllerTest {
         // assert
         result.andExpect(status().isOk());
         result.andExpect(jsonPath("$.jwt").value("token"));
+        result.andExpect(jsonPath("$.userEmail").value("email"));
         result.andExpect(jsonPath("$.roles").isArray());
         result.andExpect(jsonPath("$.roles[0]").value("ROLE_USER"));
         verify(authenticationManager).authenticate(any());
