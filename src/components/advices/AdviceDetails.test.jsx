@@ -191,7 +191,7 @@ describe("AdviceDetails", () => {
       expect(screen.getByText("Wysyłanie oceny...")).toBeDisabled();
       expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
     });
-    expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
+    expect(screen.getByText("Oceniono")).toBeDisabled();
     expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 
@@ -229,7 +229,7 @@ describe("AdviceDetails", () => {
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
     expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(screen.getByText("Oceń jako przydatne")).toBeDisabled();
+    expect(screen.getByText("Oceniono")).toBeDisabled();
   });
 
   test("should button be enabled when user did not rate advice", async () => {

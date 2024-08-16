@@ -84,6 +84,7 @@ export default function AdviceDetails() {
           const advice = await response.json();
           setAdvice(advice);
           setRateAdviceSuccess("Oceniono poradę.");
+          setUserVoted(true);
         } else {
           setRateAdviceError("Nie udało się ocenić porady!");
         }
