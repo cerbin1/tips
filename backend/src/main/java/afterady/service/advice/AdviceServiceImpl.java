@@ -7,11 +7,8 @@ import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.aggregation.SortOperation;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -77,5 +74,19 @@ public class AdviceServiceImpl implements AdviceService {
         }
         return Optional.empty();
 
+    }
+
+    @Override
+    public List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail) {
+        MatchOperation matchStage = match(Criteria.where("userEmailVotes").in(userEmail));
+        ProjectionOperation projectStage = project("name", "category", "content");
+        SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "name"));
+        Aggregation aggregation = newAggregation(
+                matchStage,
+                projectStage,
+                sortStage
+        );
+        AggregationResults<Advice> userVotedAdvices = mongoTemplate.aggregate(aggregation, ADVICE_COLLECTION, Advice.class);
+        return userVotedAdvices.getMappedResults().stream().map(Advice::toUserVotedAdviceDetailsDto).toList();
     }
 }

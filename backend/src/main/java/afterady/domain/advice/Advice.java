@@ -1,6 +1,7 @@
 package afterady.domain.advice;
 
 import afterady.service.advice.AdviceDetailsDto;
+import afterady.service.advice.UserVotedAdviceDetailsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -32,6 +33,10 @@ public class Advice {
     public AdviceDetailsDto toAdviceDetailsDto() {
         return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, getRating());
     }
+
+   public UserVotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {
+       return new UserVotedAdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content);
+   }
 
     public Integer getRating() {
         return userEmailVotes.size();

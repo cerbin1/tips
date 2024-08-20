@@ -11,11 +11,11 @@ import org.mockito.Mock;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import static afterady.TestUtils.*;
@@ -135,5 +135,26 @@ class AdviceServiceImplTest {
         verify(adviceRepository, times(1)).findById(eq(UUID_1));
         verify(adviceRepository, times(1)).save(advice);
         verifyNoMoreInteractions(adviceRepository);
+    }
+
+    @Test
+    public void shouldGetListOfUserVotedAdvices() {
+        // arrange
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
+                .thenReturn(new AggregationResults<>(List.of(
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", Set.of(TEST_EMAIL))
+                ), new Document()));
+
+        // act
+        List<UserVotedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedAdvices(TEST_EMAIL);
+
+        // assert
+        assertEquals(5, userVotedAdvices.size());
+        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
+        verifyNoMoreInteractions(mongoTemplate);
     }
 }

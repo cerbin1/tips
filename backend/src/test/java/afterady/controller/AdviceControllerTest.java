@@ -12,12 +12,12 @@ import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
+import afterady.service.advice.UserVotedAdviceDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -39,7 +39,8 @@ import java.util.Set;
 
 import static afterady.TestUtils.*;
 import static java.util.UUID.randomUUID;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -326,7 +327,7 @@ class AdviceControllerTest {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))
@@ -354,7 +355,7 @@ class AdviceControllerTest {
     @Test
     public void shouldRateAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1,"name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
         when(adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(2))));
 
         // act & assert
@@ -398,5 +399,30 @@ class AdviceControllerTest {
         mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(true)));
+    }
+
+    @Test
+    public void shouldReturnEmptyUserVotedAdvices() throws Exception {
+        // arrange
+        when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(Collections.emptyList());
+
+        // act & assert
+        mvc.perform(get("/advices?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldReturnListOfUserVotedAdvices() throws Exception {
+        // arrange
+        when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(List.of(
+                new UserVotedAdviceDetailsDto(UUID_1, "name", "HOME", "Dom", "content"),
+                new UserVotedAdviceDetailsDto(UUID_2, "name 2", "HEALTH", "Zdrowie", "content")));
+
+        // act & assert
+        mvc.perform(get("/advices?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryName\":\"HOME\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\"},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryName\":\"HEALTH\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\"}]"));
     }
 }

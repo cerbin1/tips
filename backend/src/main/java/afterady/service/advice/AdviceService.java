@@ -18,4 +18,6 @@ public interface AdviceService {
     Optional<Advice> getAdviceById(UUID id);
 
     Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail);
+
+    List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail);
 }
