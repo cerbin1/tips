@@ -104,7 +104,21 @@ describe("Login", () => {
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
-  test("should display form errors", async () => {
+  test("should display error when credentials are invalid", async () => {
+    useActionData.mockReturnValue({
+      errors: ["Niepoprawne dane logowania!"],
+    });
+    renderWithRouter(<Login />);
+    await fillForm();
+
+    fireEvent.submit(screen.getByRole("form"));
+
+    const error = screen.getByText("Nie udało się zalogować!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+  });
+
+  test("should display general error when error occurs", async () => {
     useActionData.mockReturnValue({
       errors: ["Nie udało się zalogować!"],
     });

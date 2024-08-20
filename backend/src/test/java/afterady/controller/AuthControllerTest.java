@@ -27,6 +27,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -478,6 +479,23 @@ public class AuthControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: User is not activated!")));
+    }
+
+    @Test
+    public void shouldReturn401WhenLoginCredentialsAreInvalid() throws Exception {
+        // arrange
+        when(userDetailsService.loadUserByUsername("email"))
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+        when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
+
+        // act & assert
+        mvc.perform(post("/auth/login")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new LoginRequest("email", "wrongPassword")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message", is("Error: Bad credentials!")));
     }
 
     @Test

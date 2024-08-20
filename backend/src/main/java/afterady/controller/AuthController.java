@@ -14,6 +14,7 @@ import afterady.service.activation_link.UserActivatorService;
 import afterady.service.password_reset.ResetPasswordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -166,8 +167,11 @@ public class AuthController {
         if (!userDetails.isEnabled()) {
             return ResponseEntity.unprocessableEntity().body(new MessageResponse("Error: User is not activated!"));
         }
-
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, request.getPassword()));
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(UNAUTHORIZED).body(new MessageResponse("Error: Bad credentials!"));
+        }
         String jwt = jwtUtil.generateToken(userDetails.getUsername());
         return ResponseEntity.ok(new LoginResponse(jwt, email, extractRolesFrom(userDetails)));
     }

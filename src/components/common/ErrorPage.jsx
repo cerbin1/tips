@@ -10,10 +10,6 @@ export default function ErrorPage() {
   if (error.status === 500) {
     message = JSON.parse(error.data).message;
   }
-  console.log(error);
-  console.log(error.status);
-
-  console.log(error.status === 404);
   if (error.status === 404) {
     title = "Nie znaleziono!";
     message = "Nie ma takiej strony.";
