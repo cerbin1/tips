@@ -82,7 +82,7 @@ describe("AdviceDetails", () => {
         ok: true,
         json: () =>
           JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
+            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "55"}`
           ),
       })
       .mockResolvedValueOnce({
@@ -97,13 +97,13 @@ describe("AdviceDetails", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Nazwa porady"
     );
-    const category = screen.getByRole("heading", { level: 2 });
-    expect(category).toHaveTextContent("Kategoria: Zdrowie");
-    expect(category).toHaveClass("py-6");
+    const categorySection = screen.getByRole("heading", { level: 2 });
+    expect(categorySection).toHaveTextContent("Kategoria:");
+    expect(categorySection).toHaveClass("py-6 cursor-default");
+    expect(screen.getByText("Zdrowie")).toHaveClass("text-sky-500 text-lg ");
     expect(screen.getByText("Treść")).toBeInTheDocument();
-    const rating = screen.getByText("Ocena przydatności: 5");
-    expect(rating).toBeInTheDocument();
-    expect(rating).toHaveClass("py-6");
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("55")).toHaveClass("text-sky-500 text-lg");
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceń jako przydatne");
   });
@@ -182,7 +182,8 @@ describe("AdviceDetails", () => {
     useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     await act(async () => renderWithRouter(<AdviceDetails />));
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
-    expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
 
     userEvent.click(screen.getByRole("button"));
@@ -220,11 +221,12 @@ describe("AdviceDetails", () => {
     useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     await act(async () => renderWithRouter(<AdviceDetails />));
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
-    expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(screen.getByText("Ocena przydatności: 6")).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument();
     const rateSuccess = screen.getByText("Oceniono poradę.");
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
@@ -254,7 +256,8 @@ describe("AdviceDetails", () => {
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceń jako przydatne");
     expect(rateButton).toBeEnabled();
-    expect(screen.getByText("Ocena przydatności: 5")).toBeInTheDocument();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
   });
 
   test("should button be disabled and have changed text when user rated advice", async () => {
@@ -279,6 +282,7 @@ describe("AdviceDetails", () => {
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceniono");
     expect(rateButton).toBeDisabled();
-    expect(screen.getByText("Ocena przydatności: 6")).toBeInTheDocument();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument();
   });
 });

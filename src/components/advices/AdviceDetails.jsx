@@ -102,11 +102,20 @@ export default function AdviceDetails() {
       {!adviceDetailsloading && advice && (
         <>
           <h1>{advice.name}</h1>
-          <h2 className="py-6">
-            Kategoria: <b>{advice.categoryDisplayName}</b>
+          <h2 className="py-6 cursor-default">
+            Kategoria:
+            <p className="text-sky-500 text-lg ">
+              {advice.categoryDisplayName}
+            </p>
           </h2>
-          <p>{advice.content}</p>
-          <p className="py-6">Ocena przydatności: {advice.rating}</p>
+
+          <p className="border border-sky-500 rounded py-6 px-6">
+            {advice.content}
+          </p>
+          <div className="py-6">
+            <p>Ocena przydatności:</p>
+            <p className="text-sky-500 text-lg">{advice.rating}</p>
+          </div>
           {token && (
             <Button
               disabled={rateAdviceLoading || rateAdviceSuccess || userVoted}
