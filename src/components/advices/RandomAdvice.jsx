@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
+import { Link } from "react-router-dom";
 
 export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState();
@@ -38,7 +39,12 @@ export default function RandomAdvice() {
           <p className="border border-sky-500 rounded py-6 px-6">
             {randomAdvice.content}
           </p>
-          TODO - dodać przcisk do szczegolow proady
+          <Link
+            className="text-blue-to-dark text-lg"
+            to={"/advices/" + randomAdvice.id}
+          >
+            Wyświetl szczegóły
+          </Link>
           <Button onClick={fetchRandomAdvice}>Wylosuj nową poradę</Button>
         </div>
       )}

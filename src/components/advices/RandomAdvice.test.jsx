@@ -1,6 +1,7 @@
 import { act, waitFor } from "@testing-library/react";
 import RandomAdvice from "./RandomAdvice";
 import { expect, vi } from "vitest";
+import { renderWithRouter } from "../../test-utils";
 
 describe("RandomAdvice", () => {
   test("should display error when response is not ok", async () => {
@@ -50,7 +51,7 @@ describe("RandomAdvice", () => {
         json: async () =>
           JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
       });
-    await act(async () => render(<RandomAdvice />));
+    await act(async () => renderWithRouter(<RandomAdvice />));
     expect(screen.queryByRole("heading")).toBeNull();
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     const error = screen.getByText("Nie udało się wyświetlić porady!");
@@ -78,7 +79,7 @@ describe("RandomAdvice", () => {
       json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
 
-    render(<RandomAdvice />);
+    renderWithRouter(<RandomAdvice />);
 
     expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
     await waitFor(() => {
@@ -94,7 +95,7 @@ describe("RandomAdvice", () => {
       ok: true,
       json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
-    await act(async () => render(<RandomAdvice />));
+    await act(async () => renderWithRouter(<RandomAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Woda");
     const newAdviceButton = screen.getByRole("button");
@@ -136,10 +137,11 @@ describe("RandomAdvice", () => {
   test("should display random advice", async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
+      json: () =>
+        JSON.parse(`{"id": "123", "name": "Woda", "content": "Pij dużo wody"}`),
     });
 
-    await act(async () => render(<RandomAdvice />));
+    await act(async () => renderWithRouter(<RandomAdvice />));
 
     const section = screen.getByTestId("random-advice-section");
     expect(section).toBeInTheDocument();
@@ -155,6 +157,10 @@ describe("RandomAdvice", () => {
         name: "Wylosuj nową poradę",
       })
     ).toBeInTheDocument();
+    const adviceDetailsLink = screen.getByRole("link");
+    expect(adviceDetailsLink).toHaveAttribute("href", "/advices/123");
+    expect(adviceDetailsLink).toHaveTextContent("Wyświetl szczegóły");
+    expect(adviceDetailsLink).toHaveClass("text-blue-to-dark text-lg");
   });
 
   test("should display new random advice after button click", async () => {
@@ -171,7 +177,7 @@ describe("RandomAdvice", () => {
             `{"name": "Słońce", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
           ),
       });
-    await act(async () => render(<RandomAdvice />));
+    await act(async () => renderWithRouter(<RandomAdvice />));
     expect(screen.getByText("Woda")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
 
