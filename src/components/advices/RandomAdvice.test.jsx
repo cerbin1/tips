@@ -48,9 +48,7 @@ describe("RandomAdvice", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: async () =>
-          JSON.parse(
-            `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
-          ),
+          JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
       });
     await act(async () => render(<RandomAdvice />));
     expect(screen.queryByRole("heading")).toBeNull();
@@ -71,17 +69,13 @@ describe("RandomAdvice", () => {
       screen.queryByRole("button", { name: "Wylosuj nową poradę" })
     ).toBeInTheDocument();
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
   test("should display info when loading component", async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
-        ),
+      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
 
     render(<RandomAdvice />);
@@ -92,17 +86,13 @@ describe("RandomAdvice", () => {
     });
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
   test("should display info when loading new random advice after clicking button", async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
-        ),
+      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
     await act(async () => render(<RandomAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
@@ -120,7 +110,6 @@ describe("RandomAdvice", () => {
     expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
 
@@ -147,10 +136,7 @@ describe("RandomAdvice", () => {
   test("should display random advice", async () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
-      json: () =>
-        JSON.parse(
-          `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
-        ),
+      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
 
     await act(async () => render(<RandomAdvice />));
@@ -159,9 +145,11 @@ describe("RandomAdvice", () => {
     expect(section).toBeInTheDocument();
     const adviceName = screen.getByRole("heading", { level: 1 });
     expect(adviceName).toHaveTextContent("Woda");
-    const adviceCategory = screen.getByRole("heading", { level: 2 });
-    expect(adviceCategory).toHaveTextContent("Kategoria: Dom");
-    expect(screen.getByRole("paragraph")).toHaveTextContent("Pij dużo wody");
+    const adviceContent = screen.getByRole("paragraph");
+    expect(adviceContent).toHaveTextContent("Pij dużo wody");
+    expect(adviceContent).toHaveClass(
+      "border border-sky-500 rounded py-6 px-6"
+    );
     expect(
       screen.getByRole("button", {
         name: "Wylosuj nową poradę",
@@ -174,27 +162,22 @@ describe("RandomAdvice", () => {
       .fn()
       .mockResolvedValueOnce({
         ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Woda", "categoryName": "HOME", "categoryDisplayName": "Dom", "content": "Pij dużo wody"}`
-          ),
+        json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: async () =>
           JSON.parse(
-            `{"name": "Słońce", "categoryName": "HEALTH", "categoryDisplayName": "Zdrowie", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
+            `{"name": "Słońce", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
           ),
       });
     await act(async () => render(<RandomAdvice />));
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: Dom")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button"));
 
     expect(screen.getByText("Słońce")).toBeInTheDocument();
-    expect(screen.getByText("Kategoria: Zdrowie")).toBeInTheDocument();
     expect(
       screen.getByText("Korzystaj przynajmniej 15 minut dziennie ze słońca")
     ).toBeInTheDocument();

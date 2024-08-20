@@ -3,7 +3,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 
 export default function RandomAdvice() {
-  const [randomAdvice, setRandomAdvice] = useState({});
+  const [randomAdvice, setRandomAdvice] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
 
@@ -32,11 +32,13 @@ export default function RandomAdvice() {
   return (
     <ContainerSection data-testid="random-advice-section">
       {loading && <p>Ładowanie...</p>}
-      {!loading && !error && (
+      {!loading && !error && randomAdvice && (
         <div className="flex flex-col items-center py-6 gap-4">
           <h1>{randomAdvice.name}</h1>
-          <h2>Kategoria: {randomAdvice.categoryDisplayName}</h2>
-          <p>{randomAdvice.content}</p>
+          <p className="border border-sky-500 rounded py-6 px-6">
+            {randomAdvice.content}
+          </p>
+          TODO - dodać przcisk do szczegolow proady
           <Button onClick={fetchRandomAdvice}>Wylosuj nową poradę</Button>
         </div>
       )}
