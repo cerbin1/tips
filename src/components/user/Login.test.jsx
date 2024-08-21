@@ -1,34 +1,12 @@
-import { fireEvent } from "@testing-library/react";
+import { act, fireEvent, waitFor } from "@testing-library/react";
 import Login from "./Login";
 import { vi } from "vitest";
 import { useActionData, useNavigation } from "react-router";
 import { renderWithRouter } from "../../test-utils";
+import userEvent from "@testing-library/user-event";
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-
-  vi.mock("react-router", async () => {
-    const actual = await vi.importActual("react-router");
-    return {
-      ...actual,
-      useActionData: vi.fn(),
-      useNavigation: vi.fn(() => {
-        return {
-          state: "idle",
-        };
-      }),
-    };
-  });
-
-  vi.mock("react-router-dom", async () => {
-    return {
-      ...(await vi.importActual("react-router-dom")),
-      useRouteLoaderData: vi.fn(),
-      Form: vi.fn(({ children, ...props }) => (
-        <form {...props}>{children}</form>
-      )),
-    };
-  });
 
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
@@ -75,8 +53,7 @@ describe("Login", () => {
   test("should not send form when email is empty", async () => {
     renderWithRouter(<Login />);
 
-    const submitButton = screen.getByText("Zaloguj");
-    await userEvent.click(submitButton);
+    await userEvent.click(screen.getByText("Zaloguj"));
 
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
@@ -87,8 +64,7 @@ describe("Login", () => {
       target: { value: "   " },
     });
 
-    const submitButton = screen.getByText("Zaloguj");
-    await userEvent.click(submitButton);
+    await userEvent.click(screen.getByText("Zaloguj"));
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -105,41 +81,94 @@ describe("Login", () => {
   });
 
   test("should display error when credentials are invalid", async () => {
-    useActionData.mockReturnValue({
-      errors: ["Niepoprawne dane logowania!"],
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+        status: 401,
+        statusText: "Error: Bad credentials!",
+      })
+    );
     renderWithRouter(<Login />);
     await fillForm();
 
-    fireEvent.submit(screen.getByRole("form"));
+    await userEvent.click(screen.getByRole("button"));
+
+    const error = screen.getByText("Podano nieprawidłowe dane logowania!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+  });
+
+  test("should display general error when response is not ok", async () => {
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    );
+    renderWithRouter(<Login />);
+    await fillForm();
+
+    await userEvent.click(screen.getByRole("button"));
 
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
   });
 
-  test("should display general error when error occurs", async () => {
-    useActionData.mockReturnValue({
-      errors: ["Nie udało się zalogować!"],
+  test("should change button text and disable it when form is submitting", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        JSON.parse(
+          `{"jwt": "token", "roles": "[\"user\"]", "userEmail": "email"}`
+        ),
+    });
+    renderWithRouter(<Login />);
+    await fillForm();
+    const submitButton = screen.getByText("Zaloguj");
+    expect(submitButton).toHaveClass(
+      "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
+    );
+    expect(submitButton).not.toBeDisabled();
+
+    userEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Logowanie...")).toBeInTheDocument();
+      expect(submitButton).toBeDisabled();
+    });
+    expect(screen.queryByText("Logowanie...")).toBeNull();
+    expect(screen.getByText("Zaloguj")).toBeInTheDocument();
+    expect(screen.getByRole("button")).not.toBeDisabled();
+    expect(globalThis.fetch).toHaveBeenCalledOnce();
+  });
+
+  test("should login successfully", async () => {
+    const test = { jwt: "token", roles: ["user"], userEmail: "email" };
+    globalThis.fetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        JSON.parse('{"jwt": "token", "roles": ["user"], "userEmail": "email"}'),
     });
     renderWithRouter(<Login />);
     await fillForm();
 
-    fireEvent.submit(screen.getByRole("form"));
-
-    const error = screen.getByText("Nie udało się zalogować!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-  });
-
-  test("should change button text when form is submitting", async () => {
-    useNavigation.mockReturnValue({
-      state: "submitting",
+    await act(async () => {
+      userEvent.click(screen.getByRole("button"));
     });
 
-    renderWithRouter(<Login />);
-
-    expect(screen.getByText("Logowanie...")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: "test@email",
+          password: "password",
+        }),
+      });
+    });
+    expect(localStorage.getItem("token")).toBe("token");
+    expect(localStorage.getItem("roles")).toBe('["user"]');
+    expect(localStorage.getItem("userEmail")).toBe("email");
   });
 });
 
