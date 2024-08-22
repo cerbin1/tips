@@ -1,7 +1,6 @@
 import { act, waitFor } from "@testing-library/react";
 import AdviceDetails from "./AdviceDetails";
 import { beforeAll } from "vitest";
-import { useParams } from "react-router";
 import { useRouteLoaderData } from "react-router-dom";
 import { renderWithRouter } from "../../test-utils";
 
