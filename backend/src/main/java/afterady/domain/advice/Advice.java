@@ -34,9 +34,9 @@ public class Advice {
         return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, getRating());
     }
 
-   public UserVotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {
-       return new UserVotedAdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content);
-   }
+    public UserVotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {
+        return new UserVotedAdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content);
+    }
 
     public Integer getRating() {
         return userEmailVotes.size();

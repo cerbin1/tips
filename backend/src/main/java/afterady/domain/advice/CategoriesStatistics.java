@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-import static afterady.domain.advice.CategoriesStatistics.*;
+import static afterady.domain.advice.CategoriesStatistics.CATEGORIES_STATISTICS_COLLECTION;
 
 @Document(collection = CATEGORIES_STATISTICS_COLLECTION)
 @Getter

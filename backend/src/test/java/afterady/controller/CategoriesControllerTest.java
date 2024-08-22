@@ -104,9 +104,7 @@ class CategoriesControllerTest {
     @Test
     public void shouldGetEmptyList() throws Exception {
         // arrange
-        when(categoriesStatisticsRepository.findAll()).thenReturn(
-                List.of()
-        );
+        when(categoriesStatisticsRepository.findAll()).thenReturn(Collections.emptyList());
 
         // act & assert
         mvc.perform(get("/categories-statistics"))

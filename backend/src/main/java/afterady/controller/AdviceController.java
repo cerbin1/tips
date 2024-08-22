@@ -1,7 +1,6 @@
 package afterady.controller;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
