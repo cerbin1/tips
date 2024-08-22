@@ -4,10 +4,7 @@ import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
-import afterady.domain.repository.AdviceRepository;
-import afterady.domain.repository.RoleRepository;
-import afterady.domain.repository.SuggestedAdviceRepository;
-import afterady.domain.repository.UserRepository;
+import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
@@ -28,6 +25,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
@@ -89,6 +87,8 @@ class AdviceControllerTest {
     private AdviceService adviceService;
     @MockBean
     private CaptchaService captchaService;
+    @MockBean
+    private CategoriesStatisticsRepository categoriesStatisticsRepository;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {

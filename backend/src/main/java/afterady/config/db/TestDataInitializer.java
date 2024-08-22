@@ -1,7 +1,9 @@
 package afterady.config.db;
 
 import afterady.domain.advice.Advice;
+import afterady.domain.advice.CategoriesStatistics;
 import afterady.domain.repository.AdviceRepository;
+import afterady.domain.repository.CategoriesStatisticsRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -15,9 +17,11 @@ import static afterady.domain.advice.AdviceCategory.*;
 @Component
 public class TestDataInitializer {
     private final AdviceRepository adviceRepository;
+    private final CategoriesStatisticsRepository categoriesStatisticsRepository;
 
-    public TestDataInitializer(AdviceRepository adviceRepository) {
+    public TestDataInitializer(AdviceRepository adviceRepository, CategoriesStatisticsRepository categoriesStatisticsRepository) {
         this.adviceRepository = adviceRepository;
+        this.categoriesStatisticsRepository = categoriesStatisticsRepository;
     }
 
     @EventListener(ApplicationStartedEvent.class)
@@ -53,6 +57,12 @@ public class TestDataInitializer {
         adviceRepository.save(new Advice(UUID.fromString("5aad06f9-55d7-4973-871f-58a14f5b2878"), "Zdrowy tryb życia", HEALTH, "Dbaj o zrównoważoną dietę, regularne ćwiczenia i odpowiednią ilość snu, aby utrzymać zdrowie.", rating(28)));
         adviceRepository.save(new Advice(UUID.fromString("1708bacf-c252-4585-b93a-e072ed8bf888"), "Inwestowanie w nieruchomości", FINANCE, "Zrób dokładny research rynku i wybieraj nieruchomości o dobrym potencjale wzrostu, aby inwestować z sukcesem.", rating(29)));
         adviceRepository.save(new Advice(UUID.fromString("f7bc3be3-b9ee-47b9-90ed-4d04d0f37fc8"), "Optymalizacja sieci domowej", TECHNOLOGY, "Regularnie aktualizuj firmware swojego routera i używaj silnych haseł, aby zabezpieczyć swoją sieć domową.", rating(30)));
+
+        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("b5b4fa0e-cb88-48f3-bee2-4e07cda16b6c"), HOME, HOME.getDisplayName(), "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", 6));
+        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("84e0fee2-a16c-4e38-a101-8db21661f897"), PERSONAL_DEVELOPMENT, PERSONAL_DEVELOPMENT.getDisplayName(), "Porady dotyczące samorozwoju i motywacji.", 6));
+        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("cfa81cc4-6d9b-4c81-a340-7b9b7fd119e4"), HEALTH, HEALTH.getDisplayName(), "Porady dotyczące zdrowia i dobrego samopoczucia.", 6));
+        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("c80d0e5b-dc1b-40db-a19c-7a4090e3fe10"), FINANCE, FINANCE.getDisplayName(), "Porady dotyczące zarządzania finansami.", 6));
+        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("9d039671-7bc9-4d8c-aef3-05aa6a737517"), TECHNOLOGY, TECHNOLOGY.getDisplayName(), "Porady dotyczące nowinek technologicznych.", 6));
     }
 
     private Set<String> rating(int value) {

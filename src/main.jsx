@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/home/Home.jsx";
 import AdviceDetails from "./components/advices/AdviceDetails.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
-import Categories from "./components/advices/categories/Categories.jsx";
+import CategoriesStatistics from "./components/advices/categories/CategoriesStatistics.jsx";
 import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
 import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/advices/:adviceId", element: <AdviceDetails /> },
-      { path: "/categories", element: <Categories /> },
+      { path: "/categories", element: <CategoriesStatistics /> },
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:id", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
