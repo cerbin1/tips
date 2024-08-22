@@ -89,4 +89,9 @@ public class AdviceServiceImpl implements AdviceService {
         AggregationResults<Advice> userVotedAdvices = mongoTemplate.aggregate(aggregation, ADVICE_COLLECTION, Advice.class);
         return userVotedAdvices.getMappedResults().stream().map(Advice::toUserVotedAdviceDetailsDto).toList();
     }
+
+    @Override
+    public int getAdvicesCountByCategory(AdviceCategory category) {
+        return adviceRepository.countByCategory(category);
+    }
 }

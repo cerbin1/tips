@@ -157,4 +157,16 @@ class AdviceServiceImplTest {
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
     }
+
+    @Test
+    public void shouldGetAdvicesCountByCategory() {
+        // arrange
+        when(adviceRepository.countByCategory(HOME)).thenReturn(5);
+
+        // act
+        int advicesCount = adviceService.getAdvicesCountByCategory(HOME);
+
+        // assert
+        assertEquals(5, advicesCount);
+    }
 }

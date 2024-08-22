@@ -20,4 +20,6 @@ public interface AdviceService {
     Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail);
 
     List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail);
+
+    int getAdvicesCountByCategory(AdviceCategory category);
 }
