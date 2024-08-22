@@ -238,15 +238,6 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldGetCategories() throws Exception {
-        // act & assert
-        mvc.perform(get("/advices/categories"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath(("$"), hasSize(5)))
-                .andExpect(content().json("[{\"name\":\"PERSONAL_DEVELOPMENT\", \"displayName\":\"Rozwój osobisty\"},{\"name\":\"HEALTH\", \"displayName\":\"Zdrowie\"}, {\"name\":\"HOME\", \"displayName\":\"Dom\"}, {\"name\":\"FINANCE\", \"displayName\":\"Finanse\"}, {\"name\":\"TECHNOLOGY\", \"displayName\":\"Technologia\"}]"));
-    }
-
-    @Test
     public void shouldCreateNewAdvice() throws Exception {
         // arrange
         when(captchaService.isCaptchaTokenValid("captchaToken")).thenReturn(true);

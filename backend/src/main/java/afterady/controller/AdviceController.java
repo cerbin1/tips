@@ -66,11 +66,6 @@ public class AdviceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/categories")
-    public ResponseEntity<?> getAdviceCategories() {
-        return ResponseEntity.ok(AdviceCategory.getCategories());
-    }
-
     @GetMapping("/random")
     public ResponseEntity<AdviceDetailsDto> getRandomAdvice() {
         return ResponseEntity.ok(adviceService.getRandomAdvice());
