@@ -103,6 +103,8 @@ describe("CategoryDetails", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.queryAllByRole("columnheader")).toHaveLength(3);
-    // TODO - dokończyć
+    expect(screen.getByText("name 1")).toBeInTheDocument();
+    expect(screen.getByText("Dom")).toBeInTheDocument();
+    expect(screen.getByText("9")).toBeInTheDocument();
   });
 });
