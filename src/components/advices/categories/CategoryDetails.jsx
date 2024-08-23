@@ -5,51 +5,68 @@ import TableRow from "../../common/table/TableRow";
 import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
 import ContainerSection from "../../common/ContainerSection";
-
-const advices = [
-  {
-    id: 1,
-    name: "Porada 1",
-    rating: 1542,
-  },
-  {
-    id: 2,
-    name: "Porada 2",
-    rating: 523,
-  },
-  {
-    id: 3,
-    name: "Porada 3",
-    rating: 152,
-  },
-  {
-    id: 4,
-    name: "Porada 4",
-    rating: 23,
-  },
-  {
-    id: 5,
-    name: "Porada 5",
-    rating: 12,
-  },
-];
-
-const rows = advices.map((advice) => (
-  <TableRow key={advice.id}>
-    <TableData>{advice.name}</TableData>
-    <TableData>{advice.rating}</TableData>
-    <TableDataLink href={"/advices"}>Wyświetl szczegóły</TableDataLink>
-  </TableRow>
-));
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 
 export default function CategoryDetails() {
-  return (
-    <ContainerSection data-testid="category-details-section">
-      <h1>Nazwa kategorii</h1>
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [categoryDetails, setCategoryDetails] = useState();
+  const { category } = useParams();
+
+  let tableWithAdvices;
+  if (categoryDetails) {
+    const rows = categoryDetails.advices.map((advice) => (
+      <TableRow key={advice.id}>
+        <TableData>{advice.name}</TableData>
+        <TableData>{advice.rating}</TableData>
+        <TableDataLink href={"/advices/" + advice.id}>
+          Wyświetl szczegóły
+        </TableDataLink>
+      </TableRow>
+    ));
+    tableWithAdvices = (
       <Table
         head={<TableHeader headers={["Porada", "Ocena", "Szczegóły"]} />}
         body={<TableBody rows={rows} />}
       />
+    );
+  }
+
+  useEffect(() => {
+    async function fetchAdvicesByCategory() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "advices/byCategory/" + category
+        );
+        if (response.ok) {
+          const categoryDetails = await response.json();
+          setCategoryDetails(categoryDetails);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        setError("Nie udało się wyświetlić porad!");
+      }
+      setIsLoading(false);
+    }
+
+    fetchAdvicesByCategory();
+  }, []);
+
+  return (
+    <ContainerSection data-testid="category-details-section">
+      {!error && !isLoading && categoryDetails && (
+        <>
+          <h1>{categoryDetails.categoryDisplayName}</h1>
+          Liczba: {categoryDetails.advicesCount}
+          {tableWithAdvices}
+        </>
+      )}
+      {isLoading && <p>Ładowanie...</p>}
+      {error && <p className="py-6 text-red-500">{error}</p>}
     </ContainerSection>
   );
 }

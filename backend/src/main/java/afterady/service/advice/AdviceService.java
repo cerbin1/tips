@@ -2,6 +2,7 @@ package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
+import afterady.service.advice.category.CategoryDetailsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +23,6 @@ public interface AdviceService {
     List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail);
 
     int getAdvicesCountByCategory(AdviceCategory category);
+
+    CategoryDetailsDto getCategoryDetails(AdviceCategory category);
 }

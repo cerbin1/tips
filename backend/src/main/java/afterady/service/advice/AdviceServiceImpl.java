@@ -5,6 +5,7 @@ import afterady.domain.advice.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
+import afterady.service.advice.category.CategoryDetailsDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -93,5 +94,11 @@ public class AdviceServiceImpl implements AdviceService {
     @Override
     public int getAdvicesCountByCategory(AdviceCategory category) {
         return adviceRepository.countByCategory(category);
+    }
+
+    @Override
+    public CategoryDetailsDto getCategoryDetails(AdviceCategory category) {
+        List<Advice> advices = adviceRepository.findByCategory(category);
+        return new CategoryDetailsDto(category.getDisplayName(), advices.size(), advices.stream().map(Advice::toAdviceDetailsDto).toList());
     }
 }
