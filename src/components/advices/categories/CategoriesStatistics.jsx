@@ -40,7 +40,7 @@ export default function CategoriesStatistics() {
       <TableData>{category.categoryDisplayName}</TableData>
       <TableData>{category.description}</TableData>
       <TableData>{category.advicesCount}</TableData>
-      <TableDataLink href={"/categories/" + category.id}>
+      <TableDataLink href={"/categories/" + category.category}>
         Wyświetl szczegóły
       </TableDataLink>
     </TableRow>
