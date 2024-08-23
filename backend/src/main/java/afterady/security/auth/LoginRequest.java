@@ -1,4 +1,4 @@
-package afterady.controller;
+package afterady.security.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

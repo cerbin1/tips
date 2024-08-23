@@ -1,4 +1,4 @@
-package afterady.security;
+package afterady.security.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

@@ -1,4 +1,4 @@
-package afterady.controller;
+package afterady.security.auth;
 
 import afterady.TestUtils;
 import afterady.domain.repository.RoleRepository;
@@ -10,7 +10,6 @@ import afterady.domain.user.UserActivationLink;
 import afterady.messages.LinkMessage;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSender;
-import afterady.security.JwtUtil;
 import afterady.service.CustomUserDetailsService;
 import afterady.service.activation_link.LinksRemover;
 import afterady.service.activation_link.UserActivatorService;

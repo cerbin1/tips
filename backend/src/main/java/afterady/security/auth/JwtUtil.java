@@ -1,4 +1,4 @@
-package afterady.security;
+package afterady.security.auth;
 
 
 import io.jsonwebtoken.Claims;

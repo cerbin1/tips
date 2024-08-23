@@ -1,4 +1,4 @@
-package afterady.controller;
+package afterady.security.auth;
 
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
@@ -9,7 +9,6 @@ import afterady.domain.user.UserActivationLink;
 import afterady.messages.LinkMessage;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.messages.reset_password_link.TriggerSendingPasswordResetLinkSender;
-import afterady.security.JwtUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.password_reset.ResetPasswordService;
 import org.springframework.http.ResponseEntity;
