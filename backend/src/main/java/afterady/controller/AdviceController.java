@@ -1,11 +1,9 @@
 package afterady.controller;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
-import afterady.service.advice.category.CategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
@@ -116,13 +114,6 @@ public class AdviceController {
         return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
     }
 
-    @GetMapping("/byCategory/{categoryAsString}")
-    public ResponseEntity<CategoryDetailsDto> getCategoryDetails(@PathVariable String categoryAsString) {
-        if (AdviceCategory.isValid(categoryAsString)) {
-            return ResponseEntity.ok(adviceService.getCategoryDetails(AdviceCategory.valueOf(categoryAsString)));
-        }
-        return ResponseEntity.badRequest().build();
-    }
 
     private MessageResponse validationError() {
         return new MessageResponse("Error: validation failed.");
