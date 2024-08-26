@@ -531,7 +531,7 @@ public class AuthControllerTest {
         when(jwtUtil.generateToken("email")).thenReturn("token");
 
         // act
-        ResultActions result = mvc.perform(post("/auth/login")
+        mvc.perform(post("/auth/login")
                 .content(new ObjectMapper()
                         .writeValueAsString(
                                 new LoginRequest(" email ", "password")))
