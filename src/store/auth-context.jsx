@@ -10,6 +10,14 @@ export const useAuth = () => {
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(getAuthToken());
 
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
   function setAuthToken(newToken) {
     setToken(newToken);
   }
