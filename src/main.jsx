@@ -14,11 +14,12 @@ import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
-import { checkAuthLoader, tokenLoader } from "./util/auth.js";
-import { action as logoutAction } from "./components/user/Logout.jsx";
+import { checkAuthLoader } from "./util/auth.js";
 import Profile from "./components/user/Profile.jsx";
 import PasswordReset from "./components/user/PasswordReset.jsx";
 import ChangePassword from "./components/user/PasswordChange.jsx";
+import AuthProvider from "./store/auth-context.jsx";
+import Logout from "./components/user/Logout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -26,7 +27,6 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     errorElement: <ErrorPage />,
     id: "root",
-    loader: tokenLoader,
     children: [
       { path: "/", element: <Home /> },
       { path: "/advices/:adviceId", element: <AdviceDetails /> },
@@ -41,7 +41,7 @@ const router = createBrowserRouter([
         children: [
           { path: "register", element: <Register /> },
           { path: "login", element: <Login /> },
-          { path: "logout", action: logoutAction },
+          { path: "logout", element: <Logout /> },
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
           { path: "password-reset", element: <PasswordReset /> },
@@ -54,6 +54,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );

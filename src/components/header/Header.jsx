@@ -3,9 +3,11 @@ import Logo from "./Logo";
 import NavigationItem from "./NavigationItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { getAuthToken } from "../../util/auth";
+import { useAuth } from "../../store/auth-context";
 
 export default function Header() {
-  const token = useRouteLoaderData("root");
+  const { token } = useAuth();
 
   return (
     <header className="flex justify-between items-center px-4 border-b border-cyan-100">
@@ -57,9 +59,10 @@ export default function Header() {
             Profil
           </NavLink>
           <FontAwesomeIcon icon={faUser} title="User" />
-          <Form className="inline" action="/user/logout" method="post">
-            <button className="px-2">Wyloguj</button>
-          </Form>
+
+          <NavLink className="px-2" to="/user/logout">
+            Wyloguj
+          </NavLink>
         </div>
       )}
     </header>

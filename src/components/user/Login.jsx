@@ -2,13 +2,15 @@ import { useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../store/auth-context";
 
 export default function Login() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  const { setAuthToken } = useAuth();
 
   function handleLogin(event) {
     event.preventDefault();
@@ -38,7 +40,7 @@ export default function Login() {
           const roles = responseData.roles;
           const userEmail = responseData.userEmail;
 
-          localStorage.setItem("token", token);
+          setAuthToken(token);
           localStorage.setItem("roles", JSON.stringify(roles));
           localStorage.setItem("userEmail", userEmail);
 

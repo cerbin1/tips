@@ -1,6 +1,13 @@
-import { redirect } from "react-router";
+import { useNavigate } from "react-router";
+import { useAuth } from "../../store/auth-context";
+import { useEffect } from "react";
 
-export function action() {
-  localStorage.removeItem("token");
-  return redirect("/");
+export default function Logout() {
+  const { setAuthToken } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    setAuthToken();
+    navigate("/");
+  }, []);
+  return <>Wylogowywanie użytkownika...</>;
 }

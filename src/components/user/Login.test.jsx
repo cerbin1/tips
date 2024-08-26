@@ -1,9 +1,17 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import Login from "./Login";
-import { vi } from "vitest";
-import { useActionData, useNavigation } from "react-router";
-import { renderWithRouter } from "../../test-utils";
+// import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import { BrowserRouter } from "react-router-dom";
+import AuthProvider from "../../store/auth-context";
+
+const RouterAndAuthProvider = ({ children }) => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>{children}</AuthProvider>
+    </BrowserRouter>
+  );
+};
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
@@ -17,7 +25,7 @@ beforeEach(() => {
 
 describe("Login", () => {
   test("should display form", () => {
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
 
     expect(screen.getByTestId("login-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -51,7 +59,7 @@ describe("Login", () => {
   });
 
   test("should not send form when email is empty", async () => {
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
 
     await userEvent.click(screen.getByText("Zaloguj"));
 
@@ -59,7 +67,7 @@ describe("Login", () => {
   });
 
   test("should not send form when email is empty after trimming", async () => {
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "   " },
     });
@@ -69,7 +77,7 @@ describe("Login", () => {
   });
 
   test("should not send form when password is empty", async () => {
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
@@ -88,7 +96,7 @@ describe("Login", () => {
         statusText: "Error: Bad credentials!",
       })
     );
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     await fillForm();
 
     await userEvent.click(screen.getByRole("button"));
@@ -104,7 +112,7 @@ describe("Login", () => {
         ok: false,
       })
     );
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     await fillForm();
 
     await userEvent.click(screen.getByRole("button"));
@@ -122,7 +130,7 @@ describe("Login", () => {
           `{"jwt": "token", "roles": "[\"user\"]", "userEmail": "email"}`
         ),
     });
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     await fillForm();
     const submitButton = screen.getByText("Zaloguj");
     expect(submitButton).toHaveClass(
@@ -143,13 +151,13 @@ describe("Login", () => {
   });
 
   test("should login successfully", async () => {
-    const test = { jwt: "token", roles: ["user"], userEmail: "email" };
+    localStorage.setItem("token", "token");
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
         JSON.parse('{"jwt": "token", "roles": ["user"], "userEmail": "email"}'),
     });
-    renderWithRouter(<Login />);
+    render(<Login />, { wrapper: RouterAndAuthProvider });
     await fillForm();
 
     await act(async () => {

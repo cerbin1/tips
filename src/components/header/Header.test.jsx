@@ -1,7 +1,16 @@
 import Header from "./Header";
 import { renderWithRouter } from "../../test-utils";
-import { vi } from "vitest";
-import { useRouteLoaderData } from "react-router-dom";
+import AuthProvider from "../../store/auth-context";
+import { render } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
+
+const RouterAndAuthProvider = ({ children }) => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>{children}</AuthProvider>
+    </BrowserRouter>
+  );
+};
 
 beforeAll(() => {
   vi.mock("react-router-dom", async () => {
@@ -17,7 +26,7 @@ beforeAll(() => {
 
 describe("Header", () => {
   test("should display header", () => {
-    renderWithRouter(<Header />);
+    render(<Header />, { wrapper: RouterAndAuthProvider });
 
     const header = screen.getByRole("banner");
     expect(header).toBeInTheDocument();
@@ -27,14 +36,14 @@ describe("Header", () => {
   });
 
   test("should display logo", () => {
-    renderWithRouter(<Header />);
+    render(<Header />, { wrapper: RouterAndAuthProvider });
 
     expect(screen.getByText("Afterady")).toBeInTheDocument();
   });
 
   test("should display header for not logged in user", () => {
-    renderWithRouter(<Header />);
-    useRouteLoaderData.mockReturnValue({ jwt: null });
+    localStorage.setItem("token", "");
+    render(<Header />, { wrapper: RouterAndAuthProvider });
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
@@ -59,8 +68,8 @@ describe("Header", () => {
   });
 
   test("should display header for logged in user", () => {
-    renderWithRouter(<Header />);
-    useRouteLoaderData.mockReturnValue({ jwt: "token" });
+    localStorage.setItem("token", "token");
+    render(<Header />, { wrapper: RouterAndAuthProvider });
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
@@ -81,16 +90,14 @@ describe("Header", () => {
     const userProfileLink = screen.getByText("Profil");
     expect(userProfileLink).toBeInTheDocument();
     expect(userProfileLink).toHaveAttribute("href", "/user/profile");
-    expect(screen.getByRole("form")).toBeInTheDocument();
     const logoutButton = screen.getByText("Wyloguj");
     expect(logoutButton).toBeInTheDocument();
     expect(logoutButton).toHaveClass("px-2");
-    expect(screen.getAllByRole("link")).toHaveLength(6);
-    expect(screen.getAllByRole("button")).toHaveLength(1);
+    expect(screen.getAllByRole("link")).toHaveLength(7);
   });
 
   test("should change styles to currently clicked link", async () => {
-    renderWithRouter(<Header />);
+    render(<Header />, { wrapper: RouterAndAuthProvider });
     const randomAdviceLink = screen.getByText("Losowa porada");
     expect(randomAdviceLink).toHaveClass(
       "px-12 text-blue-to-light no-underline"
