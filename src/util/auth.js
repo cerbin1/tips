@@ -10,16 +10,6 @@ export function getAuthToken() {
   return token;
 }
 
-export function checkAuthLoader() {
-  const token = getAuthToken();
-
-  if (!token) {
-    return redirect("/user/login");
-  }
-
-  return null;
-}
-
 export function getUserRoles() {
   const roles = localStorage.getItem("roles");
   if (!roles) {

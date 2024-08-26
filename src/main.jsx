@@ -14,12 +14,12 @@ import RootLayout from "./router/RootLayout.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
-import { checkAuthLoader } from "./util/auth.js";
 import Profile from "./components/user/Profile.jsx";
 import PasswordReset from "./components/user/PasswordReset.jsx";
 import ChangePassword from "./components/user/PasswordChange.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Logout from "./components/user/Logout.jsx";
+import ProtectedRoute from "./router/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,7 +34,14 @@ const router = createBrowserRouter([
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:category", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
-      { path: "/suggest", element: <SuggestAdvice />, loader: checkAuthLoader },
+      {
+        path: "/suggest",
+        element: (
+          <ProtectedRoute>
+            <SuggestAdvice />
+          </ProtectedRoute>
+        ),
+      },
       { path: "/error", element: <ErrorPage /> },
       {
         path: "/user",
