@@ -1,8 +1,17 @@
 import { act, waitFor } from "@testing-library/react";
 import AdviceDetails from "./AdviceDetails";
-import { beforeAll } from "vitest";
-import { useRouteLoaderData } from "react-router-dom";
-import { renderWithRouter } from "../../test-utils";
+import { afterEach, beforeAll } from "vitest";
+import { renderWithAuthProvider, renderWithRouter } from "../../test-utils";
+import { BrowserRouter } from "react-router-dom";
+import AuthProvider from "../../store/auth-context";
+
+const RouterAndAuthProvider = ({ children }) => {
+  return (
+    <BrowserRouter>
+      <AuthProvider>{children}</AuthProvider>
+    </BrowserRouter>
+  );
+};
 
 describe("AdviceDetails", () => {
   beforeAll(() => {
@@ -17,20 +26,18 @@ describe("AdviceDetails", () => {
         },
       };
     });
-    vi.mock("react-router-dom", async () => {
-      return {
-        ...(await vi.importActual("react-router-dom")),
-        useRouteLoaderData: vi.fn(),
-      };
-    });
 
     import.meta.env.VITE_BACKEND_URL = "backend/";
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   test("should display error when advice is not found", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false, status: 404 }));
 
-    await act(async () => render(<AdviceDetails />));
+    await act(async () => renderWithAuthProvider(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie znaleziono porady!");
@@ -41,7 +48,7 @@ describe("AdviceDetails", () => {
   test("should display general error when response is not ok", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
-    await act(async () => render(<AdviceDetails />));
+    await act(async () => renderWithAuthProvider(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
@@ -64,7 +71,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": false}`),
       });
 
-    render(<AdviceDetails />);
+    renderWithAuthProvider(<AdviceDetails />);
 
     expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
     await waitFor(() => {
@@ -75,6 +82,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should display advice details", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -88,9 +96,8 @@ describe("AdviceDetails", () => {
         ok: true,
         json: () => JSON.parse(`{"rated": false}`),
       });
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
 
-    await act(async () => render(<AdviceDetails />));
+    await act(async () => renderWithAuthProvider(<AdviceDetails />));
 
     expect(screen.getByTestId("advice-details-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -121,9 +128,10 @@ describe("AdviceDetails", () => {
         ok: true,
         json: () => JSON.parse(`{"rated": false}`),
       });
-    useRouteLoaderData.mockReturnValue(null);
 
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
 
     expect(screen.getByText("Zaloguj się aby zagłosować")).toBeInTheDocument();
     expect(
@@ -132,6 +140,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should display error when advice rate fails", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -144,8 +153,9 @@ describe("AdviceDetails", () => {
       .mockResolvedValueOnce({
         ok: false,
       });
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
@@ -159,6 +169,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should block button and change text when rating advice", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -178,8 +189,9 @@ describe("AdviceDetails", () => {
             `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
           ),
       });
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
@@ -196,6 +208,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should successfully rate advice and display info", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -217,8 +230,9 @@ describe("AdviceDetails", () => {
           ),
       });
     localStorage.setItem("userEmail", "email@test");
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
@@ -234,6 +248,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should button be enabled when user did not rate advice", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -247,9 +262,10 @@ describe("AdviceDetails", () => {
         ok: true,
         json: () => JSON.parse(`{"rated": false}`),
       });
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
 
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const rateButton = screen.getByRole("button");
@@ -260,6 +276,7 @@ describe("AdviceDetails", () => {
   });
 
   test("should button be disabled and have changed text when user rated advice", async () => {
+    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -273,9 +290,10 @@ describe("AdviceDetails", () => {
         ok: true,
         json: () => JSON.parse(`{"rated": true}`),
       });
-    useRouteLoaderData.mockReturnValue("63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
 
-    await act(async () => renderWithRouter(<AdviceDetails />));
+    await act(async () =>
+      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
+    );
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const rateButton = screen.getByRole("button");

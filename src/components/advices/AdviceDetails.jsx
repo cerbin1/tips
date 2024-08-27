@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import ContainerSection from "../common/ContainerSection";
 import Button from "../common/Button";
 import { useParams } from "react-router";
-import { useRouteLoaderData } from "react-router-dom";
 import { getUserEmail } from "../../util/auth";
+import { useAuth } from "../../store/auth-context";
 
 export default function AdviceDetails() {
   const [adviceDetailsloading, setAdviceDetailsloading] = useState(false);
@@ -14,7 +14,7 @@ export default function AdviceDetails() {
   const [rateAdviceSuccess, setRateAdviceSuccess] = useState();
   const [userVoted, setUserVoted] = useState(false);
   const { adviceId } = useParams();
-  const token = useRouteLoaderData("root");
+  const { token } = useAuth();
 
   useEffect(() => {
     async function fetchAdvice() {
