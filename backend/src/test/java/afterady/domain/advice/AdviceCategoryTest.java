@@ -1,5 +1,6 @@
 package afterady.domain.advice;
 
+import afterady.domain.advice.category.AdviceCategory;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

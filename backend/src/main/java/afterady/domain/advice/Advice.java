@@ -1,5 +1,6 @@
 package afterady.domain.advice;
 
+import afterady.domain.advice.category.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
 import lombok.AllArgsConstructor;

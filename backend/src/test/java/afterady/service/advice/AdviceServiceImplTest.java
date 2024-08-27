@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
-import static afterady.domain.advice.AdviceCategory.HOME;
+import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 

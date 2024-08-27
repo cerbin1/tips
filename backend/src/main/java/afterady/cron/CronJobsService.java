@@ -1,6 +1,6 @@
 package afterady.cron;
 
-import afterady.domain.advice.CategoriesStatistics;
+import afterady.domain.advice.category.CategoriesStatistics;
 import afterady.domain.repository.CategoriesStatisticsRepository;
 import afterady.service.advice.AdviceService;
 import org.springframework.scheduling.annotation.Scheduled;

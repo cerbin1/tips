@@ -2,7 +2,7 @@ package afterady.config.db;
 
 import afterady.cron.CronJobsService;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.CategoriesStatistics;
+import afterady.domain.advice.category.CategoriesStatistics;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.CategoriesStatisticsRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import static afterady.domain.advice.AdviceCategory.*;
+import static afterady.domain.advice.category.AdviceCategory.*;
 
 @Component
 public class TestDataInitializer {

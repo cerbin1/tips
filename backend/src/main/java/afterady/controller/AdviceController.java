@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static afterady.domain.advice.AdviceCategory.isValid;
-import static afterady.domain.advice.AdviceCategory.valueOf;
+import static afterady.domain.advice.category.AdviceCategory.isValid;
+import static afterady.domain.advice.category.AdviceCategory.valueOf;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;

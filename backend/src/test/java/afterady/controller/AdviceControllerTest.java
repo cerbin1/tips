@@ -3,7 +3,7 @@ package afterady.controller;
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
@@ -37,8 +37,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import static afterady.TestUtils.*;
-import static afterady.domain.advice.AdviceCategory.HEALTH;
-import static afterady.domain.advice.AdviceCategory.HOME;
+import static afterady.domain.advice.category.AdviceCategory.HEALTH;
+import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -93,6 +93,8 @@ class AdviceControllerTest {
     private CategoriesStatisticsRepository categoriesStatisticsRepository;
     @MockBean
     private AuthUtil authUtil;
+    @MockBean
+    private CategoryRepository categoryRepository;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {

@@ -1,4 +1,4 @@
-package afterady.domain.advice;
+package afterady.domain.advice.category;
 
 import afterady.util.AdviceCategorySerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

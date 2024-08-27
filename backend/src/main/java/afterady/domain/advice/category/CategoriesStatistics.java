@@ -1,4 +1,4 @@
-package afterady.domain.advice;
+package afterady.domain.advice.category;
 
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-import static afterady.domain.advice.CategoriesStatistics.CATEGORIES_STATISTICS_COLLECTION;
+import static afterady.domain.advice.category.CategoriesStatistics.CATEGORIES_STATISTICS_COLLECTION;
 
 @Document(collection = CATEGORIES_STATISTICS_COLLECTION)
 @Getter

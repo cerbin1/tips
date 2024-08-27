@@ -1,6 +1,6 @@
 package afterady.domain.repository;
 
-import afterady.domain.advice.CategoriesStatistics;
+import afterady.domain.advice.category.CategoriesStatistics;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

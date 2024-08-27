@@ -1,7 +1,7 @@
 package afterady.domain.repository;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.category.AdviceCategory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

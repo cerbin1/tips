@@ -1,6 +1,6 @@
 package afterady.util;
 
-import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.category.AdviceCategory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

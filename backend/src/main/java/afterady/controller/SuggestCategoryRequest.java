@@ -1,4 +1,4 @@
 package afterady.controller;
 
-public record SuggestCategoryRequest (String name) {
+public record SuggestCategoryRequest (String name, String captchaToken) {
 }

@@ -1,5 +1,6 @@
 package afterady.domain.advice;
 
+import afterady.domain.advice.category.AdviceCategory;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 

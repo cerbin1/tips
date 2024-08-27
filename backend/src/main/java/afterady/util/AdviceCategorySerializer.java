@@ -1,6 +1,6 @@
 package afterady.util;
 
-import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.category.AdviceCategory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;

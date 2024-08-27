@@ -1,4 +1,3 @@
-import ContainerSection from "../common/ContainerSection";
 import Button from "../common/Button";
 import { useEffect, useState } from "react";
 import { getAuthToken } from "../../util/auth";
@@ -113,7 +112,7 @@ export default function SuggestAdvice() {
   }
 
   return (
-    <ContainerSection data-testid="suggest-advice-section">
+    <>
       <h1>Zaproponuj poradę</h1>
       {submitFormSuccess && (
         <>
@@ -184,6 +183,6 @@ export default function SuggestAdvice() {
       {submitFormError && (
         <div className="py-6 text-red-500">{submitFormError}</div>
       )}
-    </ContainerSection>
+    </>
   );
 }

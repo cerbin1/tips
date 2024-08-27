@@ -7,7 +7,6 @@ import AdviceDetails from "./components/advices/AdviceDetails.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
 import CategoriesStatistics from "./components/advices/categories/CategoriesStatistics.jsx";
 import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
-import SuggestAdvice from "./components/advices/SuggestAdvice.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
 import Register from "./components/user/Register.jsx";
 import RootLayout from "./router/RootLayout.jsx";
@@ -20,6 +19,7 @@ import ChangePassword from "./components/user/PasswordChange.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Logout from "./components/user/Logout.jsx";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
+import Suggestions from "./components/Suggestions.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,7 +38,7 @@ const router = createBrowserRouter([
         path: "/suggest",
         element: (
           <ProtectedRoute>
-            <SuggestAdvice />
+            <Suggestions />
           </ProtectedRoute>
         ),
       },

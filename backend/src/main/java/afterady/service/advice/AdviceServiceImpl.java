@@ -1,7 +1,7 @@
 package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;

@@ -3,9 +3,11 @@ package afterady.controller;
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.CategoriesStatistics;
+import afterady.domain.advice.category.CategoriesStatistics;
+import afterady.domain.advice.category.Category;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
+import afterady.security.auth.AuthUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.category.CategoryDetailsDto;
@@ -25,6 +27,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,11 +35,11 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static afterady.TestUtils.*;
-import static afterady.domain.advice.AdviceCategory.HEALTH;
-import static afterady.domain.advice.AdviceCategory.HOME;
+import static afterady.domain.advice.category.AdviceCategory.HEALTH;
+import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -81,6 +84,10 @@ class CategoryControllerTest {
     private CaptchaService captchaService;
     @MockBean
     private CategoriesStatisticsRepository categoriesStatisticsRepository;
+    @MockBean
+    private AuthUtil authUtil;
+    @MockBean
+    private CategoryRepository categoryRepository;
 
 
     @Test
@@ -174,10 +181,10 @@ class CategoryControllerTest {
         mvc.perform(post("/categories")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestCategoryRequest(null)))
+                                        new SuggestCategoryRequest(null, "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Error: validation failed.")));
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
     }
 
     @Test
@@ -186,33 +193,79 @@ class CategoryControllerTest {
         mvc.perform(post("/categories")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestCategoryRequest(null)))
-                        .contentType(APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$", is("Error: validation failed.")));
-    }
-
-/*    @Test
-    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsNull() throws Exception {
-        // act & assert
-        mvc.perform(post("/advices")
-                        .content(new ObjectMapper()
-                                .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", null)))
+                                        new SuggestCategoryRequest(null, "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
     }
 
     @Test
-    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsEmpty() throws Exception {
+    public void shouldReturn400WhenSuggestCategoryRequestParamCaptchaTokenIsNull() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/categories")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", "")))
+                                        new SuggestCategoryRequest("name", null)))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
-    }*/
+    }
+
+    @Test
+    public void shouldReturn400WhenSuggestCategoryRequestParamCaptchaTokenIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest("name", "")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenCaptchaIsNotValidInSuggestCategory() throws Exception {
+        // arrange
+        when(captchaService.isCaptchaTokenValid("not-valid-captcha-token")).thenReturn(false);
+
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest("name", "not-valid-captcha-token")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: captcha is not valid.")));
+    }
+
+    @Test
+    public void shouldReturn422WhenSuggestCategoryRequestParamNameIsTooLong() throws Exception {
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest(StringUtils.repeat("a", 101), "captchaToken")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.message", is("Error: name too long.")));
+    }
+
+    @Test
+    public void shouldCreateNewSuggestedCategory() throws Exception {
+        // arrange
+        when(captchaService.isCaptchaTokenValid("captchaToken")).thenReturn(true);
+        when(authUtil.getLoggedUserId()).thenReturn(1L);
+
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest("name", "captchaToken")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+        verify(authUtil, times(1)).getLoggedUserId();
+        verify(categoryRepository).save(any(Category.class));
+        verify(captchaService, times(1)).isCaptchaTokenValid("captchaToken");
+        verifyNoMoreInteractions(authUtil, captchaService, categoryRepository);
+    }
 }

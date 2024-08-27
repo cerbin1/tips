@@ -85,7 +85,6 @@ describe("SuggestAdvice", () => {
         headers: { Authorization: "Bearer token" },
       }
     );
-    expect(screen.getByTestId("suggest-advice-section")).toBeInTheDocument();
     expect(screen.getByText("Zaproponuj poradę")).toBeInTheDocument();
     const form = screen.getByRole("form");
     expect(form).toBeInTheDocument();
