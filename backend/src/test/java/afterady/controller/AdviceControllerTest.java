@@ -242,7 +242,7 @@ class AdviceControllerTest {
     }
 
     @Test
-    public void shouldCreateNewAdvice() throws Exception {
+    public void shouldCreateNewSuggestedAdvice() throws Exception {
         // arrange
         when(captchaService.isCaptchaTokenValid("captchaToken")).thenReturn(true);
         when(authUtil.getLoggedUserId()).thenReturn(1L);
