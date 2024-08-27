@@ -23,7 +23,7 @@ public class CategoryController {
         if (name == null || name.isBlank()) {
             return ResponseEntity.badRequest().body("Error: validation failed.");
         }
-
+// todo finish
         return null;
     }
 
