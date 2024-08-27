@@ -35,12 +35,12 @@ export default function CategoriesStatistics() {
   }, []);
 
   const tableHeaders = ["Kategoria", "Opis", "Liczba porad", "Szczegóły"];
-  const rows = categories.map((category) => (
-    <TableRow key={category.id}>
-      <TableData>{category.categoryDisplayName}</TableData>
-      <TableData>{category.description}</TableData>
-      <TableData>{category.advicesCount}</TableData>
-      <TableDataLink href={"/categories/" + category.category}>
+  const rows = categories.map((categoryDetails) => (
+    <TableRow key={categoryDetails.id}>
+      <TableData>{categoryDetails.categoryDisplayName}</TableData>
+      <TableData>{categoryDetails.description}</TableData>
+      <TableData>{categoryDetails.advicesCount}</TableData>
+      <TableDataLink href={"/categories/" + categoryDetails.category.name}>
         Wyświetl szczegóły
       </TableDataLink>
     </TableRow>

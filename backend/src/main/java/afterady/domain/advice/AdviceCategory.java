@@ -1,12 +1,13 @@
 package afterady.domain.advice;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import afterady.util.AdviceCategorySerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 
 import static java.util.Arrays.stream;
 
 @Getter
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@JsonSerialize(using = AdviceCategorySerializer.class)
 public enum AdviceCategory {
 
     PERSONAL_DEVELOPMENT("Rozwój osobisty"),

@@ -97,13 +97,13 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
-                .andExpect(jsonPath("$[0].category", is("HOME")))
-                .andExpect(jsonPath("$[0].categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$[0].category.name", is("HOME")))
+                .andExpect(jsonPath("$[0].category.displayName", is("Dom")))
                 .andExpect(jsonPath("$[0].description", is("Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.")))
                 .andExpect(jsonPath("$[0].advicesCount", is(10)))
                 .andExpect(jsonPath("$[1].id", is(UUID_2.toString())))
-                .andExpect(jsonPath("$[1].category", is("HEALTH")))
-                .andExpect(jsonPath("$[1].categoryDisplayName", is("Zdrowie")))
+                .andExpect(jsonPath("$[1].category.name", is("HEALTH")))
+                .andExpect(jsonPath("$[1].category.displayName", is("Zdrowie")))
                 .andExpect(jsonPath("$[1].description", is("Porady dotyczące zdrowia i dobrego samopoczucia.")))
                 .andExpect(jsonPath("$[1].advicesCount", is(20)));
     }

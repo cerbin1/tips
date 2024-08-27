@@ -23,7 +23,7 @@ describe("Categories", () => {
       ok: true,
       json: () =>
         JSON.parse(
-          `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category": "HOME", "categoryDisplayName": "Dom", "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category": "HEALTH", "categoryDisplayName": "Zdrowie", "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advicesCount": 20}]`
+          `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category":{"name": "HOME", "displayName": "Dom"}, "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category":{"name": "HEALTH", "displayName": "Zdrowie"}, "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advicesCount": 20}]`
         ),
     });
     expect(screen.queryByRole("table")).toBeNull();
@@ -42,7 +42,7 @@ describe("Categories", () => {
         ok: true,
         json: () =>
           JSON.parse(
-            `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category": "HOME", "categoryDisplayName": "Dom", "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advcicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category": "HEALTH", "categoryDisplayName": "Zdrowie", "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advcicesCount": 20}]`
+            `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category":{"name": "HOME", "displayName": "Dom"}, "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advcicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category":{"name": "HEALTH", "displayName": "Zdrowie"}, "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advcicesCount": 20}]`
           ),
       })
     );
