@@ -1,9 +1,8 @@
-import { Form, Link, NavLink, useRouteLoaderData } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import Logo from "./Logo";
 import NavigationItem from "./NavigationItem";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { getAuthToken } from "../../util/auth";
 import { useAuth } from "../../store/auth-context";
 
 export default function Header() {

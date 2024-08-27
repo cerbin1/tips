@@ -1,5 +1,4 @@
 import Header from "./Header";
-import { renderWithRouter } from "../../test-utils";
 import AuthProvider from "../../store/auth-context";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
@@ -11,18 +10,6 @@ const RouterAndAuthProvider = ({ children }) => {
     </BrowserRouter>
   );
 };
-
-beforeAll(() => {
-  vi.mock("react-router-dom", async () => {
-    return {
-      ...(await vi.importActual("react-router-dom")),
-      useRouteLoaderData: vi.fn(),
-      Form: vi.fn(({ children }) => (
-        <form aria-label="test form">{children}</form>
-      )),
-    };
-  });
-});
 
 describe("Header", () => {
   test("should display header", () => {

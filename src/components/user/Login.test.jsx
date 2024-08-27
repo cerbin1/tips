@@ -1,6 +1,5 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import Login from "./Login";
-// import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { BrowserRouter } from "react-router-dom";
 import AuthProvider from "../../store/auth-context";
