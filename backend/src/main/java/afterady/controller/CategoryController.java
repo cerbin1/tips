@@ -5,9 +5,7 @@ import afterady.domain.repository.CategoriesStatisticsRepository;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.category.CategoryDetailsDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CategoryController {
@@ -17,6 +15,16 @@ public class CategoryController {
     public CategoryController(CategoriesStatisticsRepository categoriesStatisticsRepository, AdviceService adviceService) {
         this.categoriesStatisticsRepository = categoriesStatisticsRepository;
         this.adviceService = adviceService;
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<?> suggestCategory(@RequestBody SuggestCategoryRequest request) {
+        String name = request.name();
+        if (name == null || name.isBlank()) {
+            return ResponseEntity.badRequest().body("Error: validation failed.");
+        }
+
+        return null;
     }
 
     @GetMapping("/categories-statistics")

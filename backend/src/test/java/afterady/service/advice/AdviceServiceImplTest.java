@@ -1,6 +1,7 @@
 package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
+import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
 import afterady.service.advice.category.CategoryDetailsDto;
@@ -45,7 +46,7 @@ class AdviceServiceImplTest {
     @Test
     public void shouldCreateSuggestedAdvice() {
         // act
-        adviceService.createSuggestedAdvice("63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name", HOME, "content");
+        adviceService.createSuggestedAdvice("63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name", HOME, "content", 1L);
 
         // assert
         verify(suggestedAdviceRepository, times(1)).save(any());
@@ -193,6 +194,28 @@ class AdviceServiceImplTest {
         assertEquals("name 5", categoryDetails.advices().get(4).name());
         verify(adviceRepository, times(1)).findByCategory(HOME);
         verifyNoMoreInteractions(adviceRepository);
+    }
 
+    @Test
+    public void shouldGetSuggestedAdvices() {
+        // arrange
+        var userId = 1L;
+        when(suggestedAdviceRepository.findByCreatorId(userId)).thenReturn(List.of(
+                new SuggestedAdvice(UUID.randomUUID().toString(), "name 1", HOME, "content 1", 1L),
+                new SuggestedAdvice(UUID.randomUUID().toString(), "name 2", HOME, "content 2", 1L),
+                new SuggestedAdvice(UUID.randomUUID().toString(), "name 3", HOME, "content 3", 1L),
+                new SuggestedAdvice(UUID.randomUUID().toString(), "name 4", HOME, "content 4", 1L),
+                new SuggestedAdvice(UUID.randomUUID().toString(), "name 5", HOME, "content 5", 1L)
+        ));
+
+        // act
+        List<SuggestedAdvice> suggestedAdvices = adviceService.getSuggestedAdvices(userId);
+
+        // assert
+        assertEquals(5, suggestedAdvices.size());
+        assertEquals("name 1", suggestedAdvices.get(0).name());
+        assertEquals("name 5", suggestedAdvices.get(4).name());
+        verify(suggestedAdviceRepository, times(1)).findByCreatorId(userId);
+        verifyNoMoreInteractions(suggestedAdviceRepository);
     }
 }

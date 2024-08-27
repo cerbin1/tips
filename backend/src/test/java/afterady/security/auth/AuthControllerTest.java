@@ -468,7 +468,7 @@ public class AuthControllerTest {
     public void shouldReturn422WhenUserIsNotActivated() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
-                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", emptySet(), false));
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl(1L, "email", "password", emptySet(), false));
 
         // act & assert
         mvc.perform(post("/auth/login")
@@ -484,7 +484,7 @@ public class AuthControllerTest {
     public void shouldReturn401WhenLoginCredentialsAreInvalid() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
-                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl(1L, "email", "password", Set.of(new Role(ROLE_USER)), true));
         when(authenticationManager.authenticate(any())).thenThrow(new BadCredentialsException("Bad credentials"));
 
         // act & assert
@@ -501,7 +501,7 @@ public class AuthControllerTest {
     public void shouldReturn200WhenLoginIsSuccessful() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
-                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl(1L, "email", "password", Set.of(new Role(ROLE_USER)), true));
         when(jwtUtil.generateToken("email")).thenReturn("token");
 
         // act
@@ -527,7 +527,7 @@ public class AuthControllerTest {
     public void shouldTrimEmailInLogin() throws Exception {
         // arrange
         when(userDetailsService.loadUserByUsername("email"))
-                .thenReturn(new CustomUserDetailsService.UserDetailsImpl("email", "password", Set.of(new Role(ROLE_USER)), true));
+                .thenReturn(new CustomUserDetailsService.UserDetailsImpl(1L, "email", "password", Set.of(new Role(ROLE_USER)), true));
         when(jwtUtil.generateToken("email")).thenReturn("token");
 
         // act

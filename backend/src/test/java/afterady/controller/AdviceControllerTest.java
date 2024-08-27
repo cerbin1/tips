@@ -4,8 +4,10 @@ import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
+import afterady.security.auth.AuthUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
@@ -35,14 +37,15 @@ import java.util.Optional;
 import java.util.Set;
 
 import static afterady.TestUtils.*;
+import static afterady.domain.advice.AdviceCategory.HEALTH;
+import static afterady.domain.advice.AdviceCategory.HOME;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -88,6 +91,8 @@ class AdviceControllerTest {
     private CaptchaService captchaService;
     @MockBean
     private CategoriesStatisticsRepository categoriesStatisticsRepository;
+    @MockBean
+    private AuthUtil authUtil;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
@@ -240,6 +245,7 @@ class AdviceControllerTest {
     public void shouldCreateNewAdvice() throws Exception {
         // arrange
         when(captchaService.isCaptchaTokenValid("captchaToken")).thenReturn(true);
+        when(authUtil.getLoggedUserId()).thenReturn(1L);
 
         // act & assert
         mvc.perform(post("/advices")
@@ -248,7 +254,9 @@ class AdviceControllerTest {
                                         new SuggestAdviceRequest("name", "HOME", "content", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
-        verify(adviceService).createSuggestedAdvice(anyString(), eq("name"), eq(AdviceCategory.HOME), eq("content"));
+        verify(authUtil, times(1)).getLoggedUserId();
+        verify(adviceService).createSuggestedAdvice(anyString(), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq(1L));
+        verifyNoMoreInteractions(authUtil, adviceService);
     }
 
     @Test
@@ -414,5 +422,35 @@ class AdviceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryName\":\"HOME\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\"},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryName\":\"HEALTH\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\"}]"));
+    }
+
+    @Test
+    public void shouldGetSuggestedAdvices() throws Exception {
+        // arrange
+        Long userId = 1L;
+        when(adviceService.getSuggestedAdvices(userId)).thenReturn(List.of(
+                new SuggestedAdvice(UUID_1.toString(), "name 1", HOME, "content 1", 1L),
+                new SuggestedAdvice(UUID_2.toString(), "name 2", HEALTH, "content 2", 1L)));
+        when(authUtil.getLoggedUserId()).thenReturn(userId);
+
+        // act & assert
+        mvc.perform(get("/advices/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
+    }
+
+    @Test
+    public void shouldGetEmptyListWhenUserHaveNoSuggestedAdvices() throws Exception {
+        // arrange
+        Long userId = 1L;
+        when(adviceService.getSuggestedAdvices(userId)).thenReturn(Collections.emptyList());
+        when(authUtil.getLoggedUserId()).thenReturn(userId);
+
+        // act & assert
+        mvc.perform(get("/advices/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(content().json("[]"));
     }
 }

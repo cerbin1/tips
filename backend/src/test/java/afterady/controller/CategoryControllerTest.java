@@ -11,6 +11,7 @@ import afterady.service.advice.AdviceService;
 import afterady.service.advice.category.CategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -36,7 +37,9 @@ import static afterady.domain.advice.AdviceCategory.HOME;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -164,4 +167,52 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.advices[0].id", is(UUID_1.toString())))
                 .andExpect(jsonPath("$.advices[0].name", is("name 1")));
     }
+
+    @Test
+    public void shouldReturn400WhenSuggestCategoryRequestParamNameIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest(null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenSuggestCategoryRequestParamNameIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/categories")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestCategoryRequest(null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$", is("Error: validation failed.")));
+    }
+
+/*    @Test
+    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsNull() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content", null)))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }
+
+    @Test
+    public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsEmpty() throws Exception {
+        // act & assert
+        mvc.perform(post("/advices")
+                        .content(new ObjectMapper()
+                                .writeValueAsString(
+                                        new SuggestAdviceRequest("name", "HOME", "content", "")))
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Error: validation failed.")));
+    }*/
 }

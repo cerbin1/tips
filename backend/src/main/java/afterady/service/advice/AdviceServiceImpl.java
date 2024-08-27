@@ -34,8 +34,8 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public void createSuggestedAdvice(String id, String name, AdviceCategory category, String content) {
-        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content));
+    public void createSuggestedAdvice(String id, String name, AdviceCategory category, String content, Long creatorId) {
+        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId));
     }
 
     public AdviceDetailsDto getRandomAdvice() {
@@ -100,5 +100,10 @@ public class AdviceServiceImpl implements AdviceService {
     public CategoryDetailsDto getCategoryDetails(AdviceCategory category) {
         List<Advice> advices = adviceRepository.findByCategory(category);
         return new CategoryDetailsDto(category.getDisplayName(), advices.size(), advices.stream().map(Advice::toAdviceDetailsDto).toList());
+    }
+
+    @Override
+    public List<SuggestedAdvice> getSuggestedAdvices(Long userId) {
+        return suggestedAdviceRepository.findByCreatorId(userId);
     }
 }

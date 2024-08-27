@@ -1,6 +1,8 @@
 package afterady.controller;
 
 import afterady.domain.advice.Advice;
+import afterady.domain.advice.SuggestedAdvice;
+import afterady.security.auth.AuthUtil;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
@@ -24,10 +26,12 @@ import static org.springframework.http.ResponseEntity.unprocessableEntity;
 public class AdviceController {
     private final AdviceService adviceService;
     private final CaptchaService captchaService;
+    private final AuthUtil authUtil;
 
-    public AdviceController(AdviceService adviceService, CaptchaService captchaService) {
+    public AdviceController(AdviceService adviceService, CaptchaService captchaService, AuthUtil authUtil) {
         this.adviceService = adviceService;
         this.captchaService = captchaService;
+        this.authUtil = authUtil;
     }
 
     @PostMapping
@@ -60,7 +64,8 @@ public class AdviceController {
         if (!captchaService.isCaptchaTokenValid(captchaToken)) {
             return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
-        adviceService.createSuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content);
+        Long creatorId = authUtil.getLoggedUserId();
+        adviceService.createSuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content, creatorId);
 
         return ResponseEntity.ok().build();
     }
@@ -114,6 +119,10 @@ public class AdviceController {
         return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
     }
 
+    @GetMapping("/suggested")
+    public ResponseEntity<List<SuggestedAdvice>> getUserSuggestedAdvices() {
+        return ResponseEntity.ok(adviceService.getSuggestedAdvices(authUtil.getLoggedUserId()));
+    }
 
     private MessageResponse validationError() {
         return new MessageResponse("Error: validation failed.");

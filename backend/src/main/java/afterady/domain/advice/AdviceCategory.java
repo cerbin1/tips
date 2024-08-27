@@ -1,10 +1,12 @@
 package afterady.domain.advice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
 import static java.util.Arrays.stream;
 
 @Getter
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum AdviceCategory {
 
     PERSONAL_DEVELOPMENT("Rozwój osobisty"),

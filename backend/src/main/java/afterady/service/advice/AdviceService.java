@@ -2,6 +2,7 @@ package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.AdviceCategory;
+import afterady.domain.advice.SuggestedAdvice;
 import afterady.service.advice.category.CategoryDetailsDto;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.UUID;
 
 public interface AdviceService {
 
-    void createSuggestedAdvice(String id, String name, AdviceCategory adviceCategory, String content);
+    void createSuggestedAdvice(String id, String name, AdviceCategory adviceCategory, String content, Long creatorId);
 
     AdviceDetailsDto getRandomAdvice();
 
@@ -25,4 +26,6 @@ public interface AdviceService {
     int getAdvicesCountByCategory(AdviceCategory category);
 
     CategoryDetailsDto getCategoryDetails(AdviceCategory category);
+
+    List<SuggestedAdvice> getSuggestedAdvices(Long userId);
 }

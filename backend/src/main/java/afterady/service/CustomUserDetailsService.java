@@ -32,11 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         User user = userByEmail.get();
-        return new UserDetailsImpl(user.getEmail(), user.getPassword(), user.getRoles(), user.getActive());
+        return new UserDetailsImpl(user.getId(),user.getEmail(), user.getPassword(), user.getRoles(), user.getActive());
 
     }
 
-    public record UserDetailsImpl(String email, String password, Set<Role> roles,
+    public record UserDetailsImpl(Long id, String email, String password, Set<Role> roles,
                                   Boolean active) implements UserDetails {
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
