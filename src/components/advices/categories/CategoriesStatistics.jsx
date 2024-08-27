@@ -37,7 +37,7 @@ export default function CategoriesStatistics() {
   const tableHeaders = ["Kategoria", "Opis", "Liczba porad", "Szczegóły"];
   const rows = categories.map((categoryDetails) => (
     <TableRow key={categoryDetails.id}>
-      <TableData>{categoryDetails.categoryDisplayName}</TableData>
+      <TableData>{categoryDetails.category.displayName}</TableData>
       <TableData>{categoryDetails.description}</TableData>
       <TableData>{categoryDetails.advicesCount}</TableData>
       <TableDataLink href={"/categories/" + categoryDetails.category.name}>

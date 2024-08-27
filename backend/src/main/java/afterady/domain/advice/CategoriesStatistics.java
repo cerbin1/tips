@@ -16,14 +16,12 @@ public class CategoriesStatistics {
     @MongoId
     private final UUID id;
     private final AdviceCategory category;
-    private final String categoryDisplayName;
     private final String description;
     private final int advicesCount;
 
-    public CategoriesStatistics(UUID id, AdviceCategory category, String categoryDisplayName, String description, int advicesCount) {
+    public CategoriesStatistics(UUID id, AdviceCategory category, String description, int advicesCount) {
         this.id = id;
         this.category = category;
-        this.categoryDisplayName = categoryDisplayName;
         this.description = description;
         this.advicesCount = advicesCount;
     }

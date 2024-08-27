@@ -23,7 +23,7 @@ public class CronJobsService {
             int newAdvicesCount = adviceService.getAdvicesCountByCategory(categoriesStatistics.getCategory());
             if (newAdvicesCount != categoriesStatistics.getAdvicesCount()) {
                 categoriesStatisticsRepository.delete(categoriesStatistics);
-                categoriesStatisticsRepository.save(new CategoriesStatistics(categoriesStatistics.getId(), categoriesStatistics.getCategory(), categoriesStatistics.getCategoryDisplayName(), categoriesStatistics.getDescription(), newAdvicesCount));
+                categoriesStatisticsRepository.save(new CategoriesStatistics(categoriesStatistics.getId(), categoriesStatistics.getCategory(), categoriesStatistics.getDescription(), newAdvicesCount));
             }
         });
     }

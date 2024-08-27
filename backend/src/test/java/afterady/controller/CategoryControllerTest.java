@@ -88,8 +88,8 @@ class CategoryControllerTest {
         // arrange
         when(categoriesStatisticsRepository.findAll()).thenReturn(
                 List.of(
-                        new CategoriesStatistics(UUID_1, HOME, HOME.getDisplayName(), "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", 10),
-                        new CategoriesStatistics(UUID_2, HEALTH, HEALTH.getDisplayName(), "Porady dotyczące zdrowia i dobrego samopoczucia.", 20))
+                        new CategoriesStatistics(UUID_1, HOME, "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", 10),
+                        new CategoriesStatistics(UUID_2, HEALTH, "Porady dotyczące zdrowia i dobrego samopoczucia.", 20))
         );
 
         // act & assert
