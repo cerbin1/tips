@@ -3,7 +3,6 @@ package afterady.service.advice;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
-import afterady.service.advice.category.CategoryDetailsDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,7 @@ public interface AdviceService {
 
     int getAdvicesCountByCategory(AdviceCategory category);
 
-    CategoryDetailsDto getCategoryDetails(AdviceCategory category);
+    List<AdviceDetailsDto> getAdvicesBy(AdviceCategory category);
 
     List<SuggestedAdvice> getSuggestedAdvices(Long userId);
 }

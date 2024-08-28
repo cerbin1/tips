@@ -4,13 +4,13 @@ import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.category.CategoriesStatistics;
+import afterady.domain.advice.category.Category;
 import afterady.domain.advice.category.SuggestedCategory;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.security.auth.AuthUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceService;
-import afterady.service.advice.category.CategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,6 +31,7 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -88,6 +89,8 @@ class CategoryControllerTest {
     private AuthUtil authUtil;
     @MockBean
     private SuggestedCategoryRepository suggestedCategoryRepository;
+    @MockBean
+    private CategoryRepository categoryRepository;
 
 
     @Test
@@ -136,40 +139,41 @@ class CategoryControllerTest {
     }
 
     @Test
-    public void shouldReturn400WhenCategoryNotExists() throws Exception {
+    public void shouldReturn404WhenCategoryByIdNotExists() throws Exception {
         // act & assert
-        mvc.perform(get("/advices/byCategory/invalidCategory"))
-                .andExpect(status().isBadRequest());
+        mvc.perform(get("/categories/" + UUID_1))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    public void shouldReturnEmptyListOfAdvicesByCategory() throws Exception {
+    public void shouldReturnEmptyListOfAdvices() throws Exception {
         // arrange
-        when(adviceService.getCategoryDetails(HOME)).thenReturn(new CategoryDetailsDto(HOME.getDisplayName(), 0, Collections.emptyList()));
+        when(categoryRepository.findById(UUID_1)).thenReturn(Optional.of(new Category(UUID_1, HOME, "description")));
+        when(adviceService.getAdvicesBy(HOME)).thenReturn(Collections.emptyList());
 
         // act & assert
-        mvc.perform(get("/advices/byCategory/" + HOME))
+        mvc.perform(get("/categories/" + UUID_1))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.advices", hasSize(0)));
+                .andExpect(jsonPath("$.advices", hasSize(0)))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$.description", is("description")));
     }
 
     @Test
     public void shouldReturnCategoryDetails() throws Exception {
         // arrange
-        when(adviceService.getCategoryDetails(HOME)).thenReturn(
-                new CategoryDetailsDto(
-                        HOME.getDisplayName(), 5, Stream.of(
-                        new Advice(UUID_1, "name 1", HOME, "content 1", generateTestVotes(5)),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))).map(Advice::toAdviceDetailsDto).toList()));
+        when(categoryRepository.findById(UUID_1)).thenReturn(Optional.of(new Category(UUID_1, HOME, "description")));
+        when(adviceService.getAdvicesBy(HOME)).thenReturn(Stream.of(
+                new Advice(UUID_1, "name 1", HOME, "content 1", generateTestVotes(5)),
+                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
+                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
+                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
+                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))).map(Advice::toAdviceDetailsDto).toList());
 
         // act & assert
-        mvc.perform(get("/advices/byCategory/" + HOME))
+        mvc.perform(get("/categories/" + UUID_1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
-                .andExpect(jsonPath("$.advicesCount", is(5)))
                 .andExpect(jsonPath("$.advices", hasSize(5)))
                 .andExpect(jsonPath("$.advices[0].id", is(UUID_1.toString())))
                 .andExpect(jsonPath("$.advices[0].name", is("name 1")));

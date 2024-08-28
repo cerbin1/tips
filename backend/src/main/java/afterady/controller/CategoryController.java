@@ -1,16 +1,21 @@
 package afterady.controller;
 
 import afterady.domain.advice.category.AdviceCategory;
+import afterady.domain.advice.category.Category;
 import afterady.domain.advice.category.SuggestedCategory;
 import afterady.domain.repository.CategoriesStatisticsRepository;
+import afterady.domain.repository.CategoryRepository;
 import afterady.domain.repository.SuggestedCategoryRepository;
 import afterady.security.auth.AuthUtil;
+import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.category.CategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
@@ -22,17 +27,20 @@ public class CategoryController {
     private final CaptchaService captchaService;
     private final AuthUtil authUtil;
     private final SuggestedCategoryRepository suggestedCategoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public CategoryController(CategoriesStatisticsRepository categoriesStatisticsRepository,
                               AdviceService adviceService,
                               CaptchaService captchaService,
                               AuthUtil authUtil,
-                              SuggestedCategoryRepository suggestedCategoryRepository) {
+                              SuggestedCategoryRepository suggestedCategoryRepository,
+                              CategoryRepository categoryRepository) {
         this.categoriesStatisticsRepository = categoriesStatisticsRepository;
         this.adviceService = adviceService;
         this.captchaService = captchaService;
         this.authUtil = authUtil;
         this.suggestedCategoryRepository = suggestedCategoryRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping("/categories")
@@ -70,12 +78,19 @@ public class CategoryController {
         return ResponseEntity.ok(AdviceCategory.getCategories());
     }
 
-    @GetMapping("/advices/byCategory/{categoryAsString}")
-    public ResponseEntity<CategoryDetailsDto> getCategoryDetails(@PathVariable String categoryAsString) {
-        if (AdviceCategory.isValid(categoryAsString)) {
-            return ResponseEntity.ok(adviceService.getCategoryDetails(AdviceCategory.valueOf(categoryAsString)));
+    @GetMapping("/categories/{categoryId}")
+    public ResponseEntity<CategoryDetailsDto> getCategoryDetails(@PathVariable UUID categoryId) {
+        Optional<Category> maybeCategory = categoryRepository.findById(categoryId);
+        if (maybeCategory.isEmpty()) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.badRequest().build();
+        var category = maybeCategory.get();
+        List<AdviceDetailsDto> categoryAdvices = adviceService.getAdvicesBy(category.getEnumValue());
+        return ResponseEntity.ok(
+                new CategoryDetailsDto(
+                        category.getEnumValue().getDisplayName(),
+                        category.getDescription(),
+                        categoryAdvices));
     }
 
     record MessageResponse(String message) {

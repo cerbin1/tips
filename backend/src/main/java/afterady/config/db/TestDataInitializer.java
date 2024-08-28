@@ -3,8 +3,10 @@ package afterady.config.db;
 import afterady.cron.CronJobsService;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.category.CategoriesStatistics;
+import afterady.domain.advice.category.Category;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.CategoriesStatisticsRepository;
+import afterady.domain.repository.CategoryRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -18,12 +20,12 @@ import static afterady.domain.advice.category.AdviceCategory.*;
 @Component
 public class TestDataInitializer {
     private final AdviceRepository adviceRepository;
-    private final CategoriesStatisticsRepository categoriesStatisticsRepository;
+    private final CategoryRepository categoryRepository;
     private final CronJobsService cronJobsService;
 
-    public TestDataInitializer(AdviceRepository adviceRepository, CategoriesStatisticsRepository categoriesStatisticsRepository, CronJobsService cronJobsService) {
+    public TestDataInitializer(AdviceRepository adviceRepository, CategoryRepository categoryRepository, CronJobsService cronJobsService) {
         this.adviceRepository = adviceRepository;
-        this.categoriesStatisticsRepository = categoriesStatisticsRepository;
+        this.categoryRepository = categoryRepository;
         this.cronJobsService = cronJobsService;
     }
 
@@ -59,11 +61,11 @@ public class TestDataInitializer {
         adviceRepository.save(new Advice(UUID.fromString("028359c0-d49b-4cd8-bad3-db606aa7afe5"), "Planowanie posiłków", HOME, "Planuj posiłki na cały tydzień i rób zakupy z listą, aby zaoszczędzić czas i pieniądze.", rating(27)));
         adviceRepository.save(new Advice(UUID.fromString("5aad06f9-55d7-4973-871f-58a14f5b2878"), "Zdrowy tryb życia", HEALTH, "Dbaj o zrównoważoną dietę, regularne ćwiczenia i odpowiednią ilość snu, aby utrzymać zdrowie.", rating(28)));
 
-        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("b5b4fa0e-cb88-48f3-bee2-4e07cda16b6c"), HOME, "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", 0));
-        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("84e0fee2-a16c-4e38-a101-8db21661f897"), PERSONAL_DEVELOPMENT, "Porady dotyczące samorozwoju i motywacji.", 0));
-        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("cfa81cc4-6d9b-4c81-a340-7b9b7fd119e4"), HEALTH, "Porady dotyczące zdrowia i dobrego samopoczucia.", 0));
-        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("c80d0e5b-dc1b-40db-a19c-7a4090e3fe10"), FINANCE, "Porady dotyczące zarządzania finansami.", 0));
-        categoriesStatisticsRepository.save(new CategoriesStatistics(UUID.fromString("9d039671-7bc9-4d8c-aef3-05aa6a737517"), TECHNOLOGY, "Porady dotyczące nowinek technologicznych.", 0));
+        categoryRepository.save(new Category(UUID.fromString("b5b4fa0e-cb88-48f3-bee2-4e07cda16b6c"), HOME, "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu."));
+        categoryRepository.save(new Category(UUID.fromString("84e0fee2-a16c-4e38-a101-8db21661f897"), PERSONAL_DEVELOPMENT, "Porady dotyczące samorozwoju i motywacji."));
+        categoryRepository.save(new Category(UUID.fromString("cfa81cc4-6d9b-4c81-a340-7b9b7fd119e4"), HEALTH, "Porady dotyczące zdrowia i dobrego samopoczucia."));
+        categoryRepository.save(new Category(UUID.fromString("c80d0e5b-dc1b-40db-a19c-7a4090e3fe10"), FINANCE, "Porady dotyczące zarządzania finansami."));
+        categoryRepository.save(new Category(UUID.fromString("9d039671-7bc9-4d8c-aef3-05aa6a737517"), TECHNOLOGY, "Porady dotyczące nowinek technologicznych."));
 
         cronJobsService.updateCategoriesStatisticsData();
     }

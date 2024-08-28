@@ -4,7 +4,6 @@ import afterady.domain.advice.Advice;
 import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
-import afterady.service.advice.category.CategoryDetailsDto;
 import org.bson.Document;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -173,7 +172,7 @@ class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldGetCategoryDetails() {
+    public void shouldGetCategoryAdvices() {
         // arrange
         when(adviceRepository.findByCategory(HOME)).thenReturn(List.of(
                 new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", generateTestVotes(5)),
@@ -184,14 +183,12 @@ class AdviceServiceImplTest {
         ));
 
         // act
-        CategoryDetailsDto categoryDetails = adviceService.getCategoryDetails(HOME);
+        List<AdviceDetailsDto> categoryAdvices = adviceService.getAdvicesBy(HOME);
 
         // assert
-        assertEquals("Dom", categoryDetails.categoryDisplayName());
-        assertEquals(5, categoryDetails.advicesCount());
-        assertEquals(5, categoryDetails.advices().size());
-        assertEquals("name 1", categoryDetails.advices().get(0).name());
-        assertEquals("name 5", categoryDetails.advices().get(4).name());
+        assertEquals(5, categoryAdvices.size());
+        assertEquals("name 1", categoryAdvices.get(0).name());
+        assertEquals("name 5", categoryAdvices.get(4).name());
         verify(adviceRepository, times(1)).findByCategory(HOME);
         verifyNoMoreInteractions(adviceRepository);
     }

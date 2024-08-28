@@ -1,11 +1,10 @@
 package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
+import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.repository.AdviceRepository;
 import afterady.domain.repository.SuggestedAdviceRepository;
-import afterady.service.advice.category.CategoryDetailsDto;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -97,9 +96,8 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public CategoryDetailsDto getCategoryDetails(AdviceCategory category) {
-        List<Advice> advices = adviceRepository.findByCategory(category);
-        return new CategoryDetailsDto(category.getDisplayName(), advices.size(), advices.stream().map(Advice::toAdviceDetailsDto).toList());
+    public List<AdviceDetailsDto> getAdvicesBy(AdviceCategory category) {
+        return adviceRepository.findByCategory(category).stream().map(Advice::toAdviceDetailsDto).toList();
     }
 
     @Override

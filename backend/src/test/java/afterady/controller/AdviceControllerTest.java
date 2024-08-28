@@ -95,6 +95,8 @@ class AdviceControllerTest {
     private AuthUtil authUtil;
     @MockBean
     private SuggestedCategoryRepository suggestedCategoryRepository;
+    @MockBean
+    private CategoryRepository categoryRepository;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
