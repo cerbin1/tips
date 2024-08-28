@@ -9,5 +9,6 @@ describe("Logo", () => {
     expect(content).toHaveClass(
       "no-underline text-2xl font-bold text-blue-to-dark"
     );
+    expect(screen.getByRole("img")).toHaveAttribute("alt", "logo-bulb-icon");
   });
 });
