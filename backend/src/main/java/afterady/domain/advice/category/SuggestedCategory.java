@@ -6,13 +6,13 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-import static afterady.domain.advice.category.Category.*;
+import static afterady.domain.advice.category.SuggestedCategory.*;
 
 
-@Document(collection = CATEGORY_COLLECTION)
+@Document(collection = SUGGESTED_CATEGORY_COLLECTION)
 @AllArgsConstructor
-public class Category {
-    public static final String CATEGORY_COLLECTION = "suggested_category";
+public class SuggestedCategory {
+    public static final String SUGGESTED_CATEGORY_COLLECTION = "suggested_category";
 
     @MongoId
     private final UUID id;

@@ -4,7 +4,7 @@ import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
 import afterady.domain.advice.category.CategoriesStatistics;
-import afterady.domain.advice.category.Category;
+import afterady.domain.advice.category.SuggestedCategory;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.security.auth.AuthUtil;
@@ -87,7 +87,7 @@ class CategoryControllerTest {
     @MockBean
     private AuthUtil authUtil;
     @MockBean
-    private CategoryRepository categoryRepository;
+    private SuggestedCategoryRepository suggestedCategoryRepository;
 
 
     @Test
@@ -264,8 +264,8 @@ class CategoryControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(authUtil, times(1)).getLoggedUserId();
-        verify(categoryRepository).save(any(Category.class));
+        verify(suggestedCategoryRepository).save(any(SuggestedCategory.class));
         verify(captchaService, times(1)).isCaptchaTokenValid("captchaToken");
-        verifyNoMoreInteractions(authUtil, captchaService, categoryRepository);
+        verifyNoMoreInteractions(authUtil, captchaService, suggestedCategoryRepository);
     }
 }
