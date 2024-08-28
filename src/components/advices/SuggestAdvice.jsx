@@ -2,6 +2,7 @@ import Button from "../common/Button";
 import { useEffect, useState } from "react";
 import Captcha from "../common/Captcha";
 import { useAuth } from "../../store/auth-context";
+import FormInput from "../common/FormInput";
 
 export default function SuggestAdvice() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
@@ -130,17 +131,7 @@ export default function SuggestAdvice() {
           method="post"
           onSubmit={handleSubmit}
         >
-          <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
-            <label htmlFor="name">Nazwa porady</label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              className="bg-slate-200 rounded py-2 px-1"
-              required
-              maxLength={30}
-            />
-          </div>
+          <FormInput id="name" label="Nazwa porady" maxLength={30} required />
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="category">Kategoria</label>
             {categoriesLoading && <p>Ładowanie kategorii...</p>}
