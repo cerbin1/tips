@@ -1,6 +1,7 @@
 import SuggestAdvice from "./SuggestAdvice";
 import { beforeEach, expect, test } from "vitest";
 import { act, fireEvent, waitFor } from "@testing-library/react";
+import { renderWithAuthProvider } from "../../test-utils";
 
 beforeEach(() => {
   globalThis.fetch = vi.fn((url) => {
@@ -49,7 +50,7 @@ beforeEach(() => {
 
 describe("SuggestAdvice", () => {
   test("should display message when categories are loading", async () => {
-    render(<SuggestAdvice />);
+    renderWithAuthProvider(<SuggestAdvice />);
 
     expect(screen.getByText("Ładowanie kategorii...")).toBeInTheDocument();
 
@@ -62,7 +63,7 @@ describe("SuggestAdvice", () => {
 
   test("should display error when categories failed to load", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-    render(<SuggestAdvice />);
+    renderWithAuthProvider(<SuggestAdvice />);
     expect(screen.getByText("Ładowanie kategorii...")).toBeInTheDocument();
 
     await waitFor(() => {
@@ -76,7 +77,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should display form", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "backend/advices/categories",
@@ -110,7 +111,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when name is empty", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     const name = screen.getByLabelText("Nazwa porady");
     await waitFor(() => fireEvent.change(name, { target: { value: "" } }));
@@ -122,7 +123,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when name is too long", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     const name = screen.getByLabelText("Nazwa porady");
     const tooLongName = "x".repeat(31);
@@ -140,7 +141,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when category is empty", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     const category = screen.getByTestId("category");
     await waitFor(() =>
@@ -156,7 +157,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when content is empty", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     const content = screen.getByLabelText("Treść");
     await userEvent.clear(content);
@@ -168,7 +169,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when content is too long", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     const content = screen.getByLabelText("Treść");
     const tooLongContent = "x".repeat(1001);
@@ -186,7 +187,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should not send form when captcha is not resolved", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     await fillFormWithDefaultValues();
     expect(globalThis.fetch).toHaveBeenCalledOnce();
 
@@ -199,7 +200,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should block submit button and change text when submitting form", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     globalThis.fetch.mockImplementationOnce(() =>
@@ -218,7 +219,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should display general error when submitting form and response is not ok", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
@@ -233,7 +234,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should display captcha error when server returns captcha validation error", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
@@ -255,7 +256,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should display server error when submitting form and response have validation error", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
@@ -281,7 +282,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should send form successfully, display message, display button and hide form", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     expect(screen.getByRole("form")).toBeInTheDocument();
@@ -311,7 +312,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should hide button and success message and display new form when clicking button to suggest new advice", async () => {
-    await act(async () => render(<SuggestAdvice />));
+    await act(async () => renderWithAuthProvider(<SuggestAdvice />));
     expect(globalThis.fetch).toHaveBeenCalledOnce();
     await fillFormWithDefaultValues();
     expect(screen.getByRole("form")).toBeInTheDocument();

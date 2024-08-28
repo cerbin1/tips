@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getAuthToken } from "../util/auth";
 
 const AuthContext = createContext();
 
@@ -8,7 +7,7 @@ export const useAuth = () => {
 };
 
 export default function AuthProvider({ children }) {
-  const [token, setToken] = useState(getAuthToken());
+  const [token, setToken] = useState(localStorage.getItem("token"));
 
   useEffect(() => {
     if (token) {

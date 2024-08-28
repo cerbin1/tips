@@ -2,13 +2,14 @@ import { useState } from "react";
 import Button from "../../common/Button";
 import Captcha from "../../common/Captcha";
 import FormInput from "../../common/FormInput";
-import { getAuthToken } from "../../../util/auth";
+import { useAuth } from "../../../store/auth-context";
 
 export default function SuggestCategory() {
   const [captchaToken, setCaptchaToken] = useState();
   const [error, setError] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
+  const { token } = useAuth();
 
   function handleCaptchaChange(token) {
     setCaptchaToken(token);
@@ -39,7 +40,7 @@ export default function SuggestCategory() {
           {
             method: "POST",
             headers: {
-              Authorization: "Bearer " + getAuthToken(),
+              Authorization: "Bearer " + token,
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),

@@ -1,5 +1,6 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import SuggestCategory from "./SuggestCategory";
+import { renderWithAuthProvider } from "../../../test-utils";
 
 describe("SuggestCategory", () => {
   beforeEach(() => {
@@ -32,7 +33,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should display form", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
 
     expect(screen.getByText("Zaproponuj kategorię")).toBeInTheDocument();
     const form = screen.getByRole("form");
@@ -46,7 +47,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should not send form when name is empty", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     expect(screen.getByLabelText("Nazwa kategorii")).toHaveValue("");
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
@@ -55,7 +56,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should not send form when name is too long", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     const name = screen.getByLabelText("Nazwa kategorii");
     const tooLongName = "x".repeat(101);
     await waitFor(() =>
@@ -72,7 +73,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should not send form when captcha is not resolved", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
@@ -83,7 +84,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should block submit button and change text when submitting form", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     globalThis.fetch.mockImplementationOnce(() =>
       Promise.resolve({ ok: true })
     );
@@ -101,7 +102,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should display general error when submitting form and response is not ok", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     await userEvent.click(screen.getByTestId("captcha"));
     await fillName();
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
@@ -115,7 +116,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should display captcha error when server returns captcha validation error", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     await fillName();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() =>
@@ -136,7 +137,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should display server error when submitting form and response have validation error", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     await fillName();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() =>
@@ -161,7 +162,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should send form successfully, display message, display button and hide form", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     await fillName();
     expect(screen.getByRole("form")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("captcha"));
@@ -190,7 +191,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should hide button and success message and display new form when clicking button to suggest new category", async () => {
-    await act(async () => render(<SuggestCategory />));
+    await act(async () => renderWithAuthProvider(<SuggestCategory />));
     await fillName();
     expect(screen.getByRole("form")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("captcha"));

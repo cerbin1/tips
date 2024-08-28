@@ -1,7 +1,7 @@
 import Button from "../common/Button";
 import { useEffect, useState } from "react";
-import { getAuthToken } from "../../util/auth";
 import Captcha from "../common/Captcha";
+import { useAuth } from "../../store/auth-context";
 
 export default function SuggestAdvice() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
@@ -11,6 +11,7 @@ export default function SuggestAdvice() {
   const [submitFormError, setSubmitFormError] = useState();
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
   const [captchaToken, setCaptchaToken] = useState();
+  const { token } = useAuth();
 
   useEffect(() => {
     async function sendRequest() {
@@ -21,7 +22,7 @@ export default function SuggestAdvice() {
           {
             method: "GET",
             headers: {
-              Authorization: "Bearer " + getAuthToken(),
+              Authorization: "Bearer " + token,
             },
           }
         );
@@ -76,7 +77,7 @@ export default function SuggestAdvice() {
           {
             method: "POST",
             headers: {
-              Authorization: "Bearer " + getAuthToken(),
+              Authorization: "Bearer " + token,
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),

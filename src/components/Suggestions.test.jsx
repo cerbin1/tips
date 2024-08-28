@@ -1,9 +1,10 @@
 import userEvent from "@testing-library/user-event";
 import Suggestions from "./Suggestions";
+import { renderWithAuthProvider } from "../test-utils";
 
 describe("Suggestions", () => {
   test("should display button to change suggestion type", () => {
-    render(<Suggestions />);
+    renderWithAuthProvider(<Suggestions />);
 
     expect(screen.getByTestId("suggestions-section")).toBeInTheDocument();
     expect(
@@ -12,13 +13,13 @@ describe("Suggestions", () => {
   });
 
   test("should display advice suggestion on component render", () => {
-    render(<Suggestions />);
+    renderWithAuthProvider(<Suggestions />);
 
     expect(screen.getByText("Zaproponuj poradę")).toBeInTheDocument();
   });
 
   test("should change to category suggestion on button click", () => {
-    render(<Suggestions />);
+    renderWithAuthProvider(<Suggestions />);
 
     userEvent.click(screen.getByText("Przejdź do propozycji kategorii"));
   });
