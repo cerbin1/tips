@@ -1,16 +1,7 @@
-import { BrowserRouter } from "react-router-dom";
+import { renderWithRouterAndAuth } from "../../test-utils";
 import Logout from "./Logout";
-import AuthProvider from "../../store/auth-context";
 
 const mockedUseNavigate = vi.fn();
-
-const RouterAndAuthProvider = ({ children }) => {
-  return (
-    <BrowserRouter>
-      <AuthProvider>{children}</AuthProvider>
-    </BrowserRouter>
-  );
-};
 
 describe("Logout", () => {
   test("should navigate to main page after rendering component", () => {
@@ -25,7 +16,7 @@ describe("Logout", () => {
     expect(mockedUseNavigate).not.toHaveBeenCalled();
     expect(localStorage.getItem("token")).toBe("token");
 
-    render(<Logout />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Logout />);
 
     expect(mockedUseNavigate).toHaveBeenCalledWith("/");
     expect(localStorage.getItem("token")).toBeNull();

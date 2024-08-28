@@ -1,19 +1,10 @@
-import Header from "./Header";
-import AuthProvider from "../../store/auth-context";
 import { render } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-
-const RouterAndAuthProvider = ({ children }) => {
-  return (
-    <BrowserRouter>
-      <AuthProvider>{children}</AuthProvider>
-    </BrowserRouter>
-  );
-};
+import Header from "./Header";
+import { renderWithRouterAndAuth } from "../../test-utils";
 
 describe("Header", () => {
   test("should display header", () => {
-    render(<Header />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Header />);
 
     const header = screen.getByRole("banner");
     expect(header).toBeInTheDocument();
@@ -23,14 +14,14 @@ describe("Header", () => {
   });
 
   test("should display logo", () => {
-    render(<Header />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Header />);
 
     expect(screen.getByText("Afterady")).toBeInTheDocument();
   });
 
   test("should display header for not logged in user", () => {
     localStorage.setItem("token", "");
-    render(<Header />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Header />);
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
@@ -56,7 +47,7 @@ describe("Header", () => {
 
   test("should display header for logged in user", () => {
     localStorage.setItem("token", "token");
-    render(<Header />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Header />);
 
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
@@ -84,7 +75,7 @@ describe("Header", () => {
   });
 
   test("should change styles to currently clicked link", async () => {
-    render(<Header />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Header />);
     const randomAdviceLink = screen.getByText("Losowa porada");
     expect(randomAdviceLink).toHaveClass(
       "px-12 text-blue-to-light no-underline"

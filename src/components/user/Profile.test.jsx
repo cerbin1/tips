@@ -1,17 +1,7 @@
-import { act } from "react";
-import Profile from "./Profile";
-import { renderWithAuthProvider, renderWithRouter } from "../../test-utils";
 import { render, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "../../store/auth-context";
-
-const RouterAndAuthProvider = ({ children }) => {
-  return (
-    <BrowserRouter>
-      <AuthProvider>{children}</AuthProvider>
-    </BrowserRouter>
-  );
-};
+import { act } from "react";
+import { renderWithAuth, renderWithRouterAndAuth } from "../../test-utils";
+import Profile from "./Profile";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
@@ -34,9 +24,7 @@ describe("Profile", () => {
         json: () => JSON.parse("[]"),
       });
 
-    await act(async () =>
-      render(<Profile />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<Profile />));
 
     expect(screen.getByTestId("profile-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -70,7 +58,7 @@ describe("Profile", () => {
       })
     );
 
-    await act(async () => renderWithAuthProvider(<Profile />));
+    await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak ocenionych porad")).toBeInTheDocument();
@@ -86,7 +74,7 @@ describe("Profile", () => {
       })
     );
 
-    await act(async () => renderWithAuthProvider(<Profile />));
+    await act(async () => renderWithAuth(<Profile />));
 
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
@@ -102,7 +90,7 @@ describe("Profile", () => {
         ),
     });
 
-    render(<Profile />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Profile />);
 
     expect(
       screen.getByText("Ładowanie ocenionych porad...")
@@ -125,7 +113,7 @@ describe("Profile", () => {
         json: () => JSON.parse("[]"),
       });
 
-    await act(async () => renderWithAuthProvider(<Profile />));
+    await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
@@ -137,7 +125,7 @@ describe("Profile", () => {
       ok: false,
     });
 
-    await act(async () => renderWithAuthProvider(<Profile />));
+    await act(async () => renderWithAuth(<Profile />));
 
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "backend/advices?userEmail=test@test"
@@ -163,7 +151,7 @@ describe("Profile", () => {
           ),
       });
 
-    render(<Profile />, { wrapper: RouterAndAuthProvider });
+    renderWithRouterAndAuth(<Profile />);
 
     expect(
       screen.getByText("Ładowanie proponowanych porad...")

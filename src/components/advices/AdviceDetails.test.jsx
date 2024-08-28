@@ -1,17 +1,7 @@
 import { act, waitFor } from "@testing-library/react";
-import AdviceDetails from "./AdviceDetails";
 import { afterEach, beforeAll } from "vitest";
-import { renderWithAuthProvider, renderWithRouter } from "../../test-utils";
-import { BrowserRouter } from "react-router-dom";
-import AuthProvider from "../../store/auth-context";
-
-const RouterAndAuthProvider = ({ children }) => {
-  return (
-    <BrowserRouter>
-      <AuthProvider>{children}</AuthProvider>
-    </BrowserRouter>
-  );
-};
+import { renderWithAuth, renderWithRouterAndAuth } from "../../test-utils";
+import AdviceDetails from "./AdviceDetails";
 
 describe("AdviceDetails", () => {
   beforeAll(() => {
@@ -37,7 +27,7 @@ describe("AdviceDetails", () => {
   test("should display error when advice is not found", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false, status: 404 }));
 
-    await act(async () => renderWithAuthProvider(<AdviceDetails />));
+    await act(async () => renderWithAuth(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie znaleziono porady!");
@@ -48,7 +38,7 @@ describe("AdviceDetails", () => {
   test("should display general error when response is not ok", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
-    await act(async () => renderWithAuthProvider(<AdviceDetails />));
+    await act(async () => renderWithAuth(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
@@ -71,7 +61,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": false}`),
       });
 
-    renderWithAuthProvider(<AdviceDetails />);
+    renderWithAuth(<AdviceDetails />);
 
     expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
     await waitFor(() => {
@@ -97,7 +87,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": false}`),
       });
 
-    await act(async () => renderWithAuthProvider(<AdviceDetails />));
+    await act(async () => renderWithAuth(<AdviceDetails />));
 
     expect(screen.getByTestId("advice-details-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -129,9 +119,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": false}`),
       });
 
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
     expect(screen.getByText("Zaloguj się aby zagłosować")).toBeInTheDocument();
     expect(
@@ -153,9 +141,7 @@ describe("AdviceDetails", () => {
       .mockResolvedValueOnce({
         ok: false,
       });
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
@@ -189,9 +175,7 @@ describe("AdviceDetails", () => {
             `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
           ),
       });
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
@@ -230,9 +214,7 @@ describe("AdviceDetails", () => {
           ),
       });
     localStorage.setItem("userEmail", "email@test");
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
@@ -263,9 +245,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": false}`),
       });
 
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const rateButton = screen.getByRole("button");
@@ -291,9 +271,7 @@ describe("AdviceDetails", () => {
         json: () => JSON.parse(`{"rated": true}`),
       });
 
-    await act(async () =>
-      render(<AdviceDetails />, { wrapper: RouterAndAuthProvider })
-    );
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
     expect(globalThis.fetch).toHaveBeenCalledTimes(2);
     const rateButton = screen.getByRole("button");
