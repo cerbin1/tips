@@ -16,12 +16,15 @@ describe("Profile", () => {
         ok: true,
         json: () =>
           JSON.parse(
-            `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa proponowanej porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
+            `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa ocenionej porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
           ),
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse("[]"),
+        json: () =>
+          JSON.parse(
+            `[{"id": "00d0b44a-f701-4172-966e-cca3aec454dc", "name": "Nazwa proponowanej porady", "category": {"name": "Health",  "displayName": "Zdrowie"}, "content": "Treść", "creatorId": "1"}]`
+          ),
       })
       .mockResolvedValueOnce({
         ok: true,
@@ -43,14 +46,18 @@ describe("Profile", () => {
     ).toBeInTheDocument();
     expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
     expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
-    expect(screen.getAllByRole("table")).toHaveLength(2);
-    expect(screen.getAllByRole("row")).toHaveLength(4);
-    expect(screen.getAllByRole("columnheader")).toHaveLength(4);
+    expect(screen.getAllByRole("table")).toHaveLength(3);
+    expect(screen.getAllByRole("row")).toHaveLength(6);
+    expect(screen.getAllByRole("columnheader")).toHaveLength(6);
     expect(screen.getAllByRole("table")[0]).toHaveTextContent(
-      "Nazwa proponowanej porady"
+      "Nazwa ocenionej porady"
     );
     expect(screen.getAllByRole("table")[0]).toHaveTextContent("Zdrowie");
     expect(screen.getAllByRole("table")[1]).toHaveTextContent(
+      "Nazwa proponowanej porady"
+    );
+    expect(screen.getAllByRole("table")[1]).toHaveTextContent("Zdrowie");
+    expect(screen.getAllByRole("table")[2]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
   });
