@@ -1,10 +1,11 @@
 package afterady.service;
 
 import afterady.domain.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -13,17 +14,19 @@ import java.util.Optional;
 import static afterady.TestUtils.testUser;
 import static afterady.TestUtils.testUserWithRoles;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class CustomUserDetailsServiceTest {
-
-    @MockBean
-    private UserRepository userRepository;
-
-    @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @BeforeEach
+    void init() {
+        customUserDetailsService = new CustomUserDetailsService(userRepository);
+    }
 
     @Test
     public void shouldThrowExceptionIfUserByEmailNotFound() {
@@ -32,6 +35,8 @@ public class CustomUserDetailsServiceTest {
 
         // act & assert
         assertThrows(UsernameNotFoundException.class, () -> customUserDetailsService.loadUserByUsername("email"), "User not found");
+        verify(userRepository, times(1)).findByEmail("email");
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -48,6 +53,8 @@ public class CustomUserDetailsServiceTest {
         assertEquals("password", userDetails.getPassword());
         assertFalse(userDetails.isEnabled());
         assertTrue(userDetails.getAuthorities().isEmpty());
+        verify(userRepository, times(1)).findByEmail("email");
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -66,5 +73,7 @@ public class CustomUserDetailsServiceTest {
         assertEquals(2, userDetails.getAuthorities().size());
         assertTrue(userDetails.getAuthorities().stream().anyMatch(authority -> "ROLE_USER".equals(authority.getAuthority())));
         assertTrue(userDetails.getAuthorities().stream().anyMatch(authority -> "ROLE_ADMIN".equals(authority.getAuthority())));
+        verify(userRepository, times(1)).findByEmail("email");
+        verifyNoMoreInteractions(userRepository);
     }
 }
