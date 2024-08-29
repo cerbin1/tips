@@ -1,10 +1,11 @@
 package afterady.security.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
@@ -12,13 +13,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-class JwtUtilTest {
-    @MockBean
+@ExtendWith(MockitoExtension.class)
+public class JwtUtilTest {
+
+    private JwtUtil jwtUtil;
+
+    @Mock
     private HttpServletRequest mockedRequest;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    @BeforeEach
+    public void init() {
+        jwtUtil = new JwtUtil();
+    }
 
     @Test
     public void shouldNotParseTokenWhenAuthHeaderIsMissing() {
