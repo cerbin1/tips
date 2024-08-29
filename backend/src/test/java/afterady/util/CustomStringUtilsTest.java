@@ -6,10 +6,21 @@ import static afterady.util.CustomStringUtils.validateEmail;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CustomStringUtilsTest {
+public class CustomStringUtilsTest {
 
     @Test
-    public void validateValidEmails() {
+    public void shouldValidateEmails() {
+        assertFalse(validateEmail("plainaddress"));
+        assertFalse(validateEmail("#@%^%#$@#$@#.com"));
+        assertFalse(validateEmail("@example.com"));
+        assertFalse(validateEmail("Joe Smith <email@example.com>"));
+        assertFalse(validateEmail("email.example.com"));
+        assertFalse(validateEmail("email@example@example.com"));
+        assertFalse(validateEmail("あいうえお@example.com"));
+        assertFalse(validateEmail("email@example.com (Joe Smith)"));
+        assertFalse(validateEmail("email@example"));
+        assertFalse(validateEmail("email@111.222.333.44444"));
+        assertFalse(validateEmail("email@example..com"));
         assertTrue(validateEmail("email@example.com"));
         assertTrue(validateEmail("firstname.lastname@example.com"));
         assertTrue(validateEmail("email@subdomain.example.com"));
@@ -22,23 +33,9 @@ class CustomStringUtilsTest {
         assertTrue(validateEmail("email@example.co.jp"));
     }
 
-    @Test
-    public void validateInvalidEmails() {
-        assertFalse(validateEmail("plainaddress"));
-        assertFalse(validateEmail("#@%^%#$@#$@#.com"));
-        assertFalse(validateEmail("@example.com"));
-        assertFalse(validateEmail("Joe Smith <email@example.com>"));
-        assertFalse(validateEmail("email.example.com"));
-        assertFalse(validateEmail("email@example@example.com"));
-        assertFalse(validateEmail("あいうえお@example.com"));
-        assertFalse(validateEmail("email@example.com (Joe Smith)"));
-        assertFalse(validateEmail("email@example"));
-        assertFalse(validateEmail("email@111.222.333.44444"));
-        assertFalse(validateEmail("email@example..com"));
-    }
 
     @Test
-    public void validatePasswords() {
+    public void shouldValidatePasswords() {
         assertFalse(CustomStringUtils.validatePassword("qwe123"));
         assertFalse(CustomStringUtils.validatePassword("password"));
         assertFalse(CustomStringUtils.validatePassword("12345678"));
