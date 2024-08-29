@@ -9,7 +9,7 @@ beforeAll(() => {
       ...actual,
       useParams: () => {
         return {
-          category: "CATEGORY_1",
+          categoryId: "342c97ec-e00a-4ccb-b235-b6d22fe34c56",
         };
       },
     };
@@ -33,7 +33,7 @@ describe("CategoryDetails", () => {
     expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/advices/byCategory/CATEGORY_1"
+      "backend/categories/342c97ec-e00a-4ccb-b235-b6d22fe34c56"
     );
   });
 
@@ -42,13 +42,14 @@ describe("CategoryDetails", () => {
       ok: true,
       json: () =>
         JSON.parse(`{"categoryDisplayName": "Dom",
-          "advicesCount": 1,
+          "description": "Opis",
           "advices": [
             {
               "id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
               "name": "name 1",
               "categoryName": "HOME",
               "categoryDisplayName": "Dom",
+              "content": "treść",
               "rating": 10
             }
           ]
@@ -69,13 +70,14 @@ describe("CategoryDetails", () => {
       ok: true,
       json: () =>
         JSON.parse(`{"categoryDisplayName": "Dom",
-          "advicesCount": 1,
+          "description": "Opis",
           "advices": [
             {
               "id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
               "name": "name 1",
               "categoryName": "HOME",
               "categoryDisplayName": "Dom",
+              "content": "treść 1",
               "rating": 10
             },
             {
@@ -83,6 +85,7 @@ describe("CategoryDetails", () => {
               "name": "name 2",
               "categoryName": "HOME",
               "categoryDisplayName": "Dom",
+              "content": "treść 2",
               "rating": 9
             },
             {
@@ -90,6 +93,7 @@ describe("CategoryDetails", () => {
               "name": "name 3",
               "categoryName": "HOME",
               "categoryDisplayName": "Dom",
+              "content": "treść 3",
               "rating": 8
             }
           ]
@@ -101,6 +105,8 @@ describe("CategoryDetails", () => {
     expect(section).toBeInTheDocument();
     expect(screen.getByText("Dom")).toBeInTheDocument();
     expect(screen.getByRole("table")).toBeInTheDocument();
+    expect(screen.getByText("Opis")).toBeInTheDocument();
+    expect(screen.getByText("Liczba wszystkich porad: 3")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.queryAllByRole("columnheader")).toHaveLength(3);
     expect(screen.getByText("name 1")).toBeInTheDocument();

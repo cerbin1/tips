@@ -14,6 +14,10 @@ export default function Profile() {
   const [suggestedAdvices, setSuggestedAdvices] = useState([]);
   const [suggestedAdvicesLoading, setSuggestedAdvicesLoading] = useState(false);
   const [suggestedAdvicesError, setSuggestedAdvicesError] = useState();
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
+  const [suggestedCategoriesLoading, setSuggestedCategoriesLoading] =
+    useState(false);
+  const [suggestedCategoriesError, setSuggestedCategoriesError] = useState();
   const { token } = useAuth();
 
   useEffect(() => {
@@ -66,6 +70,35 @@ export default function Profile() {
     fetchUserSuggestedAdvices();
   }, []);
 
+  useEffect(() => {
+    async function fetchUserSuggestedCategories() {
+      setSuggestedCategoriesLoading(true);
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "categories/suggested",
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          setSuggestedCategories(responseData);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        setSuggestedCategoriesError(
+          "Nie udało się pobrać proponowanych kategorii!"
+        );
+      }
+      setSuggestedCategoriesLoading(false);
+    }
+    fetchUserSuggestedCategories();
+  }, []);
+
   const votedAdvicesTableHeaders = ["Nazwa", "Kategoria", "Szczegóły"];
   const votedAdvicesTableRows = votedAdvices.map((advice) => (
     <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
@@ -91,6 +124,13 @@ export default function Profile() {
       <td className="py-3 px-6 border border-slate-400">
         {advice.category.displayName}
       </td>
+    </tr>
+  ));
+
+  const suggestedCategoriesTableHeaders = ["Nazwa"];
+  const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
+    <tr key={category.id} className="hover:bg-slate-200 even:bg-slate-100">
+      <td className="py-3 px-6 border border-slate-400">{category.name}</td>
     </tr>
   ));
 
@@ -135,12 +175,33 @@ export default function Profile() {
             />
           </>
         )}
-
       {suggestedAdvicesLoading && (
         <div className="py-6">Ładowanie proponowanych porad...</div>
       )}
       {suggestedAdvicesError && (
         <div className="py-6 text-red-500">{suggestedAdvicesError}</div>
+      )}
+
+      {!suggestedCategoriesError &&
+        !suggestedCategoriesLoading &&
+        suggestedCategories &&
+        suggestedCategories.length === 0 && <p>Brak proponowanych kategorii</p>}
+      {!suggestedCategoriesError &&
+        suggestedCategories &&
+        suggestedCategories.length > 0 && (
+          <>
+            <h2>Proponowane kategorie:</h2>
+            <Table
+              head={<TableHeader headers={suggestedCategoriesTableHeaders} />}
+              body={<TableBody rows={suggestedCategoriesTableRows} />}
+            />
+          </>
+        )}
+      {suggestedCategoriesLoading && (
+        <div className="py-6">Ładowanie proponowanych kategorii...</div>
+      )}
+      {suggestedCategoriesError && (
+        <div className="py-6 text-red-500">{suggestedCategoriesError}</div>
       )}
     </ContainerSection>
   );

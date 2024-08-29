@@ -272,4 +272,34 @@ class CategoryControllerTest {
         verify(captchaService, times(1)).isCaptchaTokenValid("captchaToken");
         verifyNoMoreInteractions(authUtil, captchaService, suggestedCategoryRepository);
     }
+
+    @Test
+    public void shouldGetEmptyListOfUserSuggestedCategories() throws Exception {
+        // arrange
+        when(authUtil.getLoggedUserId()).thenReturn(1L);
+        when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(Collections.emptyList());
+
+        // act & assert
+        mvc.perform(get("/categories/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldGetUserSuggestedCategories() throws Exception {
+        // arrange
+        when(authUtil.getLoggedUserId()).thenReturn(1L);
+        when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(
+                List.of(
+                        new SuggestedCategory(UUID_1, "name 1", 1L),
+                        new SuggestedCategory(UUID.randomUUID(), "name 2", 1L)));
+
+        // act & assert
+        mvc.perform(get("/categories/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
+                .andExpect(jsonPath("$[0].name", is("name 1")))
+                .andExpect(jsonPath("$[0].creatorId", is(1)));
+    }
 }

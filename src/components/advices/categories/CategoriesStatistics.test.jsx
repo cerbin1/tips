@@ -54,5 +54,10 @@ describe("Categories", () => {
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
+    expect(screen.getAllByText("Wyświetl szczegóły")).toHaveLength(2);
+    expect(screen.getAllByText("Wyświetl szczegóły")[0]).toHaveAttribute(
+      "href",
+      "/categories/cab77578-7452-4a6d-a52f-f95126bd2dd1"
+    );
   });
 });

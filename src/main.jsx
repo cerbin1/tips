@@ -32,7 +32,7 @@ const router = createBrowserRouter([
       { path: "/advices/:adviceId", element: <AdviceDetails /> },
       { path: "/categories", element: <CategoriesStatistics /> },
       { path: "/random", element: <RandomAdvice /> },
-      { path: "/categories/:category", element: <CategoryDetails /> },
+      { path: "/categories/:categoryId", element: <CategoryDetails /> },
       { path: "/ranking", element: <Ranking /> },
       {
         path: "/suggest",

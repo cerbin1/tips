@@ -93,6 +93,12 @@ public class CategoryController {
                         categoryAdvices));
     }
 
+    @GetMapping("/categories/suggested")
+    public ResponseEntity<List<SuggestedCategory>> getUserSuggestedCategories() {
+        Long creatorId = authUtil.getLoggedUserId();
+        return ResponseEntity.ok(suggestedCategoryRepository.findByCreatorId(creatorId));
+    }
+
     record MessageResponse(String message) {
     }
 }

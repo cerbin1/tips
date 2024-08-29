@@ -16,12 +16,19 @@ describe("Profile", () => {
         ok: true,
         json: () =>
           JSON.parse(
-            `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
+            `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa proponowanej porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
           ),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: () => JSON.parse("[]"),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej kategorii", "creatorId": "1"}]`
+          ),
       });
 
     await act(async () => renderWithRouterAndAuth(<Profile />));
@@ -35,17 +42,16 @@ describe("Profile", () => {
       screen.getByText("Adres email użytkownika: test@test")
     ).toBeInTheDocument();
     expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
-    expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 2 })).toHaveTextContent(
-      "Ocenione porady:"
+    expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
+    expect(screen.getAllByRole("table")).toHaveLength(2);
+    expect(screen.getAllByRole("row")).toHaveLength(4);
+    expect(screen.getAllByRole("columnheader")).toHaveLength(4);
+    expect(screen.getAllByRole("table")[0]).toHaveTextContent(
+      "Nazwa proponowanej porady"
     );
-    expect(screen.getByRole("table")).toBeInTheDocument();
-    expect(screen.getAllByRole("row")).toHaveLength(2);
-    expect(screen.getAllByRole("columnheader")).toHaveLength(3);
-    expect(screen.getByRole("table")).toHaveTextContent("Nazwa porady");
-    expect(screen.getByRole("table")).toHaveTextContent("Zdrowie");
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/advices?userEmail=test@test"
+    expect(screen.getAllByRole("table")[0]).toHaveTextContent("Zdrowie");
+    expect(screen.getAllByRole("table")[1]).toHaveTextContent(
+      "Nazwa proponowanej kategorii"
     );
   });
 
@@ -98,7 +104,7 @@ describe("Profile", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie ocenionych porad...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
   });
 
@@ -117,7 +123,7 @@ describe("Profile", () => {
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 
   test("should display info when fetching suggested advices fails", async () => {
@@ -130,7 +136,7 @@ describe("Profile", () => {
     expect(globalThis.fetch).toHaveBeenCalledWith(
       "backend/advices?userEmail=test@test"
     );
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -144,7 +150,6 @@ describe("Profile", () => {
       })
       .mockResolvedValueOnce({
         ok: true,
-
         json: () =>
           JSON.parse(
             `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej porady", "category": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
@@ -159,7 +164,79 @@ describe("Profile", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie proponowanych porad...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
+  });
+
+  test("should display info when there are no suggested categories", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () => JSON.parse("[]"),
+      });
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    expect(screen.queryByRole("table")).toBeNull();
+    expect(
+      screen.getByText("Brak proponowanych kategorii")
+    ).toBeInTheDocument();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+  });
+
+  test("should display info when fetching suggested categories fails", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({
+      ok: false,
+    });
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    const error = screen.getByText(
+      "Nie udało się pobrać proponowanych kategorii!"
+    );
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+  });
+
+  test("should display info when suggested categories are loading", async () => {
+    3;
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej kategorii", "creatorId": "1"}]`
+          ),
+      });
+
+    renderWithRouterAndAuth(<Profile />);
+
+    expect(
+      screen.getByText("Ładowanie proponowanych kategorii...")
+    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Ładowanie proponowanych kategorii...")
+      ).toBeNull();
+    });
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(
+      screen.getByText("Nazwa proponowanej kategorii")
+    ).toBeInTheDocument();
   });
 });

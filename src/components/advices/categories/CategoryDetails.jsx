@@ -12,7 +12,7 @@ export default function CategoryDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [categoryDetails, setCategoryDetails] = useState();
-  const { category } = useParams();
+  const { categoryId } = useParams();
 
   let tableWithAdvices;
   if (categoryDetails) {
@@ -39,7 +39,7 @@ export default function CategoryDetails() {
       setError(null);
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/byCategory/" + category
+          import.meta.env.VITE_BACKEND_URL + "categories/" + categoryId
         );
         if (response.ok) {
           const categoryDetails = await response.json();
@@ -61,7 +61,8 @@ export default function CategoryDetails() {
       {!error && !isLoading && categoryDetails && (
         <>
           <h1>{categoryDetails.categoryDisplayName}</h1>
-          Liczba: {categoryDetails.advicesCount}
+          <h2>{categoryDetails.description}</h2>
+          Liczba wszystkich porad: {categoryDetails.advices.length}
           {tableWithAdvices}
         </>
       )}
