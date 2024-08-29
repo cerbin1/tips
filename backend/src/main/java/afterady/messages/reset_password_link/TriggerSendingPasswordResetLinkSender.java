@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static afterady.messages.LinksSendingMQConfiguration.LINKS_EXCHANGE;
+import static afterady.messages.LinksSendingMQConfiguration.PASSWORD_RESET_LINKS_ROUTING_KEY;
 
 @Service
 public class TriggerSendingPasswordResetLinkSender {
@@ -14,6 +15,6 @@ public class TriggerSendingPasswordResetLinkSender {
     private RabbitTemplate rabbitTemplate;
 
     public void send(LinkMessage message) {
-        rabbitTemplate.convertAndSend(LINKS_EXCHANGE, "routing.key.2", message);
+        rabbitTemplate.convertAndSend(LINKS_EXCHANGE, PASSWORD_RESET_LINKS_ROUTING_KEY, message);
     }
 }

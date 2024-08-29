@@ -17,6 +17,8 @@ public class LinksSendingMQConfiguration {
     public static final String ACTIVATION_LINKS_QUEUE = "queue1";
     public static final String PASSWORD_RESET_LINKS_QUEUE = "queue2";
     public static final String LINKS_EXCHANGE = "exchange";
+    public static final String ACTIVATION_LINKS_ROUTING_KEY = "routing.key.1";
+    public static final String PASSWORD_RESET_LINKS_ROUTING_KEY = "routing.key.2";
 
     @Bean
     public Queue queue1() {
@@ -35,12 +37,12 @@ public class LinksSendingMQConfiguration {
 
     @Bean
     public Binding binding1(Queue queue1, TopicExchange exchange) {
-        return BindingBuilder.bind(queue1).to(exchange).with("routing.key.1");
+        return BindingBuilder.bind(queue1).to(exchange).with(ACTIVATION_LINKS_ROUTING_KEY);
     }
 
     @Bean
     public Binding binding2(Queue queue2, TopicExchange exchange) {
-        return BindingBuilder.bind(queue2).to(exchange).with("routing.key.2");
+        return BindingBuilder.bind(queue2).to(exchange).with(ACTIVATION_LINKS_ROUTING_KEY);
     }
 
     @Bean

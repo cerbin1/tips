@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static afterady.messages.LinksSendingMQConfiguration.ACTIVATION_LINKS_ROUTING_KEY;
+import static afterady.messages.LinksSendingMQConfiguration.LINKS_EXCHANGE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +30,6 @@ public class TriggerSendingActivationLinkSenderTest {
         sender.send(message);
 
         // assert
-        verify(rabbitTemplate).convertAndSend(eq("exchange"), eq("routing.key.1"), eq(message));
+        verify(rabbitTemplate).convertAndSend(eq(LINKS_EXCHANGE), eq(ACTIVATION_LINKS_ROUTING_KEY), eq(message));
     }
 }

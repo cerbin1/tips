@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static afterady.messages.LinksSendingMQConfiguration.LINKS_EXCHANGE;
+import static afterady.messages.LinksSendingMQConfiguration.PASSWORD_RESET_LINKS_ROUTING_KEY;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +30,6 @@ public class TriggerSendingPasswordResetLinkSenderTest {
         sender.send(message);
 
         // assert
-        verify(rabbitTemplate).convertAndSend(eq("exchange"), eq("routing.key.2"), eq(message));
+        verify(rabbitTemplate).convertAndSend(eq(LINKS_EXCHANGE), eq(PASSWORD_RESET_LINKS_ROUTING_KEY), eq(message));
     }
 }
