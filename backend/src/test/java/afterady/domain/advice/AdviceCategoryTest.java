@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AdviceCategoryTest {
+public class AdviceCategoryTest {
 
     @Test
-    public void testIsValid() {
+    public void shouldValidateEnumValue() {
         assertTrue(AdviceCategory.isValid("PERSONAL_DEVELOPMENT"));
         assertFalse(AdviceCategory.isValid("OTHER_CATEGORY"));
     }
