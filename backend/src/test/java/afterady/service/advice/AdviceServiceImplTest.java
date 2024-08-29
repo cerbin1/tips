@@ -26,7 +26,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-class AdviceServiceImplTest {
+public class AdviceServiceImplTest {
+
+    private AdviceService adviceService;
 
     @Mock
     private SuggestedAdviceRepository suggestedAdviceRepository;
@@ -34,8 +36,6 @@ class AdviceServiceImplTest {
     private AdviceRepository adviceRepository;
     @Mock
     private MongoTemplate mongoTemplate;
-
-    private AdviceService adviceService;
 
     @BeforeEach
     public void setUp() {
@@ -50,6 +50,7 @@ class AdviceServiceImplTest {
         // assert
         verify(suggestedAdviceRepository, times(1)).save(any());
         verifyNoMoreInteractions(suggestedAdviceRepository);
+        verifyNoInteractions(adviceRepository, mongoTemplate);
     }
 
     @Test
@@ -69,6 +70,7 @@ class AdviceServiceImplTest {
         assertEquals(1, advice.rating());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
+        verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
     }
 
     @Test
@@ -96,6 +98,7 @@ class AdviceServiceImplTest {
         assertEquals(1, last.rating());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(adviceRepository);
+        verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
     }
 
     @Test
@@ -118,6 +121,7 @@ class AdviceServiceImplTest {
         assertEquals(1, adviceDetails.getRating());
         verify(adviceRepository, times(1)).findById(eq(UUID_1));
         verifyNoMoreInteractions(adviceRepository);
+        verifyNoInteractions(suggestedAdviceRepository, mongoTemplate);
     }
 
     @Test
@@ -129,13 +133,17 @@ class AdviceServiceImplTest {
         when(adviceRepository.save(advice)).thenReturn(advice);
 
         // act
-        adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL);
+        Optional<Advice> maybeUpdatedAdvice = adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL);
 
         // assert
-        assertEquals(2, advice.getRating());
+        assertTrue(maybeUpdatedAdvice.isPresent());
+        Advice updatedAdvice = maybeUpdatedAdvice.get();
+        assertEquals(UUID_1, updatedAdvice.getId());
+        assertEquals(2, updatedAdvice.getRating());
         verify(adviceRepository, times(1)).findById(eq(UUID_1));
         verify(adviceRepository, times(1)).save(advice);
         verifyNoMoreInteractions(adviceRepository);
+        verifyNoInteractions(suggestedAdviceRepository, mongoTemplate);
     }
 
     @Test
@@ -157,6 +165,7 @@ class AdviceServiceImplTest {
         assertEquals(5, userVotedAdvices.size());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
+        verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
     }
 
     @Test
@@ -169,6 +178,9 @@ class AdviceServiceImplTest {
 
         // assert
         assertEquals(5, advicesCount);
+        verify(adviceRepository, times(1)).countByCategory(HOME);
+        verifyNoMoreInteractions(adviceRepository);
+        verifyNoInteractions(suggestedAdviceRepository, mongoTemplate);
     }
 
     @Test
@@ -191,6 +203,7 @@ class AdviceServiceImplTest {
         assertEquals("name 5", categoryAdvices.get(4).name());
         verify(adviceRepository, times(1)).findByCategory(HOME);
         verifyNoMoreInteractions(adviceRepository);
+        verifyNoInteractions(suggestedAdviceRepository, mongoTemplate);
     }
 
     @Test
@@ -214,5 +227,6 @@ class AdviceServiceImplTest {
         assertEquals("name 5", suggestedAdvices.get(4).name());
         verify(suggestedAdviceRepository, times(1)).findByCreatorId(userId);
         verifyNoMoreInteractions(suggestedAdviceRepository);
+        verifyNoInteractions(adviceRepository, mongoTemplate);
     }
 }
