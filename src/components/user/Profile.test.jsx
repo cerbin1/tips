@@ -8,6 +8,7 @@ beforeAll(() => {
 });
 describe("Profile", () => {
   test("should display profile", async () => {
+    localStorage.setItem("token", "token");
     localStorage.setItem("roles", "ROLE_USER");
     localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
@@ -60,6 +61,24 @@ describe("Profile", () => {
     expect(screen.getAllByRole("table")[2]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/advices?userEmail=test@test"
+    );
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/categories/suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when there are no voted advices", async () => {
@@ -92,6 +111,9 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/advices?userEmail=test@test"
+    );
   });
 
   test("should display info when rated advices are loading", async () => {
@@ -111,8 +133,11 @@ describe("Profile", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie ocenionych porad...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/advices?userEmail=test@test"
+    );
   });
 
   test("should display info when there are no suggested advices", async () => {
@@ -131,6 +156,12 @@ describe("Profile", () => {
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
     expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when fetching suggested advices fails", async () => {
@@ -140,13 +171,16 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/advices?userEmail=test@test"
-    );
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when suggested advices are loading", async () => {
@@ -171,8 +205,14 @@ describe("Profile", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie proponowanych porad...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when there are no suggested categories", async () => {
@@ -196,6 +236,15 @@ describe("Profile", () => {
       screen.getByText("Brak proponowanych kategorii")
     ).toBeInTheDocument();
     expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/categories/suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when fetching suggested categories fails", async () => {
@@ -205,12 +254,21 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     const error = screen.getByText(
       "Nie udało się pobrać proponowanych kategorii!"
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/categories/suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when suggested categories are loading", async () => {
@@ -241,9 +299,18 @@ describe("Profile", () => {
         screen.queryByText("Ładowanie proponowanych kategorii...")
       ).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
     expect(
       screen.getByText("Nazwa proponowanej kategorii")
     ).toBeInTheDocument();
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toHaveBeenCalledWith(
+      "backend/categories/suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 });
