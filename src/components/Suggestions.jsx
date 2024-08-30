@@ -1,7 +1,6 @@
 import ContainerSection from "./common/ContainerSection";
 import SuggestAdvice from "./advices/SuggestAdvice";
 import { useState } from "react";
-import LinkButton from "./common/LinkButton";
 import SuggestCategory from "./advices/categories/SuggestCategory";
 
 export default function Suggestions() {
@@ -11,11 +10,15 @@ export default function Suggestions() {
   }
   return (
     <ContainerSection data-testid="suggestions-section">
-      <LinkButton onClick={handleTypeChange}>
+      <p
+        className="text-blue-to-light cursor-pointer"
+        onClick={handleTypeChange}
+      >
         {suggestAdvice
           ? "Przejdź do propozycji kategorii"
-          : "Przejdź do propozycji porady"}
-      </LinkButton>
+          : "Przejdź do propozycji porady"}{" "}
+      </p>
+
       {suggestAdvice ? <SuggestAdvice /> : <SuggestCategory />}
     </ContainerSection>
   );
