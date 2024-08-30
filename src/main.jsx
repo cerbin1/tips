@@ -15,7 +15,7 @@ import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
 import Profile from "./components/user/Profile.jsx";
 import PasswordReset from "./components/user/PasswordReset.jsx";
-import ChangePassword from "./components/user/PasswordChange.jsx";
+import PasswordChangeForm from "./components/user/PasswordChangeForm.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Logout from "./components/user/Logout.jsx";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
           { path: "password-reset", element: <PasswordReset /> },
-          { path: "password-change/:token", element: <ChangePassword /> },
+          { path: "password-change/:token", element: <PasswordChangeForm /> },
         ],
       },
     ],

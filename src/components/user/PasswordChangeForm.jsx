@@ -4,7 +4,7 @@ import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
 import { useNavigate, useParams } from "react-router";
 
-export default function PasswordChange() {
+export default function PasswordChangeForm() {
   const navigate = useNavigate();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);

@@ -1,9 +1,10 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
-import PasswordChange from "./PasswordChange";
+import PasswordChangeForm from "./PasswordChangeForm";
 import { renderWithRouter } from "../../test/test-utils";
+
 const mockedUseNavigate = vi.fn();
 
-describe("PasswordChange", () => {
+describe("PasswordChangeForm", () => {
   beforeAll(() => {
     vi.mock("react-router", async () => {
       const actual = await vi.importActual("react-router");
@@ -22,8 +23,8 @@ describe("PasswordChange", () => {
     import.meta.env.VITE_BACKEND_URL = "backend/";
   });
 
-  test("should display password change form", () => {
-    renderWithRouter(<PasswordChange />);
+  test("should render component", () => {
+    renderWithRouter(<PasswordChangeForm />);
 
     expect(screen.getByTestId("password-change-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -43,7 +44,7 @@ describe("PasswordChange", () => {
   });
 
   test("should not submit form when password is empty", async () => {
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
 
     await userEvent.click(screen.getByRole("button"));
 
@@ -51,7 +52,7 @@ describe("PasswordChange", () => {
   });
 
   test("should not submit form when password is too short", async () => {
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
     const password = screen.getByLabelText("Nowe hasło");
     fireEvent.change(password, { target: { value: "pass" } });
     expect(password).toHaveValue("pass");
@@ -62,7 +63,7 @@ describe("PasswordChange", () => {
   });
 
   test("should not change password when password is invalid", async () => {
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
     fillPasswordInput();
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
@@ -84,7 +85,7 @@ describe("PasswordChange", () => {
   });
 
   test("should display general error when response is not ok", async () => {
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
     fillPasswordInput();
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
@@ -97,7 +98,7 @@ describe("PasswordChange", () => {
   });
 
   test("should display error when link expired", async () => {
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
     fillPasswordInput();
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
@@ -117,7 +118,7 @@ describe("PasswordChange", () => {
 
   test("should send form successfully", async () => {
     mockedUseNavigate.navigate = vi.fn();
-    renderWithRouter(<PasswordChange />);
+    renderWithRouter(<PasswordChangeForm />);
     const password = screen.getByLabelText("Nowe hasło");
     fireEvent.change(password, { target: { value: "password123!" } });
     expect(password).toHaveValue("password123!");
@@ -139,7 +140,7 @@ describe("PasswordChange", () => {
   });
 
   test("should block submit button and change text when submitting form", async () => {
-    await act(async () => render(<PasswordChange />));
+    await act(async () => render(<PasswordChangeForm />));
     const submitButton = screen.getByRole("button");
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveTextContent("Wyślij");
