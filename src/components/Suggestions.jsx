@@ -16,7 +16,7 @@ export default function Suggestions() {
       >
         {suggestAdvice
           ? "Przejdź do propozycji kategorii"
-          : "Przejdź do propozycji porady"}{" "}
+          : "Przejdź do propozycji porady"}
       </p>
 
       {suggestAdvice ? <SuggestAdvice /> : <SuggestCategory />}
