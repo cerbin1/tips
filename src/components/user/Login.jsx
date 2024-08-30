@@ -2,9 +2,9 @@ import { useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
-import { useNavigate, useOutletContext } from "react-router";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../store/auth-context";
+import SecondaryLinkButton from "../common/SecondaryLinkButton";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -72,12 +72,10 @@ export default function Login() {
         <FormInput label="Hasło" id="password" type="password" required />
 
         <div className="flex justify-between">
-          <Link
-            to="/user/password-reset"
-            className="px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
-          >
-            Zresetuj hasło
-          </Link>
+          <SecondaryLinkButton
+            path="/user/password-reset"
+            label="Zresetuj hasło"
+          />
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Logowanie..." : "Zaloguj"}
           </Button>

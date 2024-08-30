@@ -46,6 +46,7 @@ describe("Register", () => {
     expect(resetButton).toHaveClass(
       "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
     );
+    // TODO - zmienić to!
     const submitButton = screen.getByText("Wyślij");
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveAttribute("type", "submit");

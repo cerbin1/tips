@@ -8,13 +8,13 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
-beforeEach(() => {
+beforeAll(() => {
   globalThis.fetch.mockClear();
 });
 
 describe("Login", () => {
-  test("should display form", () => {
-    renderWithRouterAndAuth(<Login />);
+  test("should render component", () => {
+    act(() => renderWithRouterAndAuth(<Login />));
 
     expect(screen.getByTestId("login-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -23,6 +23,8 @@ describe("Login", () => {
     const form = screen.getByRole("form");
     expect(form).toBeInTheDocument();
     expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
+    expect(screen.getAllByRole("textbox")).toHaveLength(1);
+    expect(screen.getAllByRole("button")).toHaveLength(1);
     const emailInput = screen.getByLabelText("Adres e-mail");
     expect(emailInput).toBeInTheDocument();
     expect(emailInput).toHaveAttribute("type", "email");
@@ -31,10 +33,9 @@ describe("Login", () => {
     expect(passwordInput).toBeInTheDocument();
     expect(passwordInput).toHaveAttribute("type", "password");
     expect(passwordInput).toBeRequired();
-    expect(screen.getAllByRole("textbox")).toHaveLength(1);
-    expect(screen.getAllByRole("button")).toHaveLength(1);
-    const loginButton = screen.getByText("Zaloguj");
+    const loginButton = screen.getByRole("button");
     expect(loginButton).toBeInTheDocument();
+    expect(loginButton).toHaveTextContent("Zaloguj");
     expect(loginButton).toHaveAttribute("type", "submit");
     expect(loginButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
@@ -45,12 +46,16 @@ describe("Login", () => {
     expect(passwordResetButton).toHaveClass(
       "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
     );
+    expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
   test("should not send form when email is empty", async () => {
     renderWithRouterAndAuth(<Login />);
+    const loginButton = screen.getByText("Zaloguj");
+    expect(loginButton).toBeInTheDocument();
+    expect(loginButton).not.toBeDisabled();
 
-    await userEvent.click(screen.getByText("Zaloguj"));
+    await userEvent.click(loginButton);
 
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
@@ -60,8 +65,12 @@ describe("Login", () => {
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "   " },
     });
+    const loginButton = screen.getByText("Zaloguj");
+    expect(loginButton).toBeInTheDocument();
+    expect(loginButton).not.toBeDisabled();
 
-    await userEvent.click(screen.getByText("Zaloguj"));
+    await userEvent.click(loginButton);
+
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -70,9 +79,11 @@ describe("Login", () => {
     fireEvent.change(screen.getByLabelText("Adres e-mail"), {
       target: { value: "test@email" },
     });
+    const loginButton = screen.getByText("Zaloguj");
+    expect(loginButton).toBeInTheDocument();
+    expect(loginButton).not.toBeDisabled();
 
-    const submitButton = screen.getByText("Zaloguj");
-    await userEvent.click(submitButton);
+    await userEvent.click(loginButton);
 
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
@@ -93,6 +104,7 @@ describe("Login", () => {
     const error = screen.getByText("Podano nieprawidłowe dane logowania!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expectLoginAuthRequestSent();
   });
 
   test("should display general error when response is not ok", async () => {
@@ -109,63 +121,62 @@ describe("Login", () => {
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expectLoginAuthRequestSent();
   });
 
   test("should change button text and disable it when form is submitting", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        JSON.parse(
-          `{"jwt": "token", "roles": "[\"user\"]", "userEmail": "email"}`
-        ),
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"jwt": "token", "roles": ["user"], "userEmail": "email"}`
+          ),
+      })
+    );
     renderWithRouterAndAuth(<Login />);
     await fillForm();
-    const submitButton = screen.getByText("Zaloguj");
-    expect(submitButton).toHaveClass(
-      "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
-    );
-    expect(submitButton).not.toBeDisabled();
+    let loginButton = screen.getByRole("button");
+    expect(loginButton).toHaveTextContent("Zaloguj");
+    expect(loginButton).not.toBeDisabled();
 
-    userEvent.click(submitButton);
+    userEvent.click(loginButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Logowanie...")).toBeInTheDocument();
-      expect(submitButton).toBeDisabled();
+      const loggingButton = screen.getByRole("button");
+      expect(loggingButton).toBeInTheDocument();
+      expect(loggingButton).toHaveTextContent("Logowanie...");
+      expect(loggingButton).toBeDisabled();
     });
     expect(screen.queryByText("Logowanie...")).toBeNull();
-    expect(screen.getByText("Zaloguj")).toBeInTheDocument();
-    expect(screen.getByRole("button")).not.toBeDisabled();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    loginButton = screen.getByRole("button");
+    expect(loginButton).toBeInTheDocument();
+    expect(loginButton).not.toBeDisabled();
+    expectLoginAuthRequestSent(globalThis);
   });
 
   test("should login successfully", async () => {
     localStorage.setItem("token", "token");
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        JSON.parse('{"jwt": "token", "roles": ["user"], "userEmail": "email"}'),
-    });
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () =>
+          JSON.parse(
+            `{"jwt": "token", "roles": ["user"], "userEmail": "email"}`
+          ),
+      })
+    );
     renderWithRouterAndAuth(<Login />);
     await fillForm();
 
     await act(async () => {
-      userEvent.click(screen.getByRole("button"));
+      await userEvent.click(screen.getByRole("button"));
     });
 
-    await waitFor(() => {
-      expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: "test@email",
-          password: "password",
-        }),
-      });
-    });
     expect(localStorage.getItem("token")).toBe("token");
     expect(localStorage.getItem("roles")).toBe('["user"]');
     expect(localStorage.getItem("userEmail")).toBe("email");
+    expectLoginAuthRequestSent();
   });
 });
 
@@ -176,4 +187,21 @@ async function fillForm() {
   fireEvent.change(screen.getByLabelText("Hasło"), {
     target: { value: "password" },
   });
+}
+
+function expectLoginAuthRequestSent() {
+  expect(globalThis.fetch).toBeCalledTimes(1);
+  expect(globalThis.fetch).toBeCalledWith(
+    "backend/auth/login",
+    expect.objectContaining({
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: "test@email",
+        password: "password",
+      }),
+    })
+  );
 }
