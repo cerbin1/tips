@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { waitFor } from "@testing-library/react";
 import { act } from "react";
 import { renderWithAuth, renderWithRouterAndAuth } from "../../test/test-utils";
 import Profile from "./Profile";

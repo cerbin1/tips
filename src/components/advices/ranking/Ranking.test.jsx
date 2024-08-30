@@ -1,7 +1,6 @@
 import Ranking from "./Ranking";
 import { renderWithRouter } from "../../../test/test-utils";
 import { act, waitFor } from "@testing-library/react";
-import { json } from "react-router";
 import { beforeAll } from "vitest";
 
 describe("Ranking", () => {

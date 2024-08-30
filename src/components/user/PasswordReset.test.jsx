@@ -1,6 +1,5 @@
 import PasswordReset from "./PasswordReset";
 import { act, fireEvent, waitFor } from "@testing-library/react";
-import { beforeAll } from "vitest";
 
 describe("PasswordReset", () => {
   beforeAll(() => {
