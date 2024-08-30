@@ -1,6 +1,6 @@
 import { BrowserRouter } from "react-router-dom";
 import { render } from "@testing-library/react";
-import AuthProvider from "./store/auth-context";
+import AuthProvider from "../store/auth-context";
 
 export const renderWithRouter = (component) => {
   return {
