@@ -85,17 +85,7 @@ describe("PasswordChangeForm", () => {
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/auth/account/password-change/token",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: "password",
-      }
-    );
+    expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
   test("should display general error when response is not ok", async () => {
@@ -108,17 +98,7 @@ describe("PasswordChangeForm", () => {
     const error = screen.getByText("Nie udało się zmienić hasła!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/auth/account/password-change/token",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: "password",
-      }
-    );
+    expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
   test("should display error when link expired", async () => {
@@ -137,17 +117,7 @@ describe("PasswordChangeForm", () => {
     const error = screen.getByText("Nie udało się zmienić hasła! Link wygasł.");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/auth/account/password-change/token",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: "password",
-      }
-    );
+    expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
   test("should send form successfully", async () => {
@@ -161,17 +131,7 @@ describe("PasswordChangeForm", () => {
     await userEvent.click(screen.getByRole("button"));
 
     expect(mockedUseNavigate).toBeCalledWith("/user/login");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/auth/account/password-change/token",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: "password123!",
-      }
-    );
+    expectChangeRequestWasSentWithPassword("password123!", globalThis);
   });
 
   test("should block submit button and change text when submitting form", async () => {
@@ -191,6 +151,16 @@ describe("PasswordChangeForm", () => {
       expect(submitButton).toBeDisabled();
     });
     expect(mockedUseNavigate).toBeCalledWith("/user/login");
+    expectChangeRequestWasSentWithPassword("password123!", globalThis);
+  });
+
+  function fillPasswordInput() {
+    const password = screen.getByLabelText("Nowe hasło");
+    fireEvent.change(password, { target: { value: "password" } });
+    expect(password).toHaveValue("password");
+  }
+
+  function expectChangeRequestWasSentWithPassword(password, globalThis) {
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/account/password-change/token",
@@ -199,14 +169,8 @@ describe("PasswordChangeForm", () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: "password123!",
+        body: password,
       }
     );
-  });
-
-  function fillPasswordInput() {
-    const password = screen.getByLabelText("Nowe hasło");
-    fireEvent.change(password, { target: { value: "password" } });
-    expect(password).toHaveValue("password");
   }
 });
