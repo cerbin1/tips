@@ -8,12 +8,13 @@ export default function ActivateUser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const params = useParams();
+  const { token } = useParams();
 
   useEffect(() => {
     async function sendRequest() {
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "auth/activate/" + params.token
+          import.meta.env.VITE_BACKEND_URL + "auth/activate/" + token
         );
 
         if (response.ok) {
