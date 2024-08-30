@@ -30,17 +30,21 @@ describe("PasswordChangeForm", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Zmiana hasła"
     );
-    expect(screen.getByRole("form")).toBeInTheDocument();
+    const form = screen.getByRole("form");
+    expect(form).toBeInTheDocument();
+    expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
+    expect(screen.getAllByRole("button")).toHaveLength(1);
     const password = screen.getByLabelText("Nowe hasło");
     expect(password).toBeInTheDocument();
     expect(password).toHaveAttribute("type", "password");
     expect(password).toBeRequired();
-    const submit = screen.getByRole("button");
-    expect(submit).toBeInTheDocument();
-    expect(submit).toHaveAttribute("type", "submit");
-    expect(submit).toHaveClass(
+    const submitButton = screen.getByRole("button");
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toHaveAttribute("type", "submit");
+    expect(submitButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
     );
+    expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
   test("should not submit form when password is empty", async () => {
@@ -76,12 +80,22 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText(
       "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-change/token",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: "password",
+      }
+    );
   });
 
   test("should display general error when response is not ok", async () => {
@@ -91,10 +105,20 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się zmienić hasła!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-change/token",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: "password",
+      }
+    );
   });
 
   test("should display error when link expired", async () => {
@@ -110,10 +134,20 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się zmienić hasła! Link wygasł.");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-change/token",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: "password",
+      }
+    );
   });
 
   test("should send form successfully", async () => {
@@ -126,6 +160,8 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
+    expect(mockedUseNavigate).toBeCalledWith("/user/login");
+    expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/account/password-change/token",
       {
@@ -136,7 +172,6 @@ describe("PasswordChangeForm", () => {
         body: "password123!",
       }
     );
-    expect(mockedUseNavigate).toBeCalledWith("/user/login");
   });
 
   test("should block submit button and change text when submitting form", async () => {
@@ -155,6 +190,18 @@ describe("PasswordChangeForm", () => {
       expect(screen.getByText("Wysyłanie...")).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
+    expect(mockedUseNavigate).toBeCalledWith("/user/login");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-change/token",
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: "password123!",
+      }
+    );
   });
 
   function fillPasswordInput() {
