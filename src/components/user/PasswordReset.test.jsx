@@ -60,7 +60,7 @@ describe("PasswordReset", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/account/password-reset?email=test@test",
       { method: "PUT" }
     );

@@ -187,7 +187,7 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się utworzyć użytkownika!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -208,7 +208,7 @@ describe("Register", () => {
     const submitButton = screen.getByText("Wyślij");
     await userEvent.click(submitButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nazwa użytkownika jest zajęta!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -228,7 +228,7 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Hasła musza być takie same!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -249,7 +249,7 @@ describe("Register", () => {
     const submitButton = screen.getByText("Wyślij");
     await userEvent.click(submitButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Email jest zajęty!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -269,7 +269,7 @@ describe("Register", () => {
     const submitButton = screen.getByText("Wyślij");
     await userEvent.click(submitButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Email jest niepoprawny!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -281,7 +281,7 @@ describe("Register", () => {
 
     await fillAndSubmitForm();
 
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/auth/register", {
+    expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       body: '{"email":"test@email","username":"username","password":"password","passwordRepeat":"password"}',
       headers: {
         "Content-Type": "application/json",
@@ -316,14 +316,14 @@ describe("Register", () => {
   test("should display error and hide resend button when resend activation link failed", async () => {
     renderWithRouter(<Register />);
     await fillAndSubmitForm();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");
     expect(resendActivationLinkButton).toBeInTheDocument();
 
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     await userEvent.click(resendActivationLinkButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
       {
         headers: {
@@ -341,14 +341,14 @@ describe("Register", () => {
   test("should successfully resend activation link and then display info and hide resend button", async () => {
     renderWithRouter(<Register />);
     await fillAndSubmitForm();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");
     expect(resendActivationLinkButton).toBeInTheDocument();
 
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
     await userEvent.click(resendActivationLinkButton);
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/resend/63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
       {
         headers: {

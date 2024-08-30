@@ -32,7 +32,7 @@ describe("CategoryDetails", () => {
     expect(error);
     expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByRole("table")).toBeNull();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/categories/342c97ec-e00a-4ccb-b235-b6d22fe34c56"
     );
   });

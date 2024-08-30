@@ -31,10 +31,8 @@ describe("ActivateUser", () => {
     const loginButton = screen.getByText("Przejdź do logowania");
     expect(loginButton).toBeInTheDocument();
     expect(loginButton).toHaveAttribute("href", "/login");
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/activate/token"
-    );
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });
 
   test("should display message when sending activate user request", async () => {
@@ -46,10 +44,8 @@ describe("ActivateUser", () => {
     await waitFor(() => {
       expect(screen.queryByText("Aktywacja konta...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/activate/token"
-    );
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });
 
   test("should display error when request to activate user fails", async () => {
@@ -62,9 +58,7 @@ describe("ActivateUser", () => {
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-600");
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/auth/activate/token"
-    );
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });
 });

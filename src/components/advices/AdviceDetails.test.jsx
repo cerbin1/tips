@@ -29,7 +29,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     const error = screen.getByText("Nie znaleziono porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -40,7 +40,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -67,7 +67,7 @@ describe("AdviceDetails", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
   });
 
@@ -142,7 +142,7 @@ describe("AdviceDetails", () => {
         ok: false,
       });
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
 
@@ -151,7 +151,7 @@ describe("AdviceDetails", () => {
     const error = screen.getByText("Nie udało się ocenić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledTimes(3);
   });
 
   test("should block button and change text when rating advice", async () => {
@@ -176,7 +176,7 @@ describe("AdviceDetails", () => {
           ),
       });
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
@@ -188,7 +188,7 @@ describe("AdviceDetails", () => {
       expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledTimes(3);
   });
 
   test("should successfully rate advice and display info", async () => {
@@ -215,7 +215,7 @@ describe("AdviceDetails", () => {
       });
     localStorage.setItem("userEmail", "email@test");
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
 
@@ -225,7 +225,7 @@ describe("AdviceDetails", () => {
     const rateSuccess = screen.getByText("Oceniono poradę.");
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(screen.getByText("Oceniono")).toBeDisabled();
   });
 
@@ -247,7 +247,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceń jako przydatne");
     expect(rateButton).toBeEnabled();
@@ -273,7 +273,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceniono");
     expect(rateButton).toBeDisabled();

@@ -135,7 +135,7 @@ describe("PasswordChange", () => {
         body: "password123!",
       }
     );
-    expect(mockedUseNavigate).toHaveBeenCalledWith("/user/login");
+    expect(mockedUseNavigate).toBeCalledWith("/user/login");
   });
 
   test("should block submit button and change text when submitting form", async () => {

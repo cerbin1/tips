@@ -13,12 +13,12 @@ describe("Logout", () => {
         useNavigate: () => mockedUseNavigate,
       };
     });
-    expect(mockedUseNavigate).not.toHaveBeenCalled();
+    expect(mockedUseNavigate).not.toBeCalled();
     expect(localStorage.getItem("token")).toBe("token");
 
     renderWithRouterAndAuth(<Logout />);
 
-    expect(mockedUseNavigate).toHaveBeenCalledWith("/");
+    expect(mockedUseNavigate).toBeCalledWith("/");
     expect(localStorage.getItem("token")).toBeNull();
   });
 });

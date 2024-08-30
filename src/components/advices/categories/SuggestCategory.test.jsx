@@ -52,7 +52,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(0);
+    expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
   test("should not send form when name is too long", async () => {
@@ -66,7 +66,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(0);
+    expect(globalThis.fetch).toBeCalledTimes(0);
     const error = screen.getByText("Nazwa jest zbyt długa!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -77,7 +77,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(0);
+    expect(globalThis.fetch).toBeCalledTimes(0);
     const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -109,7 +109,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wysłać propozycji!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -130,7 +130,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -153,7 +153,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText(
       "Nie udało się zapisć propozycji. Walidacja nieudana."
     );
@@ -170,7 +170,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/categories", {
+    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -197,7 +197,7 @@ describe("SuggestCategory", () => {
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
     await userEvent.click(screen.getByText("Wyślij propozycję"));
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/categories", {
+    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",

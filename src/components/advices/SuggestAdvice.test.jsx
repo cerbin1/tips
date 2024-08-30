@@ -79,13 +79,10 @@ describe("SuggestAdvice", () => {
   test("should display form", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
 
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/advices/categories",
-      {
-        method: "GET",
-        headers: { Authorization: "Bearer token" },
-      }
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/categories", {
+      method: "GET",
+      headers: { Authorization: "Bearer token" },
+    });
     expect(screen.getByText("Zaproponuj poradę")).toBeInTheDocument();
     const form = screen.getByRole("form");
     expect(form).toBeInTheDocument();
@@ -119,7 +116,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
   });
 
   test("should not send form when name is too long", async () => {
@@ -134,7 +131,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nazwa jest zbyt długa!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -153,7 +150,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
   });
 
   test("should not send form when content is empty", async () => {
@@ -165,7 +162,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
   });
 
   test("should not send form when content is too long", async () => {
@@ -180,7 +177,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Treść jest zbyt długa!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -189,11 +186,11 @@ describe("SuggestAdvice", () => {
   test("should not send form when captcha is not resolved", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
     await fillFormWithDefaultValues();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -201,7 +198,7 @@ describe("SuggestAdvice", () => {
 
   test("should block submit button and change text when submitting form", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     globalThis.fetch.mockImplementationOnce(() =>
       Promise.resolve({ ok: true })
@@ -220,14 +217,14 @@ describe("SuggestAdvice", () => {
 
   test("should display general error when submitting form and response is not ok", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wysłać propozycji!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -235,7 +232,7 @@ describe("SuggestAdvice", () => {
 
   test("should display captcha error when server returns captcha validation error", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() =>
@@ -249,7 +246,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -257,7 +254,7 @@ describe("SuggestAdvice", () => {
 
   test("should display server error when submitting form and response have validation error", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() =>
@@ -273,7 +270,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText(
       "Nie udało się zapisć propozycji. Walidacja nieudana."
     );
@@ -283,7 +280,7 @@ describe("SuggestAdvice", () => {
 
   test("should send form successfully, display message, display button and hide form", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     expect(screen.getByRole("form")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("captcha"));
@@ -291,7 +288,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -313,13 +310,13 @@ describe("SuggestAdvice", () => {
 
   test("should hide button and success message and display new form when clicking button to suggest new advice", async () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
     expect(screen.getByRole("form")).toBeInTheDocument();
     await userEvent.click(screen.getByTestId("captcha"));
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
     await userEvent.click(screen.getByText("Wyślij propozycję"));
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",

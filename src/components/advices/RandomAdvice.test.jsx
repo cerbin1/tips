@@ -10,7 +10,7 @@ describe("RandomAdvice", () => {
     await act(async () => render(<RandomAdvice />));
 
     expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -23,7 +23,7 @@ describe("RandomAdvice", () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     await act(async () => render(<RandomAdvice />));
     expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -31,7 +31,7 @@ describe("RandomAdvice", () => {
 
     await userEvent.click(button);
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(
       screen.getByText("Nie udało się wyświetlić porady!")
     ).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("RandomAdvice", () => {
       });
     await act(async () => renderWithRouter(<RandomAdvice />));
     expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -61,7 +61,7 @@ describe("RandomAdvice", () => {
 
     await userEvent.click(button);
 
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.queryByText("Nie udało się wyświetlić porady!")).toBeNull();
     expect(
       screen.queryByRole("button", { name: "Spróbuj ponownie" })
@@ -85,7 +85,7 @@ describe("RandomAdvice", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie...")).toBeNull();
     });
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     expect(screen.getByText("Woda")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
@@ -96,7 +96,7 @@ describe("RandomAdvice", () => {
       json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
     });
     await act(async () => renderWithRouter(<RandomAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Woda");
     const newAdviceButton = screen.getByRole("button");
     expect(newAdviceButton).toHaveTextContent("Wylosuj nową poradę");
@@ -109,7 +109,7 @@ describe("RandomAdvice", () => {
     });
     expect(screen.queryByText("Ładowanie...")).toBeNull();
     expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.getByText("Woda")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
   });
@@ -119,7 +119,7 @@ describe("RandomAdvice", () => {
       ok: false,
     });
     await act(async () => render(<RandomAdvice />));
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const retryButton = screen.getByRole("button");
     expect(retryButton).toHaveTextContent("Spróbuj ponownie");
 
@@ -131,7 +131,7 @@ describe("RandomAdvice", () => {
     });
     expect(screen.queryByText("Ładowanie...")).toBeNull();
     expect(screen.getByText("Spróbuj ponownie")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledTimes(2);
   });
 
   test("should display random advice", async () => {

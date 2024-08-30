@@ -61,24 +61,21 @@ describe("Profile", () => {
     expect(screen.getAllByRole("table")[2]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
       },
     });
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/categories/suggested",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer token",
-        },
-      }
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when there are no voted advices", async () => {
@@ -94,7 +91,7 @@ describe("Profile", () => {
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak ocenionych porad")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
   });
@@ -111,7 +108,7 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
   });
@@ -134,8 +131,8 @@ describe("Profile", () => {
       expect(screen.queryByText("Ładowanie ocenionych porad...")).toBeNull();
     });
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith(
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
   });
@@ -155,8 +152,8 @@ describe("Profile", () => {
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -174,8 +171,8 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -206,8 +203,8 @@ describe("Profile", () => {
       expect(screen.queryByText("Ładowanie proponowanych porad...")).toBeNull();
     });
     expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -235,16 +232,13 @@ describe("Profile", () => {
     expect(
       screen.getByText("Brak proponowanych kategorii")
     ).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/categories/suggested",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer token",
-        },
-      }
-    );
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when fetching suggested categories fails", async () => {
@@ -259,16 +253,13 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/categories/suggested",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer token",
-        },
-      }
-    );
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when suggested categories are loading", async () => {
@@ -302,15 +293,12 @@ describe("Profile", () => {
     expect(
       screen.getByText("Nazwa proponowanej kategorii")
     ).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
-    expect(globalThis.fetch).toHaveBeenCalledWith(
-      "backend/categories/suggested",
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer token",
-        },
-      }
-    );
+    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 });

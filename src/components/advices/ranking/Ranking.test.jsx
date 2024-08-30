@@ -12,7 +12,7 @@ describe("Ranking", () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     await act(async () => renderWithRouter(<Ranking />));
 
-    expect(globalThis.fetch).toHaveBeenCalledOnce();
+    expect(globalThis.fetch).toBeCalledTimes(1);
     const error = screen.getByText("Nie udało się wyświetlić rankingu!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
@@ -109,7 +109,7 @@ describe("Ranking", () => {
     expect(screen.getByText("Kategoria")).toBeInTheDocument();
     expect(screen.getByText("Ocena")).toBeInTheDocument();
     expect(screen.getByText("Szczegóły")).toBeInTheDocument();
-    expect(globalThis.fetch).toHaveBeenCalledWith("backend/advices/ranking");
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/ranking");
     const cells = screen.getAllByRole("cell");
     expect(cells).toHaveLength(40);
     expect(cells[0]).toHaveTextContent("name 1");
