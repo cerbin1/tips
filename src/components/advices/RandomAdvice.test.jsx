@@ -1,7 +1,7 @@
 import { act, waitFor } from "@testing-library/react";
 import RandomAdvice from "./RandomAdvice";
 import { expect, vi } from "vitest";
-import { renderWithRouter } from "../../test-utils";
+import { renderWithRouter } from "../../test/test-utils";
 
 describe("RandomAdvice", () => {
   test("should display error when response is not ok", async () => {

@@ -3,7 +3,7 @@ import TableHeader from "./TableHeader";
 import TableRow from "./TableRow";
 import Table from "./Table";
 import TableData from "./TableData";
-import { renderWithRouter } from "../../../test-utils";
+import { renderWithRouter } from "../../../test/test-utils";
 import TableBody from "./TableBody";
 
 describe("Table", () => {

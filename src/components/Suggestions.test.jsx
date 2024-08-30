@@ -1,6 +1,5 @@
-import userEvent from "@testing-library/user-event";
+import { renderWithAuth } from "../test/test-utils";
 import Suggestions from "./Suggestions";
-import { renderWithAuth } from "../test-utils";
 
 describe("Suggestions", () => {
   test("should display button to change suggestion type", () => {

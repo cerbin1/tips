@@ -1,4 +1,4 @@
-import { renderWithRouter } from "../../../test-utils";
+import { renderWithRouter } from "../../../test/test-utils";
 import TableDataLink from "./TableDataLink";
 
 describe("TableDataLink", () => {

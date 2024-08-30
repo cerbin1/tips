@@ -1,5 +1,5 @@
 import CategoryDetails from "./CategoryDetails";
-import { renderWithRouter } from "../../../test-utils";
+import { renderWithRouter } from "../../../test/test-utils";
 import { act, waitFor } from "@testing-library/react";
 
 beforeAll(() => {

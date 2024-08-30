@@ -1,5 +1,5 @@
 import Home from "./Home";
-import { renderWithRouter } from "../../test-utils";
+import { renderWithRouter } from "../../test/test-utils";
 
 describe("Home", () => {
   test("should display hero section", () => {

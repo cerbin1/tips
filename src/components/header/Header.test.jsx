@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import Header from "./Header";
-import { renderWithRouterAndAuth } from "../../test-utils";
+import { renderWithRouterAndAuth } from "../../test/test-utils";
 
 describe("Header", () => {
   test("should display header", () => {

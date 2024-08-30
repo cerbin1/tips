@@ -1,6 +1,6 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import PasswordChange from "./PasswordChange";
-import { renderWithRouter } from "../../test-utils";
+import { renderWithRouter } from "../../test/test-utils";
 const mockedUseNavigate = vi.fn();
 
 describe("PasswordChange", () => {

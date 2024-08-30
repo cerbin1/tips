@@ -1,7 +1,7 @@
 import { waitFor } from "@testing-library/react";
 import ActivateUser from "./ActivateUser";
 import { vi } from "vitest";
-import { renderWithRouter } from "../../test-utils";
+import { renderWithRouter } from "../../test/test-utils";
 
 describe("ActivateUser", () => {
   test("should display user activating info", async () => {

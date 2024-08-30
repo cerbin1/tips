@@ -1,7 +1,7 @@
 import SuggestAdvice from "./SuggestAdvice";
 import { beforeEach, expect, test } from "vitest";
 import { act, fireEvent, waitFor } from "@testing-library/react";
-import { renderWithAuth } from "../../test-utils";
+import { renderWithAuth } from "../../test/test-utils";
 
 beforeEach(() => {
   globalThis.fetch = vi.fn((url) => {

@@ -1,4 +1,4 @@
-import { renderWithRouterAndAuth } from "../../test-utils";
+import { renderWithRouterAndAuth } from "../../test/test-utils";
 import Logout from "./Logout";
 
 const mockedUseNavigate = vi.fn();

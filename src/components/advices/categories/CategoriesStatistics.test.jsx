@@ -1,5 +1,5 @@
 import CategoriesStatistics from "./CategoriesStatistics";
-import { renderWithRouter } from "../../../test-utils";
+import { renderWithRouter } from "../../../test/test-utils";
 import { act, waitFor } from "@testing-library/react";
 
 describe("Categories", () => {

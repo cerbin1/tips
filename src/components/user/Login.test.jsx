@@ -1,7 +1,7 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Login from "./Login";
-import { renderWithRouterAndAuth } from "../../test-utils";
+import { renderWithRouterAndAuth } from "../../test/test-utils";
 
 beforeAll(() => {
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));

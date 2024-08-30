@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll } from "vitest";
-import { renderWithAuth, renderWithRouterAndAuth } from "../../test-utils";
+import { renderWithAuth, renderWithRouterAndAuth } from "../../test/test-utils";
 import AdviceDetails from "./AdviceDetails";
 
 describe("AdviceDetails", () => {

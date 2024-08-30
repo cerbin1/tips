@@ -1,6 +1,6 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import SuggestCategory from "./SuggestCategory";
-import { renderWithAuth } from "../../../test-utils";
+import { renderWithAuth } from "../../../test/test-utils";
 
 describe("SuggestCategory", () => {
   beforeEach(() => {
