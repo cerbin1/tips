@@ -3,7 +3,6 @@ import Login from "./Login";
 import { renderWithRouterAndAuth } from "../../test/test-utils";
 
 beforeAll(() => {
-  globalThis.fetch.mockClear();
   globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
   import.meta.env.VITE_BACKEND_URL = "backend/";
