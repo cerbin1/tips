@@ -144,10 +144,7 @@ describe("SuggestCategory", () => {
       Promise.resolve({
         ok: false,
         status: 422,
-        json: () =>
-          Promise.resolve({
-            message: "Error",
-          }),
+        json: () => Promise.resolve({ message: "Error" }),
       })
     );
 

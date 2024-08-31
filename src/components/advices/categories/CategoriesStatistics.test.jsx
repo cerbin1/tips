@@ -22,9 +22,21 @@ describe("Categories", () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
-        JSON.parse(
-          `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category":{"name": "HOME", "displayName": "Dom"}, "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category":{"name": "HEALTH", "displayName": "Zdrowie"}, "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advicesCount": 20}]`
-        ),
+        Promise.resolve([
+          {
+            id: "cab77578-7452-4a6d-a52f-f95126bd2dd1",
+            category: { name: "HOME", displayName: "Dom" },
+            description:
+              "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.",
+            advicesCount: 10,
+          },
+          {
+            id: "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda",
+            category: { name: "HEALTH", displayName: "Zdrowie" },
+            description: "Porady dotyczące zdrowia i dobrego samopoczucia.",
+            advicesCount: 20,
+          },
+        ]),
     });
     expect(screen.queryByRole("table")).toBeNull();
     renderWithRouter(<CategoriesStatistics />);
@@ -41,9 +53,21 @@ describe("Categories", () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "cab77578-7452-4a6d-a52f-f95126bd2dd1", "category":{"name": "HOME", "displayName": "Dom"}, "description": "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.", "advcicesCount": 10}, {"id": "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda", "category":{"name": "HEALTH", "displayName": "Zdrowie"}, "description": "Porady dotyczące zdrowia i dobrego samopoczucia.", "advcicesCount": 20}]`
-          ),
+          Promise.resolve([
+            {
+              id: "cab77578-7452-4a6d-a52f-f95126bd2dd1",
+              category: { name: "HOME", displayName: "Dom" },
+              description:
+                "Porady dotyczące sprzątania, zarządzania przestrzenią itp. w domu.",
+              advcicesCount: 10,
+            },
+            {
+              id: "4a9fb847-31fb-49bf-8f2e-1f6ccec69eda",
+              category: { name: "HEALTH", displayName: "Zdrowie" },
+              description: "Porady dotyczące zdrowia i dobrego samopoczucia.",
+              advcicesCount: 20,
+            },
+          ]),
       })
     );
     await act(async () => renderWithRouter(<CategoriesStatistics />));

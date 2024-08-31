@@ -46,11 +46,7 @@ describe("RandomAdvice", () => {
       .mockResolvedValueOnce({
         ok: false,
       })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () =>
-          JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
-      });
+      .mockResolvedValueOnce(returnRandomAdvice());
     await act(async () => renderWithRouter(<RandomAdvice />));
     expect(screen.queryByRole("heading")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
@@ -74,10 +70,7 @@ describe("RandomAdvice", () => {
   });
 
   test("should display info when loading component", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
-    });
+    globalThis.fetch = vi.fn().mockResolvedValueOnce(returnRandomAdvice());
 
     renderWithRouter(<RandomAdvice />);
 
@@ -91,10 +84,7 @@ describe("RandomAdvice", () => {
   });
 
   test("should display info when loading new random advice after clicking button", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
-    });
+    globalThis.fetch = vi.fn().mockResolvedValue(returnRandomAdvice());
     await act(async () => renderWithRouter(<RandomAdvice />));
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Woda");
@@ -138,7 +128,7 @@ describe("RandomAdvice", () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
-        JSON.parse(`{"id": "123", "name": "Woda", "content": "Pij dużo wody"}`),
+        Promise.resolve({ id: "123", name: "Woda", content: "Pij dużo wody" }),
     });
 
     await act(async () => renderWithRouter(<RandomAdvice />));
@@ -166,16 +156,14 @@ describe("RandomAdvice", () => {
   test("should display new random advice after button click", async () => {
     globalThis.fetch = vi
       .fn()
+      .mockResolvedValueOnce(returnRandomAdvice())
       .mockResolvedValueOnce({
+        json: () =>
+          Promise.resolve({
+            name: "Słońce",
+            content: "Korzystaj przynajmniej 15 minut dziennie ze słońca",
+          }),
         ok: true,
-        json: () => JSON.parse(`{"name": "Woda", "content": "Pij dużo wody"}`),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () =>
-          JSON.parse(
-            `{"name": "Słońce", "content": "Korzystaj przynajmniej 15 minut dziennie ze słońca"}`
-          ),
       });
     await act(async () => renderWithRouter(<RandomAdvice />));
     expect(screen.getByText("Woda")).toBeInTheDocument();
@@ -189,3 +177,10 @@ describe("RandomAdvice", () => {
     ).toBeInTheDocument();
   });
 });
+
+function returnRandomAdvice() {
+  return {
+    ok: true,
+    json: () => Promise.resolve({ name: "Woda", content: "Pij dużo wody" }),
+  };
+}

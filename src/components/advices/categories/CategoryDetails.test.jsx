@@ -41,19 +41,20 @@ describe("CategoryDetails", () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
-        JSON.parse(`{"categoryDisplayName": "Dom",
-          "description": "Opis",
-          "advices": [
+        Promise.resolve({
+          categoryDisplayName: "Dom",
+          description: "Opis",
+          advices: [
             {
-              "id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
-              "name": "name 1",
-              "categoryName": "HOME",
-              "categoryDisplayName": "Dom",
-              "content": "treść",
-              "rating": 10
-            }
-          ]
-        }`),
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "name 1",
+              categoryName: "HOME",
+              categoryDisplayName: "Dom",
+              content: "treść",
+              rating: 10,
+            },
+          ],
+        }),
     });
     expect(screen.queryByRole("table")).toBeNull();
     renderWithRouter(<CategoryDetails />);
@@ -69,35 +70,36 @@ describe("CategoryDetails", () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
-        JSON.parse(`{"categoryDisplayName": "Dom",
-          "description": "Opis",
-          "advices": [
+        Promise.resolve({
+          categoryDisplayName: "Dom",
+          description: "Opis",
+          advices: [
             {
-              "id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
-              "name": "name 1",
-              "categoryName": "HOME",
-              "categoryDisplayName": "Dom",
-              "content": "treść 1",
-              "rating": 10
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "name 1",
+              categoryName: "HOME",
+              categoryDisplayName: "Dom",
+              content: "treść 1",
+              rating: 10,
             },
             {
-              "id": "2d55e1da-704d-44cc-a207-bd45f42acb72",
-              "name": "name 2",
-              "categoryName": "HOME",
-              "categoryDisplayName": "Dom",
-              "content": "treść 2",
-              "rating": 9
+              id: "2d55e1da-704d-44cc-a207-bd45f42acb72",
+              name: "name 2",
+              categoryName: "HOME",
+              categoryDisplayName: "Dom",
+              content: "treść 2",
+              rating: 9,
             },
             {
-              "id": "bab01121-bd2f-465d-90e5-2000e0a1d95e",
-              "name": "name 3",
-              "categoryName": "HOME",
-              "categoryDisplayName": "Dom",
-              "content": "treść 3",
-              "rating": 8
-            }
-          ]
-        }`),
+              id: "bab01121-bd2f-465d-90e5-2000e0a1d95e",
+              name: "name 3",
+              categoryName: "HOME",
+              categoryDisplayName: "Dom",
+              content: "treść 3",
+              rating: 8,
+            },
+          ],
+        }),
     });
     await act(async () => renderWithRouter(<CategoryDetails />));
 

@@ -6,8 +6,9 @@ import Profile from "./Profile";
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
+
 describe("Profile", () => {
-  test("should display profile", async () => {
+  test("should render component and display user profile", async () => {
     localStorage.setItem("token", "token");
     localStorage.setItem("roles", "ROLE_USER");
     localStorage.setItem("userEmail", "test@test");
@@ -16,23 +17,39 @@ describe("Profile", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa ocenionej porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
-          ),
+          Promise.resolve([
+            {
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "Nazwa ocenionej porady",
+              categoryName: "Health",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+            },
+          ]),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "00d0b44a-f701-4172-966e-cca3aec454dc", "name": "Nazwa proponowanej porady", "category": {"name": "Health",  "displayName": "Zdrowie"}, "content": "Treść", "creatorId": "1"}]`
-          ),
+          Promise.resolve([
+            {
+              id: "00d0b44a-f701-4172-966e-cca3aec454dc",
+              name: "Nazwa proponowanej porady",
+              category: { name: "Health", displayName: "Zdrowie" },
+              content: "Treść",
+              creatorId: "1",
+            },
+          ]),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej kategorii", "creatorId": "1"}]`
-          ),
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa proponowanej kategorii",
+              creatorId: "1",
+            },
+          ]),
       });
 
     await act(async () => renderWithRouterAndAuth(<Profile />));
@@ -83,7 +100,7 @@ describe("Profile", () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
-        json: () => JSON.parse("[]"),
+        json: () => Promise.resolve([]),
       })
     );
 
@@ -117,9 +134,15 @@ describe("Profile", () => {
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>
-        JSON.parse(
-          `[{"id": "63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
-        ),
+        Promise.resolve([
+          {
+            id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+          },
+        ]),
     });
 
     renderWithRouterAndAuth(<Profile />);
@@ -145,7 +168,7 @@ describe("Profile", () => {
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse("[]"),
+        json: () => Promise.resolve([]),
       });
 
     await act(async () => renderWithAuth(<Profile />));
@@ -189,9 +212,15 @@ describe("Profile", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej porady", "category": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść"}]`
-          ),
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa proponowanej porady",
+              category: "Health",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+            },
+          ]),
       });
 
     renderWithRouterAndAuth(<Profile />);
@@ -223,7 +252,7 @@ describe("Profile", () => {
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse("[]"),
+        json: () => Promise.resolve([]),
       });
 
     await act(async () => renderWithAuth(<Profile />));
@@ -275,9 +304,13 @@ describe("Profile", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `[{"id": "5131ba80-4d83-42ef-a8e9-e7bcab17b019", "name": "Nazwa proponowanej kategorii", "creatorId": "1"}]`
-          ),
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa proponowanej kategorii",
+              creatorId: "1",
+            },
+          ]),
       });
 
     renderWithRouterAndAuth(<Profile />);

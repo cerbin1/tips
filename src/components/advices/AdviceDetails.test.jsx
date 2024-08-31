@@ -52,13 +52,17 @@ describe("AdviceDetails", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
+          Promise.resolve({
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+            rating: "5",
+          }),
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse(`{"rated": false}`),
+        json: () => Promise.resolve({ rated: false }),
       });
 
     renderWithAuth(<AdviceDetails />);
@@ -78,13 +82,17 @@ describe("AdviceDetails", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "55"}`
-          ),
+          Promise.resolve({
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+            rating: 5,
+          }),
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse(`{"rated": false}`),
+        json: () => Promise.resolve({ rated: false }),
       });
 
     await act(async () => renderWithAuth(<AdviceDetails />));
@@ -99,7 +107,7 @@ describe("AdviceDetails", () => {
     expect(screen.getByText("Zdrowie")).toHaveClass("text-sky-500 text-lg ");
     expect(screen.getByText("Treść")).toBeInTheDocument();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("55")).toHaveClass("text-sky-500 text-lg");
+    expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
     const rateButton = screen.getByRole("button");
     expect(rateButton).toHaveTextContent("Oceń jako przydatne");
   });
@@ -107,16 +115,10 @@ describe("AdviceDetails", () => {
   test("should rating button not appear when user is not logged in", async () => {
     globalThis.fetch = vi
       .fn()
+      .mockResolvedValueOnce(adviceDetailsResponse())
       .mockResolvedValueOnce({
         ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => JSON.parse(`{"rated": false}`),
+        json: () => Promise.resolve({ rated: false }),
       });
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
@@ -131,13 +133,7 @@ describe("AdviceDetails", () => {
     localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
-      })
+      .mockResolvedValueOnce(adviceDetailsResponse())
       .mockResolvedValueOnce({
         ok: false,
       });
@@ -158,22 +154,20 @@ describe("AdviceDetails", () => {
     localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
-      })
+      .mockResolvedValueOnce(adviceDetailsResponse())
       .mockResolvedValueOnce({
         ok: false,
       })
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
-          ),
+          Promise.resolve({
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+            rating: 6,
+          }),
       });
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     expect(globalThis.fetch).toBeCalledTimes(2);
@@ -195,23 +189,21 @@ describe("AdviceDetails", () => {
     localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
+      .mockResolvedValueOnce(adviceDetailsResponse())
       .mockResolvedValueOnce({
         ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => JSON.parse(`{"rated": false}`),
+        json: () => Promise.resolve({ rated: false }),
       })
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
-          ),
+          Promise.resolve({
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+            rating: 6,
+          }),
       });
     localStorage.setItem("userEmail", "email@test");
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
@@ -233,16 +225,10 @@ describe("AdviceDetails", () => {
     localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
+      .mockResolvedValueOnce(adviceDetailsResponse())
       .mockResolvedValueOnce({
         ok: true,
-        json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "5"}`
-          ),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => JSON.parse(`{"rated": false}`),
+        json: () => Promise.resolve({ rated: false }),
       });
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
@@ -262,13 +248,17 @@ describe("AdviceDetails", () => {
       .mockResolvedValueOnce({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"name": "Nazwa porady", "categoryName": "Health",  "categoryDisplayName": "Zdrowie", "content": "Treść", "rating": "6"}`
-          ),
+          Promise.resolve({
+            name: "Nazwa porady",
+            categoryName: "Health",
+            categoryDisplayName: "Zdrowie",
+            content: "Treść",
+            rating: 6,
+          }),
       })
       .mockResolvedValueOnce({
         ok: true,
-        json: () => JSON.parse(`{"rated": true}`),
+        json: () => Promise.resolve({ rated: true }),
       });
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
@@ -281,3 +271,17 @@ describe("AdviceDetails", () => {
     expect(screen.getByText("6")).toBeInTheDocument();
   });
 });
+
+function adviceDetailsResponse() {
+  return {
+    ok: true,
+    json: () =>
+      Promise.resolve({
+        name: "Nazwa porady",
+        categoryName: "Health",
+        categoryDisplayName: "Zdrowie",
+        content: "Treść",
+        rating: 5,
+      }),
+  };
+}

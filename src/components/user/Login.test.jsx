@@ -125,9 +125,11 @@ describe("Login", () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"jwt": "token", "roles": ["user"], "userEmail": "email"}`
-          ),
+          Promise.resolve({
+            jwt: "token",
+            roles: ["user"],
+            userEmail: "email",
+          }),
       })
     );
     renderWithRouterAndAuth(<Login />);
@@ -157,9 +159,11 @@ describe("Login", () => {
       Promise.resolve({
         ok: true,
         json: () =>
-          JSON.parse(
-            `{"jwt": "token", "roles": ["user"], "userEmail": "email"}`
-          ),
+          Promise.resolve({
+            jwt: "token",
+            roles: ["user"],
+            userEmail: "email",
+          }),
       })
     );
     renderWithRouterAndAuth(<Login />);
