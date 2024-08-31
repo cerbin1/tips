@@ -4,7 +4,7 @@ import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
 
 export default function PasswordResetForm() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState();
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);

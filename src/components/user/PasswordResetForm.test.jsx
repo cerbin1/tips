@@ -1,13 +1,19 @@
+import { afterEach } from "vitest";
 import PasswordResetForm from "./PasswordResetForm";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 
 describe("PasswordResetForm", () => {
   beforeAll(() => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     import.meta.env.VITE_BACKEND_URL = "backend/";
   });
+  beforeEach(() => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+  });
+  afterEach(() => {
+    globalThis.fetch.mockClear();
+  });
 
-  test("should display form", () => {
+  test("should render component and display form", () => {
     render(<PasswordResetForm />);
 
     expect(screen.getByTestId("password-reset-section")).toBeInTheDocument();
@@ -27,12 +33,15 @@ describe("PasswordResetForm", () => {
     expect(submitButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
     );
+    expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
   test("should not submit form when email is empty", async () => {
     render(<PasswordResetForm />);
+    const submitButton = screen.getByRole("button");
+    expect(submitButton).toBeEnabled();
 
-    await userEvent.click(screen.getByRole("button"));
+    await userEvent.click(submitButton);
 
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
@@ -44,13 +53,15 @@ describe("PasswordResetForm", () => {
       target: { value: "invalid" },
     });
     expect(email).toHaveValue("invalid");
+    const submitButton = screen.getByRole("button");
+    expect(submitButton).toBeEnabled();
 
-    await userEvent.click(screen.getByRole("button"));
+    await userEvent.click(submitButton);
 
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
-  test("should display general error when request fails on backend", async () => {
+  test("should display general error when submitting form and response is not ok", async () => {
     render(<PasswordResetForm />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
@@ -60,56 +71,69 @@ describe("PasswordResetForm", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/auth/account/password-reset?email=test@test",
-      { method: "PUT" }
-    );
     const error = screen.getByText(
       "Nie udało się wysłać linku resetującego hasło!"
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-reset?email=test@test",
+      { method: "PUT" }
+    );
   });
 
   test("should block submit button and change text when submitting form", async () => {
     render(<PasswordResetForm />);
-    const submitButton = screen.getByRole("button");
+    let submitButton = screen.getByRole("button");
+    expect(submitButton).toBeInTheDocument();
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveTextContent("Wyślij");
     const email = screen.getByLabelText("Adres e-mail");
-    await act(async () => {
-      fireEvent.change(email, {
-        target: { value: "test@test" },
-      });
+    fireEvent.change(email, {
+      target: { value: "test@test" },
     });
     expect(email).toHaveValue("test@test");
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
 
     userEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Wysyłanie...")).toBeInTheDocument();
-      expect(submitButton).toBeDisabled();
+      const isSubmittingButton = screen.getByText("Wysyłanie...");
+      expect(isSubmittingButton).toBeInTheDocument();
+      expect(isSubmittingButton).toBeInTheDocument();
+      expect(isSubmittingButton).toBeDisabled();
     });
+    submitButton = screen.getByRole("button");
+    expect(submitButton).toBeEnabled();
+    expect(submitButton).toHaveTextContent("Wyślij");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-reset?email=test@test",
+      { method: "PUT" }
+    );
   });
 
   test("should send form successfully", async () => {
-    await act(async () => render(<PasswordResetForm />));
+    render(<PasswordResetForm />);
     const email = screen.getByLabelText("Adres e-mail");
-    await act(async () => {
-      fireEvent.change(email, {
-        target: { value: "test@test" },
-      });
+    fireEvent.change(email, {
+      target: { value: "test@test" },
     });
     expect(email).toHaveValue("test@test");
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
-    await userEvent.click(screen.getByRole("button"));
 
-    expect(globalThis.fetch).toBeCalledTimes(1);
+    await act(async () => userEvent.click(screen.getByRole("button")));
+
     const success = screen.getByText(
       "Link do resetowania hasła został wysłany."
     );
     expect(success).toBeInTheDocument();
     expect(success).toHaveClass("py-6 text-green-500");
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/auth/account/password-reset?email=test@test",
+      { method: "PUT" }
+    );
   });
 });
