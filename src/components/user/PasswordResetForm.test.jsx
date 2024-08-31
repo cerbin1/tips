@@ -1,14 +1,14 @@
-import PasswordReset from "./PasswordReset";
+import PasswordResetForm from "./PasswordResetForm";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 
-describe("PasswordReset", () => {
+describe("PasswordResetForm", () => {
   beforeAll(() => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
     import.meta.env.VITE_BACKEND_URL = "backend/";
   });
 
   test("should display form", () => {
-    render(<PasswordReset />);
+    render(<PasswordResetForm />);
 
     expect(screen.getByTestId("password-reset-section")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
@@ -30,7 +30,7 @@ describe("PasswordReset", () => {
   });
 
   test("should not submit form when email is empty", async () => {
-    render(<PasswordReset />);
+    render(<PasswordResetForm />);
 
     await userEvent.click(screen.getByRole("button"));
 
@@ -38,7 +38,7 @@ describe("PasswordReset", () => {
   });
 
   test("should not submit form when email is not valid", async () => {
-    render(<PasswordReset />);
+    render(<PasswordResetForm />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "invalid" },
@@ -51,7 +51,7 @@ describe("PasswordReset", () => {
   });
 
   test("should display general error when request fails on backend", async () => {
-    render(<PasswordReset />);
+    render(<PasswordResetForm />);
     const email = screen.getByLabelText("Adres e-mail");
     fireEvent.change(email, {
       target: { value: "test@test" },
@@ -72,7 +72,7 @@ describe("PasswordReset", () => {
   });
 
   test("should block submit button and change text when submitting form", async () => {
-    render(<PasswordReset />);
+    render(<PasswordResetForm />);
     const submitButton = screen.getByRole("button");
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveTextContent("Wyślij");
@@ -94,7 +94,7 @@ describe("PasswordReset", () => {
   });
 
   test("should send form successfully", async () => {
-    await act(async () => render(<PasswordReset />));
+    await act(async () => render(<PasswordResetForm />));
     const email = screen.getByLabelText("Adres e-mail");
     await act(async () => {
       fireEvent.change(email, {

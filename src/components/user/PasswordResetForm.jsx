@@ -3,7 +3,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
 
-export default function PasswordReset() {
+export default function PasswordResetForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState();
   const [loading, setLoading] = useState(false);

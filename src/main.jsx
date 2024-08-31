@@ -14,7 +14,7 @@ import ActivateUser from "./components/user/ActivateUser.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Login from "./components/user/Login.jsx";
 import Profile from "./components/user/Profile.jsx";
-import PasswordReset from "./components/user/PasswordReset.jsx";
+import PasswordResetForm from "./components/user/PasswordResetForm.jsx";
 import PasswordChangeForm from "./components/user/PasswordChangeForm.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Logout from "./components/user/Logout.jsx";
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
           { path: "logout", element: <Logout /> },
           { path: "profile", element: <Profile /> },
           { path: "activate/:token", element: <ActivateUser /> },
-          { path: "password-reset", element: <PasswordReset /> },
+          { path: "password-reset", element: <PasswordResetForm /> },
           { path: "password-change/:token", element: <PasswordChangeForm /> },
         ],
       },
