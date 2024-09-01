@@ -3,14 +3,15 @@ import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/FormInput";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import SecondaryButton from "../common/SecondaryButton";
 
 export default function Register() {
   const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
   const [userCreateLoading, setUserCreateLoading] = useState(false);
-  const [userCreateError, setUserCreateError] = useState(undefined);
+  const [userCreateError, setUserCreateError] = useState();
   const [resendLinkLoading, setResendLinkLoading] = useState(false);
   const [resendLinkSent, setResendLinkSent] = useState(false);
-  const [resendLinkError, setResendLinkError] = useState(undefined);
+  const [resendLinkError, setResendLinkError] = useState();
   const [activationLink, setActivationLink] = useState();
 
   function handleSubmit(event) {
@@ -19,20 +20,21 @@ export default function Register() {
     async function sendRequest() {
       setUserCreateLoading(true);
       setPasswordsAreNotEqual(false);
-      setUserCreateError(undefined);
+      setUserCreateError();
       const formData = new FormData(event.target);
       const email = formData.get("email").trim();
-      const username = formData.get("username");
+      const username = formData.get("username").trim();
       const password = formData.get("password");
       const passwordRepeat = formData.get("password-repeat");
-
       if (email === "") {
         setUserCreateError("Email nie może być pusty!");
+        setUserCreateLoading(false);
         return;
       }
 
       if (username === "") {
         setUserCreateError("Nazwa użytkownika nie może być pusta!");
+        setUserCreateLoading(false);
         return;
       }
 
@@ -57,7 +59,7 @@ export default function Register() {
         } else {
           if (response.status === 422) {
             const error = await response.json();
-            if (error.message === "Error: Username is already taken.") {
+            if (error.message === "Error: Username is already in use.") {
               setUserCreateError("Nazwa użytkownika jest zajęta!");
             } else if (error.message === "Error: Email is already in use.") {
               setUserCreateError("Email jest zajęty!");
@@ -85,7 +87,7 @@ export default function Register() {
 
   async function resendLink() {
     setResendLinkLoading(true);
-    setResendLinkError(undefined);
+    setResendLinkError();
     try {
       const url = import.meta.env.VITE_BACKEND_URL + "auth/resend/";
       const response = await fetch(url + activationLink, {
@@ -132,16 +134,12 @@ export default function Register() {
             required
           />
           {passwordsAreNotEqual && (
-            <p className="text-red-500">Hasła muszą się zgadzać!</p>
+            <p className="py-6 text-red-500">Hasła muszą się zgadzać!</p>
           )}
           <div className="flex justify-between">
-            <button
-              className="px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
-              type="reset"
-              disabled={userCreateLoading}
-            >
+            <SecondaryButton type="reset" disabled={userCreateLoading}>
               Wyczyść formularz
-            </button>
+            </SecondaryButton>
             <Button type="submit" disabled={userCreateLoading}>
               {userCreateLoading ? "Wysyłanie..." : "Wyślij"}
             </Button>
@@ -152,15 +150,10 @@ export default function Register() {
         <div className="py-6 text-red-500">{userCreateError}</div>
       )}
 
-      {resendLinkError && (
-        <div className="py-6 text-red-500">{resendLinkError}</div>
-      )}
-
       {activationLink && !resendLinkError && (
         <>
           <div className="my-4 py-2 px-8 border border-cyan-200 radius-2xl text-green-600 leading-loose">
             {resendLinkSent && <p>Link został wysłany ponownie.</p>}
-
             {!resendLinkSent && (
               <>
                 <p>Rejestracja przebiegła pomyślnie.</p>
@@ -183,6 +176,9 @@ export default function Register() {
             <Link to="/login">Przejdź do logowania</Link>
           </Button>
         </>
+      )}
+      {resendLinkError && (
+        <div className="py-6 text-red-500">{resendLinkError}</div>
       )}
     </ContainerSection>
   );
