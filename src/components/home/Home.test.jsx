@@ -2,12 +2,12 @@ import Home from "./Home";
 import { renderWithRouter } from "../../test/test-utils";
 
 describe("Home", () => {
-  test("should display hero section", () => {
+  test("should render component", () => {
     renderWithRouter(<Home />);
 
-    const hero = screen.getByTestId("hero-section");
-    expect(hero).toBeInTheDocument();
-    expect(hero).toHaveClass("flex justify-center text-center");
+    const heroSection = screen.getByTestId("hero-section");
+    expect(heroSection).toBeInTheDocument();
+    expect(heroSection).toHaveClass("flex justify-center text-center");
     const title = screen.getByRole("heading", {
       name: "Witamy na naszej stronie!",
     });
