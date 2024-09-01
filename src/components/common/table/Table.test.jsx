@@ -1,13 +1,13 @@
-import TableDataLink from "./TableDataLink";
-import TableHeader from "./TableHeader";
-import TableRow from "./TableRow";
 import Table from "./Table";
-import TableData from "./TableData";
-import { renderWithRouter } from "../../../test/test-utils";
+import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
+import TableRow from "./TableRow";
+import TableData from "./TableData";
+import TableDataLink from "./TableDataLink";
+import { renderWithRouter } from "../../../test/test-utils";
 
 describe("Table", () => {
-  test("should display table", () => {
+  test("should render component", () => {
     const ids = [1, 2, 3, 4];
     const tableRows = ids.map((id) => (
       <TableRow key={id} rowKey={id}>
@@ -28,7 +28,6 @@ describe("Table", () => {
       ></Table>
     );
 
-    expect(screen.getByRole("table")).toBeInTheDocument();
     const table = screen.getByRole("table");
     expect(table).toBeInTheDocument();
     expect(table).toHaveClass("mt-4");
