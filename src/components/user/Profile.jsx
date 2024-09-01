@@ -148,7 +148,7 @@ export default function Profile() {
         <>
           <h2>Ocenione porady:</h2>
           <Table
-            head={<TableHeader headerNames={votedAdvicesTableHeaders} />}
+            head={<TableHeader headers={votedAdvicesTableHeaders} />}
             body={<TableBody rows={votedAdvicesTableRows} />}
           />
         </>
@@ -170,7 +170,7 @@ export default function Profile() {
           <>
             <h2>Proponowane porady:</h2>
             <Table
-              head={<TableHeader headerNames={suggestedAdvicesTableHeaders} />}
+              head={<TableHeader headers={suggestedAdvicesTableHeaders} />}
               body={<TableBody rows={suggestedAdvicesTableRows} />}
             />
           </>
@@ -192,9 +192,7 @@ export default function Profile() {
           <>
             <h2>Proponowane kategorie:</h2>
             <Table
-              head={
-                <TableHeader headerNames={suggestedCategoriesTableHeaders} />
-              }
+              head={<TableHeader headers={suggestedCategoriesTableHeaders} />}
               body={<TableBody rows={suggestedCategoriesTableRows} />}
             />
           </>

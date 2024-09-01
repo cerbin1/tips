@@ -27,7 +27,7 @@ export default function CategoryDetails() {
     ));
     tableWithAdvices = (
       <Table
-        head={<TableHeader headerNames={["Porada", "Ocena", "Szczegóły"]} />}
+        head={<TableHeader headers={["Porada", "Ocena", "Szczegóły"]} />}
         body={<TableBody rows={rows} />}
       />
     );

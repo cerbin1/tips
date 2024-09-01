@@ -57,7 +57,7 @@ export default function rating() {
       <h1>Top 10 porad</h1>
       {!loading && !error && (
         <Table
-          head={<TableHeader headerNames={tableHeaders} />}
+          head={<TableHeader headers={tableHeaders} />}
           body={<TableBody rows={rows} />}
         />
       )}
