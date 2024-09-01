@@ -6,7 +6,7 @@ export default function ErrorPage() {
   const error = useRouteError();
   let title = "Wystąpił błąd!";
   let message = "Coś poszło nie tak.";
-  console.log(error);
+  console.log("Error: ", error);
   if (error.status === 500) {
     message = JSON.parse(error.data).message;
   }
