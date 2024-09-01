@@ -3,12 +3,12 @@ import TableRow from "./TableRow";
 import TableData from "./TableData";
 
 describe("TableBody", () => {
-  test("should display table body", () => {
+  test("should render component", () => {
     render(
       <table>
         <TableBody
           rows={
-            <TableRow rowKey="1">
+            <TableRow>
               <TableData>test1</TableData>
               <TableData>test2</TableData>
               <TableData>test3</TableData>
