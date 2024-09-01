@@ -63,21 +63,24 @@ describe("Profile", () => {
       screen.getByText("Adres email użytkownika: test@test")
     ).toBeInTheDocument();
     expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
-    expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")).toHaveLength(3);
     expect(screen.getAllByRole("row")).toHaveLength(6);
     expect(screen.getAllByRole("columnheader")).toHaveLength(6);
+    expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[0]).toHaveTextContent(
       "Nazwa ocenionej porady"
     );
     expect(screen.getAllByRole("table")[0]).toHaveTextContent("Zdrowie");
+    expect(screen.getByText("Proponowane porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[1]).toHaveTextContent(
       "Nazwa proponowanej porady"
     );
     expect(screen.getAllByRole("table")[1]).toHaveTextContent("Zdrowie");
+    expect(screen.getByText("Proponowane kategorie:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[2]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
+    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -154,7 +157,6 @@ describe("Profile", () => {
       expect(screen.queryByText("Ładowanie ocenionych porad...")).toBeNull();
     });
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -175,7 +177,6 @@ describe("Profile", () => {
 
     expect(screen.queryByRole("table")).toBeNull();
     expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -194,7 +195,6 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -232,7 +232,6 @@ describe("Profile", () => {
       expect(screen.queryByText("Ładowanie proponowanych porad...")).toBeNull();
     });
     expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -261,7 +260,6 @@ describe("Profile", () => {
     expect(
       screen.getByText("Brak proponowanych kategorii")
     ).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -326,7 +324,6 @@ describe("Profile", () => {
     expect(
       screen.getByText("Nazwa proponowanej kategorii")
     ).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
       headers: {
         "Content-Type": "application/json",
