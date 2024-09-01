@@ -35,7 +35,7 @@ export default function CategoriesStatistics() {
   }, []);
 
   const tableHeaders = ["Kategoria", "Opis", "Liczba porad", "Szczegóły"];
-  const rows = categories.map((categoryDetails) => (
+  const tableRows = categories.map((categoryDetails) => (
     <TableRow key={categoryDetails.id}>
       <TableData>{categoryDetails.category.displayName}</TableData>
       <TableData>{categoryDetails.description}</TableData>
@@ -54,7 +54,7 @@ export default function CategoriesStatistics() {
       {!error && !isLoading && (
         <Table
           head={<TableHeader headers={tableHeaders} />}
-          body={<TableBody rows={rows} />}
+          body={<TableBody rows={tableRows} />}
         />
       )}
     </ContainerSection>

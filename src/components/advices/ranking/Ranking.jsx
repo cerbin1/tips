@@ -34,7 +34,7 @@ export default function rating() {
   }, []);
 
   const tableHeaders = ["Nazwa", "Kategoria", "Ocena", "Szczegóły"];
-  const rows = topAdvices.map((advice) => (
+  const tableRows = topAdvices.map((advice) => (
     <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
@@ -58,7 +58,7 @@ export default function rating() {
       {!loading && !error && (
         <Table
           head={<TableHeader headers={tableHeaders} />}
-          body={<TableBody rows={rows} />}
+          body={<TableBody rows={tableRows} />}
         />
       )}
       {loading && <div className="py-6">Ładowanie...</div>}

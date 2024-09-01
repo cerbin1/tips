@@ -16,7 +16,7 @@ export default function CategoryDetails() {
 
   let tableWithAdvices;
   if (categoryDetails) {
-    const rows = categoryDetails.advices.map((advice) => (
+    const tableRows = categoryDetails.advices.map((advice) => (
       <TableRow key={advice.id}>
         <TableData>{advice.name}</TableData>
         <TableData>{advice.rating}</TableData>
@@ -28,7 +28,7 @@ export default function CategoryDetails() {
     tableWithAdvices = (
       <Table
         head={<TableHeader headers={["Porada", "Ocena", "Szczegóły"]} />}
-        body={<TableBody rows={rows} />}
+        body={<TableBody rows={tableRows} />}
       />
     );
   }
