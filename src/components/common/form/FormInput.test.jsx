@@ -1,8 +1,8 @@
 import FormInput from "./FormInput";
 
 describe("FormInput", () => {
-  test("should render text input", () => {
-    render(<FormInput id="id" label="text input" />);
+  test("should render component", () => {
+    render(<FormInput id="input" label="text input" />);
 
     const paragraph = screen.getByRole("paragraph");
     expect(paragraph).toBeInTheDocument();
@@ -14,13 +14,15 @@ describe("FormInput", () => {
     const input = screen.getByRole("textbox");
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass("bg-slate-200 rounded py-2 px-1");
-    expect(input).toHaveAttribute("id", "id");
-    expect(input).toHaveAttribute("name", "id");
+    expect(input).toHaveAttribute("id", "input");
+    expect(input).toHaveAttribute("name", "input");
     expect(input).toHaveAttribute("type", "text");
   });
 
-  test("should render password input", () => {
-    render(<FormInput id="id" label="password input name" type="password" />);
+  test("should display password input", () => {
+    render(
+      <FormInput id="password" label="password input name" type="password" />
+    );
 
     const paragraph = screen.getByRole("paragraph");
     expect(paragraph).toBeInTheDocument();
@@ -30,13 +32,13 @@ describe("FormInput", () => {
     const input = screen.getByLabelText("password input name");
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass("bg-slate-200 rounded py-2 px-1");
-    expect(input).toHaveAttribute("id", "id");
-    expect(input).toHaveAttribute("name", "id");
+    expect(input).toHaveAttribute("id", "password");
+    expect(input).toHaveAttribute("name", "password");
     expect(input).toHaveAttribute("type", "password");
   });
 
-  test("should render email input", () => {
-    render(<FormInput id="id" label="email input" type="email" />);
+  test("should display email input", () => {
+    render(<FormInput id="email" label="email input" type="email" />);
 
     const paragraph = screen.getByRole("paragraph");
     expect(paragraph).toBeInTheDocument();
@@ -48,13 +50,13 @@ describe("FormInput", () => {
     const input = screen.getByRole("textbox");
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass("bg-slate-200 rounded py-2 px-1");
-    expect(input).toHaveAttribute("id", "id");
-    expect(input).toHaveAttribute("name", "id");
+    expect(input).toHaveAttribute("id", "email");
+    expect(input).toHaveAttribute("name", "email");
     expect(input).toHaveAttribute("type", "email");
   });
 
-  test("should render input with html validation", () => {
-    render(<FormInput id="id" label="input" minLength={5} required />);
+  test("should display input with html validation", () => {
+    render(<FormInput id="input" label="input" minLength={5} required />);
 
     const paragraph = screen.getByRole("paragraph");
     expect(paragraph).toBeInTheDocument();
@@ -66,8 +68,8 @@ describe("FormInput", () => {
     const input = screen.getByRole("textbox");
     expect(input).toBeInTheDocument();
     expect(input).toHaveClass("bg-slate-200 rounded py-2 px-1");
-    expect(input).toHaveAttribute("id", "id");
-    expect(input).toHaveAttribute("name", "id");
+    expect(input).toHaveAttribute("id", "input");
+    expect(input).toHaveAttribute("name", "input");
     expect(input).toHaveAttribute("minlength", "5");
     expect(input).toBeRequired();
   });
