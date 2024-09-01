@@ -5,9 +5,9 @@ describe("NavigationItem", () => {
   test("should render component", () => {
     renderWithRouter(<NavigationItem href="/link">Link</NavigationItem>);
 
-    const test = screen.getByText("Link");
-    expect(test).toBeInTheDocument();
-    expect(test).toHaveClass("no-underline px-12 text-blue-to-light");
-    expect(test).toHaveAttribute("href", "/link");
+    const link = screen.getByText("Link");
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveClass("no-underline px-12 text-blue-to-light");
+    expect(link).toHaveAttribute("href", "/link");
   });
 });
