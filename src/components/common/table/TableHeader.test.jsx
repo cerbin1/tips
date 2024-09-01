@@ -1,7 +1,7 @@
 import TableHeader from "./TableHeader";
 
 describe("TableHeader", () => {
-  test("should display table header", () => {
+  test("should render component", () => {
     const headers = ["header1", "header2", "header3", "header4"];
     render(
       <table>
