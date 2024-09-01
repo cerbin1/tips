@@ -1,8 +1,8 @@
 import Button from "../common/Button";
 import { useEffect, useState } from "react";
-import Captcha from "../common/Captcha";
+import Captcha from "../common/form/Captcha";
 import { useAuth } from "../../store/auth-context";
-import FormInput from "../common/FormInput";
+import FormInput from "../common/form/FormInput";
 
 export default function SuggestAdvice() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);

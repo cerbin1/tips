@@ -27,7 +27,7 @@ beforeEach(() => {
     return Promise.reject(new Error("Not Found"));
   });
 
-  vi.mock("../common/Captcha", () => ({
+  vi.mock("../common/form/Captcha", () => ({
     default: ({ onCaptchaChange }) => {
       const mockToken = "mock-token";
       return (

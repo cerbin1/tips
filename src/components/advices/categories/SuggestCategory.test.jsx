@@ -12,7 +12,7 @@ describe("SuggestCategory", () => {
       });
     });
 
-    vi.mock("../../common/Captcha", () => ({
+    vi.mock("../../common/form/Captcha", () => ({
       default: ({ onCaptchaChange }) => {
         const mockToken = "mock-token";
         return (

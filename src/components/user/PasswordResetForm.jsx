@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
-import FormInput from "../common/FormInput";
+import FormInput from "../common/form/FormInput";
 
 export default function PasswordResetForm() {
   const [email, setEmail] = useState();

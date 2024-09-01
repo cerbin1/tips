@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Button from "../../common/Button";
-import Captcha from "../../common/Captcha";
-import FormInput from "../../common/FormInput";
+import Captcha from "../../common/form/Captcha";
+import FormInput from "../../common/form/FormInput";
 import { useAuth } from "../../../store/auth-context";
 
 export default function SuggestCategory() {

@@ -1,6 +1,6 @@
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
-import FormInput from "../common/FormInput";
+import FormInput from "../common/form/FormInput";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import SecondaryButton from "../common/SecondaryButton";
