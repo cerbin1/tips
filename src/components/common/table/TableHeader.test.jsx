@@ -5,7 +5,7 @@ describe("TableHeader", () => {
     const headers = ["header1", "header2", "header3", "header4"];
     render(
       <table>
-        <TableHeader headers={headers} />
+        <TableHeader headerNames={headers} />
       </table>
     );
 

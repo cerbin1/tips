@@ -20,7 +20,9 @@ describe("Table", () => {
     renderWithRouter(
       <Table
         head={
-          <TableHeader headers={["header1", "header2", "header3", "header4"]} />
+          <TableHeader
+            headerNames={["header1", "header2", "header3", "header4"]}
+          />
         }
         body={<TableBody rows={tableRows} />}
       ></Table>

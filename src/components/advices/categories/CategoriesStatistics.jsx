@@ -53,7 +53,7 @@ export default function CategoriesStatistics() {
       {isLoading && <p>Ładowanie...</p>}
       {!error && !isLoading && (
         <Table
-          head={<TableHeader headers={tableHeaders} />}
+          head={<TableHeader headerNames={tableHeaders} />}
           body={<TableBody rows={rows} />}
         />
       )}
