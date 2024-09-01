@@ -1,11 +1,11 @@
 import TableRow from "./TableRow";
 
 describe("TableRow", () => {
-  test("should display table row", () => {
+  test("should render component", () => {
     render(
       <table>
         <tbody>
-          <TableRow key="test">
+          <TableRow>
             <td>test1</td>
             <td>test2</td>
             <td>test3</td>
