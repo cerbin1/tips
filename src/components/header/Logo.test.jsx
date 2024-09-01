@@ -9,6 +9,8 @@ describe("Logo", () => {
     expect(content).toHaveClass(
       "no-underline text-2xl font-bold text-blue-to-dark"
     );
-    expect(screen.getByRole("img")).toHaveAttribute("alt", "logo-bulb-icon");
+    expect(content.parentElement).toHaveClass("flex gap-1");
+    const logoImg = screen.getByRole("img");
+    expect(logoImg).toHaveAttribute("alt", "logo-bulb-icon");
   });
 });
