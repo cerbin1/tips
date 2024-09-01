@@ -2,12 +2,12 @@ import { renderWithRouter } from "../../../test/test-utils";
 import TableDataLink from "./TableDataLink";
 
 describe("TableDataLink", () => {
-  test("should display table data link", () => {
+  test("should render component", () => {
     renderWithRouter(
       <table>
         <tbody>
           <tr>
-            <TableDataLink href="/test">test</TableDataLink>
+            <TableDataLink href="/test">Link</TableDataLink>
           </tr>
         </tbody>
       </table>
@@ -20,6 +20,6 @@ describe("TableDataLink", () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveClass("text-blue-to-dark text-lg");
     expect(link).toHaveAttribute("href", "/test");
-    expect(link).toHaveTextContent("test");
+    expect(link).toHaveTextContent("Link");
   });
 });
