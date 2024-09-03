@@ -1,7 +1,7 @@
-import Button from "../common/Button";
 import { useEffect, useState } from "react";
-import Captcha from "../common/form/Captcha";
 import { useAuth } from "../../store/auth-context";
+import Button from "../common/Button";
+import Captcha from "../common/form/Captcha";
 import FormInput from "../common/form/FormInput";
 
 export default function SuggestAdvice() {
@@ -140,7 +140,6 @@ export default function SuggestAdvice() {
                 name="category"
                 id="category"
                 className="bg-slate-200 rounded py-2"
-                data-testid="category"
                 required
               >
                 {categories &&
@@ -152,7 +151,7 @@ export default function SuggestAdvice() {
               </select>
             )}
             {categoriesLoadingError && (
-              <p className="text-red-500">{categoriesLoadingError}</p>
+              <p className="py-6 text-red-500">{categoriesLoadingError}</p>
             )}
           </div>
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
