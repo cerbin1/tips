@@ -1,6 +1,10 @@
 import Header from "./Header";
 import { renderWithRouterAndAuth } from "../../test/test-utils";
 
+afterEach(() => {
+  localStorage.clear();
+});
+
 describe("Header", () => {
   test("should render component and display header for not logged in user", () => {
     localStorage.setItem("token", "");

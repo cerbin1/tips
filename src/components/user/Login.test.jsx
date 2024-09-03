@@ -8,6 +8,10 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
+afterEach(() => {
+  localStorage.clear();
+});
+
 describe("Login", () => {
   test("should render component", () => {
     act(() => renderWithRouterAndAuth(<Login />));

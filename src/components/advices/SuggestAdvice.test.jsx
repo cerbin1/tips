@@ -1,5 +1,4 @@
 import SuggestAdvice from "./SuggestAdvice";
-import { beforeEach, expect, test } from "vitest";
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithAuth } from "../../test/test-utils";
 
@@ -44,8 +43,10 @@ beforeEach(() => {
   }));
 
   import.meta.env.VITE_BACKEND_URL = "backend/";
-  import.meta.env.VITE_HCAPTCHA_SITE_KEY = "site-key";
-  localStorage.setItem("token", "token");
+});
+
+afterEach(() => {
+  localStorage.clear();
 });
 
 describe("SuggestAdvice", () => {
@@ -77,6 +78,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should display form", async () => {
+    localStorage.setItem("token", "token");
     await act(async () => renderWithAuth(<SuggestAdvice />));
 
     expect(globalThis.fetch).toBeCalledWith("backend/advices/categories", {
@@ -276,6 +278,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should send form successfully, display message, display button and hide form", async () => {
+    localStorage.setItem("token", "token");
     await act(async () => renderWithAuth(<SuggestAdvice />));
     expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();
@@ -306,6 +309,7 @@ describe("SuggestAdvice", () => {
   });
 
   test("should hide button and success message and display new form when clicking button to suggest new advice", async () => {
+    localStorage.setItem("token", "token");
     await act(async () => renderWithAuth(<SuggestAdvice />));
     expect(globalThis.fetch).toBeCalledTimes(1);
     await fillFormWithDefaultValues();

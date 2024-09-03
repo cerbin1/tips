@@ -2,14 +2,22 @@ import { waitFor } from "@testing-library/react";
 import { act } from "react";
 import { renderWithAuth, renderWithRouterAndAuth } from "../../test/test-utils";
 import Profile from "./Profile";
+import { beforeEach } from "vitest";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
+beforeEach(() => {
+  localStorage.setItem("token", "token");
+});
+
+afterEach(() => {
+  localStorage.clear();
+});
+
 describe("Profile", () => {
   test("should render component and display user profile", async () => {
-    localStorage.setItem("token", "token");
     localStorage.setItem("roles", "ROLE_USER");
     localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
@@ -117,6 +125,7 @@ describe("Profile", () => {
   });
 
   test("should display info when fetching rated advices fails", async () => {
+    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -134,6 +143,7 @@ describe("Profile", () => {
   });
 
   test("should display info when rated advices are loading", async () => {
+    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn().mockResolvedValueOnce({
       ok: true,
       json: () =>

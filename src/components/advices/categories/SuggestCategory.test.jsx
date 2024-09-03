@@ -28,8 +28,10 @@ describe("SuggestCategory", () => {
       },
     }));
     import.meta.env.VITE_BACKEND_URL = "backend/";
-    import.meta.env.VITE_HCAPTCHA_SITE_KEY = "site-key";
-    localStorage.setItem("token", "token");
+  });
+
+  afterEach(() => {
+    localStorage.clear();
   });
 
   test("should display form", async () => {
@@ -159,6 +161,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should send form successfully, display message, display button and hide form", async () => {
+    localStorage.setItem("token", "token");
     await act(async () => renderWithAuth(<SuggestCategory />));
     await fillName();
     expect(screen.getByRole("form")).toBeInTheDocument();
@@ -188,6 +191,7 @@ describe("SuggestCategory", () => {
   });
 
   test("should hide button and success message and display new form when clicking button to suggest new category", async () => {
+    localStorage.setItem("token", "token");
     await act(async () => renderWithAuth(<SuggestCategory />));
     await fillName();
     expect(screen.getByRole("form")).toBeInTheDocument();

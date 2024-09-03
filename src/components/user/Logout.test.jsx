@@ -3,6 +3,10 @@ import Logout from "./Logout";
 
 const mockedUseNavigate = vi.fn();
 
+afterEach(() => {
+  localStorage.clear();
+});
+
 describe("Logout", () => {
   test("should render component and navigate to main page", () => {
     localStorage.setItem("token", "token");
