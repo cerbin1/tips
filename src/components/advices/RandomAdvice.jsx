@@ -10,7 +10,7 @@ export default function RandomAdvice() {
 
   async function fetchRandomAdvice() {
     setLoading(true);
-    setError(null);
+    setError();
     const url = import.meta.env.VITE_BACKEND_URL + "advices/random";
     try {
       const response = await fetch(url);

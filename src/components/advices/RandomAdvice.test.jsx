@@ -3,113 +3,58 @@ import RandomAdvice from "./RandomAdvice";
 import { expect, vi } from "vitest";
 import { renderWithRouter } from "../../test/test-utils";
 
+beforeEach(() => {
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
 describe("RandomAdvice", () => {
-  test("should display error when response is not ok", async () => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+  test("should render component", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValueOnce(randomAdvice());
 
-    await act(async () => render(<RandomAdvice />));
-
-    expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-    expect(
-      screen.getByRole("button", { name: "Spróbuj ponownie" })
-    ).toBeInTheDocument();
-  });
-
-  test("should display error when getting random advice fails and second clicking button to try again fails too", async () => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-    await act(async () => render(<RandomAdvice />));
-    expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-    const button = screen.getByRole("button", { name: "Spróbuj ponownie" });
-
-    await userEvent.click(button);
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    expect(
-      screen.getByText("Nie udało się wyświetlić porady!")
-    ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "Spróbuj ponownie" })
-    ).toBeInTheDocument();
-  });
-
-  test("should display advice when first time getting random advice fails and second clicking button to try again succeed", async () => {
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: false,
-      })
-      .mockResolvedValueOnce(returnRandomAdvice());
     await act(async () => renderWithRouter(<RandomAdvice />));
-    expect(screen.queryByRole("heading")).toBeNull();
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-    const button = screen.getByRole("button", { name: "Spróbuj ponownie" });
 
-    await userEvent.click(button);
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    expect(screen.queryByText("Nie udało się wyświetlić porady!")).toBeNull();
-    expect(
-      screen.queryByRole("button", { name: "Spróbuj ponownie" })
-    ).toBeNull();
-    expect(
-      screen.queryByRole("button", { name: "Wylosuj nową poradę" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
+    expect(screen.getByTestId("random-advice-section")).toBeInTheDocument();
+    const adviceName = screen.getByRole("heading", { level: 1 });
+    expect(adviceName).toBeInTheDocument();
+    expect(adviceName).toHaveTextContent("Woda");
+    const adviceContent = screen.getByRole("paragraph");
+    expect(adviceContent).toHaveTextContent("Pij dużo wody");
+    expect(adviceContent).toHaveClass(
+      "border border-sky-500 rounded py-6 px-6"
+    );
+    const submitButton = screen.getByRole("button");
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toHaveTextContent("Wylosuj nową poradę");
+    const adviceDetailsLink = screen.getByRole("link");
+    expect(adviceDetailsLink).toBeInTheDocument();
+    expect(adviceDetailsLink).toHaveAttribute(
+      "href",
+      "/advices/264bdbc8-e6a7-44d8-9407-9d878ce27800"
+    );
+    expect(adviceDetailsLink).toHaveTextContent("Wyświetl szczegóły");
+    expect(adviceDetailsLink).toHaveClass("text-blue-to-dark text-lg");
   });
 
-  test("should display info when loading component", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce(returnRandomAdvice());
+  test("should display info when rendering component", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValueOnce(randomAdvice());
 
-    renderWithRouter(<RandomAdvice />);
+    act(() => renderWithRouter(<RandomAdvice />));
 
     expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+    expect(screen.queryByText("Woda")).toBeNull();
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie...")).toBeNull();
     });
-    expect(globalThis.fetch).toBeCalledTimes(1);
     expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
   });
 
-  test("should display info when loading new random advice after clicking button", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue(returnRandomAdvice());
-    await act(async () => renderWithRouter(<RandomAdvice />));
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Woda");
-    const newAdviceButton = screen.getByRole("button");
-    expect(newAdviceButton).toHaveTextContent("Wylosuj nową poradę");
-
-    userEvent.click(newAdviceButton);
-
-    await waitFor(() => {
-      expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
-      expect(screen.queryByText("Wylosuj nową poradę")).toBeNull();
-    });
-    expect(screen.queryByText("Ładowanie...")).toBeNull();
-    expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    expect(screen.getByText("Woda")).toBeInTheDocument();
-    expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
-  });
-
-  test("should display info when loading advice after clicking retry button", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValue({
-      ok: false,
-    });
+  test("should display info when loading random advice after clicking retry button", async () => {
+    globalThis.fetch = vi.fn().mockResolvedValue({ ok: false });
     await act(async () => render(<RandomAdvice />));
     expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
     const retryButton = screen.getByRole("button");
     expect(retryButton).toHaveTextContent("Spróbuj ponownie");
 
@@ -121,51 +66,76 @@ describe("RandomAdvice", () => {
     });
     expect(screen.queryByText("Ładowanie...")).toBeNull();
     expect(screen.getByText("Spróbuj ponownie")).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(2);
+    expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
   });
 
-  test("should display random advice", async () => {
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        Promise.resolve({ id: "123", name: "Woda", content: "Pij dużo wody" }),
-    });
-
+  test("should display info when loading new advice after clicking new random advice button", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(randomAdvice())
+      .mockResolvedValueOnce(randomAdvice2());
     await act(async () => renderWithRouter(<RandomAdvice />));
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
+    expect(screen.getByText("Woda")).toBeInTheDocument();
+    expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
 
-    const section = screen.getByTestId("random-advice-section");
-    expect(section).toBeInTheDocument();
-    const adviceName = screen.getByRole("heading", { level: 1 });
-    expect(adviceName).toHaveTextContent("Woda");
-    const adviceContent = screen.getByRole("paragraph");
-    expect(adviceContent).toHaveTextContent("Pij dużo wody");
-    expect(adviceContent).toHaveClass(
-      "border border-sky-500 rounded py-6 px-6"
-    );
+    await userEvent.click(screen.getByText("Wylosuj nową poradę"));
+
+    expect(screen.queryByText("Ładowanie...")).toBeNull();
+    expect(screen.queryByText("Woda")).toBeNull();
+    expect(screen.queryByText("Pij dużo wody")).toBeNull();
+    expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
+    expect(screen.getByText("Słońce")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", {
-        name: "Wylosuj nową poradę",
-      })
+      screen.getByText("Korzystaj przynajmniej 15 minut dziennie ze słońca")
     ).toBeInTheDocument();
-    const adviceDetailsLink = screen.getByRole("link");
-    expect(adviceDetailsLink).toHaveAttribute("href", "/advices/123");
-    expect(adviceDetailsLink).toHaveTextContent("Wyświetl szczegóły");
-    expect(adviceDetailsLink).toHaveClass("text-blue-to-dark text-lg");
+    expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
+  });
+
+  test("should display error when response is not ok", async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+
+    await act(async () => render(<RandomAdvice />));
+
+    expect(screen.queryByRole("heading")).toBeNull();
+    const error = screen.getByText("Nie udało się wyświetlić porady!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+    const button = screen.getByRole("button");
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent("Spróbuj ponownie");
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
+  });
+
+  test("should display error when getting random advice fails and clicking retry button fails too", async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+    await act(async () => render(<RandomAdvice />));
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
+    expect(screen.queryByRole("heading")).toBeNull();
+    expect(
+      screen.getByText("Nie udało się wyświetlić porady!")
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText("Spróbuj ponownie"));
+
+    expect(
+      screen.getByText("Nie udało się wyświetlić porady!")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Spróbuj ponownie")).toBeInTheDocument();
+    expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
   });
 
   test("should display new random advice after button click", async () => {
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce(returnRandomAdvice())
-      .mockResolvedValueOnce({
-        json: () =>
-          Promise.resolve({
-            name: "Słońce",
-            content: "Korzystaj przynajmniej 15 minut dziennie ze słońca",
-          }),
-        ok: true,
-      });
+      .mockResolvedValueOnce(randomAdvice())
+      .mockResolvedValueOnce(randomAdvice2());
     await act(async () => renderWithRouter(<RandomAdvice />));
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
     expect(screen.getByText("Woda")).toBeInTheDocument();
     expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
 
@@ -175,12 +145,52 @@ describe("RandomAdvice", () => {
     expect(
       screen.getByText("Korzystaj przynajmniej 15 minut dziennie ze słońca")
     ).toBeInTheDocument();
+    expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
+  });
+
+  test("should display new random advice when first time getting random advice fails and clicking retry button succeed", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false })
+      .mockResolvedValueOnce(randomAdvice());
+    await act(async () => renderWithRouter(<RandomAdvice />));
+    expect(screen.queryByRole("heading")).toBeNull();
+    expect(globalThis.fetch).toBeCalledTimes(1);
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
+    expect(
+      screen.getByText("Nie udało się wyświetlić porady!")
+    ).toBeInTheDocument();
+
+    await userEvent.click(screen.getByText("Spróbuj ponownie"));
+
+    expect(screen.queryByText("Nie udało się wyświetlić porady!")).toBeNull();
+    expect(screen.queryByText("Spróbuj ponownie")).toBeNull();
+    expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();
+    expect(screen.getByText("Woda")).toBeInTheDocument();
+    expect(screen.getByText("Pij dużo wody")).toBeInTheDocument();
+    expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
   });
 });
 
-function returnRandomAdvice() {
+function randomAdvice() {
   return {
     ok: true,
-    json: () => Promise.resolve({ name: "Woda", content: "Pij dużo wody" }),
+    json: () =>
+      Promise.resolve({
+        id: "264bdbc8-e6a7-44d8-9407-9d878ce27800",
+        name: "Woda",
+        content: "Pij dużo wody",
+      }),
+  };
+}
+
+function randomAdvice2() {
+  return {
+    ok: true,
+    json: () =>
+      Promise.resolve({
+        name: "Słońce",
+        content: "Korzystaj przynajmniej 15 minut dziennie ze słońca",
+      }),
   };
 }
