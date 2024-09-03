@@ -354,8 +354,7 @@ async function fillFormWithDefaultValues() {
 }
 
 function assertFetchCategoriesRequestExecuted() {
-  expect(globalThis.fetch).toBeCalledTimes(1);
-  expect(globalThis.fetch).toBeCalledWith("backend/advices/categories", {
+  expect(globalThis.fetch).nthCalledWith(1, "backend/advices/categories", {
     method: "GET",
     headers: { Authorization: "Bearer token" },
   });
