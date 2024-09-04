@@ -111,15 +111,7 @@ describe("SuggestCategory", () => {
       expect(screen.getByText("Wysyłanie...")).toBeInTheDocument();
       expect(submitButton).toBeDisabled();
     });
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-      body: JSON.stringify({ name: "name", captchaToken: "mock-token" }),
-    });
+    assertSubmitFormRequestExecuted();
   });
 
   test("should display error when submitting form and response is not ok", async () => {
@@ -134,15 +126,7 @@ describe("SuggestCategory", () => {
     const error = screen.getByText("Nie udało się wysłać propozycji!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-      body: JSON.stringify({ name: "name", captchaToken: "mock-token" }),
-    });
+    assertSubmitFormRequestExecuted();
   });
 
   test("should display error when server returns captcha validation error", async () => {
@@ -164,15 +148,7 @@ describe("SuggestCategory", () => {
     const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-      body: JSON.stringify({ name: "name", captchaToken: "mock-token" }),
-    });
+    assertSubmitFormRequestExecuted();
   });
 
   test("should display error when submitting form and response have validation error", async () => {
@@ -195,15 +171,7 @@ describe("SuggestCategory", () => {
     );
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-      body: JSON.stringify({ name: "name", captchaToken: "mock-token" }),
-    });
+    assertSubmitFormRequestExecuted();
   });
 
   test("should submit form successfully, display message and button and hide form", async () => {
@@ -280,4 +248,16 @@ async function fillName() {
   const name = screen.getByLabelText("Nazwa kategorii");
   await waitFor(() => fireEvent.change(name, { target: { value: "name" } }));
   expect(name).toHaveValue("name");
+}
+
+function assertSubmitFormRequestExecuted() {
+  expect(globalThis.fetch).toBeCalledTimes(1);
+  expect(globalThis.fetch).toBeCalledWith("backend/categories", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer token",
+    },
+    body: JSON.stringify({ name: "name", captchaToken: "mock-token" }),
+  });
 }
