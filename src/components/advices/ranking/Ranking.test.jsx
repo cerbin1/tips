@@ -163,7 +163,6 @@ describe("Ranking", () => {
 
     const error = screen.getByText("Nie udało się wyświetlić rankingu!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/ranking");
   });

@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import SecondaryLinkButton from "../common/SecondaryLinkButton";
+import RequestError from "../common/RequestError";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -80,13 +81,8 @@ export default function Login() {
             {isLoading ? "Logowanie..." : "Zaloguj"}
           </Button>
         </div>
-
-        {error && (
-          <div>
-            <p className="py-6 text-red-500">{error}</p>
-          </div>
-        )}
       </form>
+      <RequestError content={error} />
     </ContainerSection>
   );
 }

@@ -6,6 +6,7 @@ import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
 import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
+import RequestError from "../../common/RequestError";
 
 export default function CategoriesStatistics() {
   const [categories, setCategories] = useState([]);
@@ -49,7 +50,7 @@ export default function CategoriesStatistics() {
   return (
     <ContainerSection data-testid="categories-section">
       <h1>Kategorie Porad</h1>
-      {error && <p className="py-6 text-red-500">{error}</p>}
+      <RequestError content={error} />
       {isLoading && <p>Ładowanie...</p>}
       {!error && !isLoading && categories && (
         <Table

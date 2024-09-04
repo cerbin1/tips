@@ -84,7 +84,6 @@ describe("PasswordChangeForm", () => {
       "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
@@ -97,7 +96,6 @@ describe("PasswordChangeForm", () => {
 
     const error = screen.getByText("Nie udało się zmienić hasła!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
@@ -116,7 +114,6 @@ describe("PasswordChangeForm", () => {
 
     const error = screen.getByText("Nie udało się zmienić hasła! Link wygasł.");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 

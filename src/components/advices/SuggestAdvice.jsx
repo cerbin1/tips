@@ -3,6 +3,7 @@ import { useAuth } from "../../store/auth-context";
 import Button from "../common/Button";
 import Captcha from "../common/form/Captcha";
 import FormInput from "../common/form/FormInput";
+import RequestError from "../common/RequestError";
 
 export default function SuggestAdvice() {
   const [categoriesLoading, setCategoriesLoading] = useState(false);
@@ -150,9 +151,7 @@ export default function SuggestAdvice() {
                   ))}
               </select>
             )}
-            {categoriesLoadingError && (
-              <p className="py-6 text-red-500">{categoriesLoadingError}</p>
-            )}
+            <RequestError content={categoriesLoadingError} />
           </div>
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="content">Treść</label>
@@ -171,9 +170,7 @@ export default function SuggestAdvice() {
           </Button>
         </form>
       )}
-      {submitFormError && (
-        <div className="py-6 text-red-500">{submitFormError}</div>
-      )}
+      <RequestError content={submitFormError} />
     </>
   );
 }

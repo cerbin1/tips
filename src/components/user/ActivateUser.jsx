@@ -3,10 +3,11 @@ import ContainerSection from "../common/ContainerSection";
 import { useParams } from "react-router";
 import Button from "../common/Button";
 import { Link } from "react-router-dom";
+import RequestError from "../common/RequestError";
 
 export default function ActivateUser() {
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState();
   const params = useParams();
   const { token } = useParams();
 
@@ -43,7 +44,7 @@ export default function ActivateUser() {
         </>
       )}
 
-      {error && <div className="py-6 text-red-600">{error}</div>}
+      <RequestError content={error} />
     </ContainerSection>
   );
 }

@@ -4,6 +4,7 @@ import ContainerSection from "../../common/ContainerSection";
 import Table from "../../common/table/Table";
 import TableBody from "../../common/table/TableBody";
 import TableHeader from "../../common/table/TableHeader";
+import RequestError from "../../common/RequestError";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -62,7 +63,7 @@ export default function rating() {
         />
       )}
       {loading && <div className="py-6">Ładowanie...</div>}
-      {error && <div className="py-6 text-red-500">{error}</div>}
+      <RequestError content={error} />
     </ContainerSection>
   );
 }

@@ -103,7 +103,6 @@ describe("Login", () => {
 
     const error = screen.getByText("Podano nieprawidłowe dane logowania!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expectLoginAuthRequestSent();
   });
 
@@ -120,7 +119,6 @@ describe("Login", () => {
 
     const error = screen.getByText("Nie udało się zalogować!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expectLoginAuthRequestSent();
   });
 

@@ -74,7 +74,6 @@ describe("PasswordResetForm", () => {
       "Nie udało się wysłać linku resetującego hasło!"
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/auth/account/password-reset?email=test@test",

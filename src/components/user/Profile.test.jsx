@@ -135,7 +135,6 @@ describe("Profile", () => {
 
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -203,7 +202,6 @@ describe("Profile", () => {
 
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -288,7 +286,6 @@ describe("Profile", () => {
       "Nie udało się pobrać proponowanych kategorii!"
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(3);
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
       headers: {

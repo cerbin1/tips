@@ -4,6 +4,7 @@ import { useAuth } from "../../store/auth-context";
 import { getUserEmail } from "../../util/auth";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
+import RequestError from "../common/RequestError";
 
 export default function AdviceDetails() {
   const [adviceDetails, setAdviceDetails] = useState();
@@ -139,15 +140,9 @@ export default function AdviceDetails() {
         <p className="py-6 text-green-500">{rateAdviceSuccess}</p>
       )}
 
-      {adviceDetailsError && (
-        <p className="py-6 text-red-500">{adviceDetailsError}</p>
-      )}
-
-      {rateAdviceError && (
-        <p className="py-6 text-red-500">{rateAdviceError}</p>
-      )}
-
-      {userVotedError && <p className="py-6 text-red-500">{userVotedError}</p>}
+      <RequestError content={adviceDetailsError} />
+      <RequestError content={rateAdviceError} />
+      <RequestError content={userVotedError} />
     </ContainerSection>
   );
 }

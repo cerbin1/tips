@@ -6,6 +6,7 @@ import ContainerSection from "../common/ContainerSection";
 import Table from "../common/table/Table";
 import TableBody from "../common/table/TableBody";
 import TableHeader from "../common/table/TableHeader";
+import RequestError from "../common/RequestError";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
@@ -156,9 +157,7 @@ export default function Profile() {
       {votedAdvicesLoading && (
         <div className="py-6">Ładowanie ocenionych porad...</div>
       )}
-      {votedAdvicesError && (
-        <div className="py-6 text-red-500">{votedAdvicesError}</div>
-      )}
+      <RequestError content={votedAdvicesError} />
 
       {!suggestedAdvicesError &&
         !suggestedAdvicesLoading &&
@@ -178,9 +177,7 @@ export default function Profile() {
       {suggestedAdvicesLoading && (
         <div className="py-6">Ładowanie proponowanych porad...</div>
       )}
-      {suggestedAdvicesError && (
-        <div className="py-6 text-red-500">{suggestedAdvicesError}</div>
-      )}
+      <RequestError content={suggestedAdvicesError} />
 
       {!suggestedCategoriesError &&
         !suggestedCategoriesLoading &&
@@ -200,9 +197,7 @@ export default function Profile() {
       {suggestedCategoriesLoading && (
         <div className="py-6">Ładowanie proponowanych kategorii...</div>
       )}
-      {suggestedCategoriesError && (
-        <div className="py-6 text-red-500">{suggestedCategoriesError}</div>
-      )}
+      <RequestError content={suggestedCategoriesError} />
     </ContainerSection>
   );
 }

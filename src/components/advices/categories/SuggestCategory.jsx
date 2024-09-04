@@ -3,6 +3,7 @@ import { useAuth } from "../../../store/auth-context";
 import Button from "../../common/Button";
 import Captcha from "../../common/form/Captcha";
 import FormInput from "../../common/form/FormInput";
+import RequestError from "../../common/RequestError";
 
 export default function SuggestCategory() {
   const [captchaToken, setCaptchaToken] = useState();
@@ -98,7 +99,7 @@ export default function SuggestCategory() {
           </Button>
         </form>
       )}
-      {error && <div className="py-6 text-red-500">{error}</div>}
+      <RequestError content={error} />
     </>
   );
 }

@@ -4,6 +4,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import SecondaryButton from "../common/SecondaryButton";
+import RequestError from "../common/RequestError";
 
 export default function Register() {
   const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
@@ -134,7 +135,7 @@ export default function Register() {
             required
           />
           {passwordsAreNotEqual && (
-            <p className="py-6 text-red-500">Hasła muszą się zgadzać!</p>
+            <RequestError content="Hasła muszą się zgadzać!" />
           )}
           <div className="flex justify-between">
             <SecondaryButton type="reset" disabled={userCreateLoading}>
@@ -147,7 +148,7 @@ export default function Register() {
         </form>
       )}
       {!activationLink && userCreateError && (
-        <div className="py-6 text-red-500">{userCreateError}</div>
+        <RequestError content={userCreateError} />
       )}
 
       {activationLink && !resendLinkError && (
@@ -177,9 +178,7 @@ export default function Register() {
           </Button>
         </>
       )}
-      {resendLinkError && (
-        <div className="py-6 text-red-500">{resendLinkError}</div>
-      )}
+      <RequestError content={resendLinkError} />
     </ContainerSection>
   );
 }

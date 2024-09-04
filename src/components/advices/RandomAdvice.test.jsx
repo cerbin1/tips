@@ -100,7 +100,6 @@ describe("RandomAdvice", () => {
     expect(screen.queryByRole("heading")).toBeNull();
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     const button = screen.getByRole("button");
     expect(button).toBeInTheDocument();
     expect(button).toHaveTextContent("Spróbuj ponownie");

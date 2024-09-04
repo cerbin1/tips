@@ -119,7 +119,6 @@ describe("CategoryDetails", () => {
 
     const error = screen.getByText("Nie udało się wyświetlić porad!");
     expect(error);
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(
@@ -134,7 +133,6 @@ describe("CategoryDetails", () => {
 
     const error = screen.getByText("Nie udało się wyświetlić porad!");
     expect(error);
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(

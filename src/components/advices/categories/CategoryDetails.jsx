@@ -7,6 +7,7 @@ import TableData from "../../common/table/TableData";
 import TableDataLink from "../../common/table/TableDataLink";
 import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
+import RequestError from "../../common/RequestError";
 
 export default function CategoryDetails() {
   const [categoryDetails, setCategoryDetails] = useState();
@@ -67,7 +68,7 @@ export default function CategoryDetails() {
         </>
       )}
       {isLoading && <p>Ładowanie...</p>}
-      {error && <p className="py-6 text-red-500">{error}</p>}
+      <RequestError content={error} />
     </ContainerSection>
   );
 }

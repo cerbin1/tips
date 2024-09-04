@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
+import RequestError from "../common/RequestError";
 
 export default function PasswordChangeForm() {
   const navigate = useNavigate();
@@ -80,7 +81,8 @@ export default function PasswordChangeForm() {
           {loading ? "Wysyłanie..." : "Wyślij"}
         </Button>
       </form>
-      {error && <div className="py-6 text-red-500">{error}</div>}
+
+      <RequestError content={error} />
     </ContainerSection>
   );
 }

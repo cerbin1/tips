@@ -79,7 +79,6 @@ describe("SuggestCategory", () => {
 
     const error = screen.getByText("Nazwa jest zbyt długa!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -91,7 +90,6 @@ describe("SuggestCategory", () => {
 
     const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -125,7 +123,6 @@ describe("SuggestCategory", () => {
 
     const error = screen.getByText("Nie udało się wysłać propozycji!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     assertSubmitFormRequestExecuted();
   });
 
@@ -147,7 +144,6 @@ describe("SuggestCategory", () => {
 
     const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     assertSubmitFormRequestExecuted();
   });
 
@@ -170,7 +166,6 @@ describe("SuggestCategory", () => {
       "Nie udało się zapisć propozycji. Walidacja nieudana."
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     assertSubmitFormRequestExecuted();
   });
 

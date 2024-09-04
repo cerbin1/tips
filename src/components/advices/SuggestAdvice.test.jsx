@@ -125,7 +125,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Nazwa jest zbyt długa!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     assertFetchCategoriesRequestExecuted();
   });
@@ -170,7 +169,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Treść jest zbyt długa!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     assertFetchCategoriesRequestExecuted();
   });
@@ -184,7 +182,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
   });
@@ -209,7 +206,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Nie udało się pobrać kategorii!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     assertFetchCategoriesRequestExecuted();
   });
 
@@ -241,7 +237,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Nie udało się wysłać propozycji!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });
@@ -264,7 +259,6 @@ describe("SuggestAdvice", () => {
 
     const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });
@@ -288,7 +282,6 @@ describe("SuggestAdvice", () => {
       "Nie udało się zapisć propozycji. Walidacja nieudana."
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });

@@ -135,7 +135,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Nazwa użytkownika nie może być pusta!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -160,7 +159,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Hasła muszą się zgadzać!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -172,7 +170,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Nazwa użytkownika jest zajęta!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -197,7 +194,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Email jest zajęty!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -222,7 +218,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Email jest niepoprawny!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -249,7 +244,6 @@ describe("Register", () => {
       "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -274,7 +268,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Hasła musza być takie same!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -299,7 +292,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Nie udało się utworzyć użytkownika!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -371,7 +363,6 @@ describe("Register", () => {
 
     const error = screen.getByText("Nie udało się ponownie wysłać linka!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByText("Kliknij tutaj")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(

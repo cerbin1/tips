@@ -81,7 +81,6 @@ describe("AdviceDetails", () => {
 
     const error = screen.getByText("Nie znaleziono porady!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -95,7 +94,6 @@ describe("AdviceDetails", () => {
 
     const error = screen.getByText("Nie udało się wyświetlić porady!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -111,7 +109,6 @@ describe("AdviceDetails", () => {
       "Nie udało się pobrać informacji o głosowaniu!"
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -146,7 +143,6 @@ describe("AdviceDetails", () => {
 
     const error = screen.getByText("Nie udało się ocenić porady!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     assertAdviceRatedRequestExecuted();
   });
 

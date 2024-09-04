@@ -56,7 +56,6 @@ describe("ActivateUser", () => {
       "Nie udało się aktywować użytkownika!"
     );
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-600");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });

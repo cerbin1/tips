@@ -2,6 +2,7 @@ import { useState } from "react";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
+import RequestError from "../common/RequestError";
 
 export default function PasswordResetForm() {
   const [email, setEmail] = useState();
@@ -58,7 +59,7 @@ export default function PasswordResetForm() {
           </Button>
         </form>
       )}
-      {error && <p className="py-6 text-red-500">{error}</p>}
+      <RequestError content={error} />
 
       {submitFormSuccess && (
         <p className="py-6 text-green-500">

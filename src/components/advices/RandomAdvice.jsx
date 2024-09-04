@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
+import RequestError from "../common/RequestError";
 
 export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState();
@@ -50,7 +51,7 @@ export default function RandomAdvice() {
       )}
       {!loading && error && (
         <>
-          <p className="py-6 text-red-500">{error}</p>
+          <RequestError content={error} />
           <Button onClick={fetchRandomAdvice}>Spróbuj ponownie</Button>
         </>
       )}

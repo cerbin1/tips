@@ -94,7 +94,6 @@ describe("CategoriesStatistics", () => {
 
     const error = screen.getByText("Nie udało się wyświetlić kategorii!");
     expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/categories-statistics");
