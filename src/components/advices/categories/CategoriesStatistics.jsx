@@ -1,20 +1,20 @@
-import TableHeader from "../../common/table/TableHeader";
-import TableRow from "../../common/table/TableRow";
-import TableData from "../../common/table/TableData";
-import TableDataLink from "../../common/table/TableDataLink";
+import { useEffect, useState } from "react";
+import ContainerSection from "../../common/ContainerSection";
 import Table from "../../common/table/Table";
 import TableBody from "../../common/table/TableBody";
-import ContainerSection from "../../common/ContainerSection";
-import { useEffect, useState } from "react";
+import TableData from "../../common/table/TableData";
+import TableDataLink from "../../common/table/TableDataLink";
+import TableHeader from "../../common/table/TableHeader";
+import TableRow from "../../common/table/TableRow";
 
 export default function CategoriesStatistics() {
-  const [error, setError] = useState();
-  const [isLoading, setIsLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchCategories() {
-      setError(null);
+      setError();
       setIsLoading(true);
       try {
         const response = await fetch(
@@ -51,7 +51,7 @@ export default function CategoriesStatistics() {
       <h1>Kategorie Porad</h1>
       {error && <p className="py-6 text-red-500">{error}</p>}
       {isLoading && <p>Ładowanie...</p>}
-      {!error && !isLoading && (
+      {!error && !isLoading && categories && (
         <Table
           head={<TableHeader headers={tableHeaders} />}
           body={<TableBody rows={tableRows} />}
