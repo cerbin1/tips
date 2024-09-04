@@ -19,14 +19,17 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
+beforeEach(() => {
+  localStorage.setItem("token", "token");
+  localStorage.setItem("userEmail", "test@email");
+});
+
 afterEach(() => {
   localStorage.clear();
 });
 
 describe("AdviceDetails", () => {
   test("should render component", async () => {
-    localStorage.setItem("token", "token");
-    localStorage.setItem("userEmail", "test@email");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
@@ -50,35 +53,7 @@ describe("AdviceDetails", () => {
     const rateButton = screen.getByRole("button");
     expect(rateButton).toBeInTheDocument();
     expect(rateButton).toHaveTextContent("Oceń jako przydatne");
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
-    );
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rated?userEmail=test@email"
-    );
-  });
-
-  test("should display error when advice is not found", async () => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false, status: 404 }));
-
-    await act(async () => renderWithAuth(<AdviceDetails />));
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    const error = screen.getByText("Nie znaleziono porady!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
-  });
-
-  test("should display general error when response is not ok", async () => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-
-    await act(async () => renderWithAuth(<AdviceDetails />));
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
-    expect(error).toHaveClass("py-6 text-red-500");
+    assertFetchAdviceDetailsRequestsExecuted();
   });
 
   test("should display info when advice details are loading", async () => {
@@ -93,11 +68,59 @@ describe("AdviceDetails", () => {
     await waitFor(() => {
       expect(screen.queryByText("Ładowanie...")).toBeNull();
     });
-    expect(globalThis.fetch).toBeCalledTimes(2);
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
+    assertFetchAdviceDetailsRequestsExecuted();
+  });
+
+  test("should display error when advice is not found", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 404 })
+      .mockResolvedValueOnce({ ok: false });
+
+    await act(async () => renderWithAuth(<AdviceDetails />));
+
+    const error = screen.getByText("Nie znaleziono porady!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+    );
+  });
+
+  test("should display general error when fetching advice details response is not ok", async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+
+    await act(async () => renderWithAuth(<AdviceDetails />));
+
+    const error = screen.getByText("Nie udało się wyświetlić porady!");
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+    );
+  });
+
+  test("should display error when fetching user rated advice info response is not ok", async () => {
+    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+
+    await act(async () => renderWithAuth(<AdviceDetails />));
+
+    const error = screen.getByText(
+      "Nie udało się pobrać informacji o głosowaniu!"
+    );
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass("py-6 text-red-500");
+    expect(globalThis.fetch).toBeCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+    );
   });
 
   test("should rating button not appear when user is not logged in", async () => {
+    localStorage.setItem("token", "");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
@@ -106,53 +129,36 @@ describe("AdviceDetails", () => {
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
     expect(screen.getByText("Zaloguj się aby zagłosować")).toBeInTheDocument();
-    expect(
-      screen.queryByRole("button", { name: "Oceń jako przydatne" })
-    ).toBeNull();
+    expect(screen.queryByRole("button")).toBeNull();
+    expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
+    expect(globalThis.fetch).toBeCalledTimes(2);
   });
 
-  test("should display error when advice rate fails", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+  test("should display error when rating advice fails", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce({
-        ok: false,
-      });
+      .mockResolvedValueOnce(ratedAdviceResponse(false))
+      .mockResolvedValueOnce({ ok: false });
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
-    );
+    assertFetchAdviceDetailsRequestsExecuted();
 
     await userEvent.click(screen.getByRole("button"));
 
     const error = screen.getByText("Nie udało się ocenić porady!");
     expect(error).toBeInTheDocument();
     expect(error).toHaveClass("py-6 text-red-500");
-    expect(globalThis.fetch).toBeCalledTimes(3);
+    assertAdviceRatedRequestExecuted();
   });
 
   test("should block button and change text when rating advice", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce({
-        ok: false,
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-            rating: 6,
-          }),
-      });
+      .mockResolvedValueOnce(ratedAdviceResponse(false))
+      .mockResolvedValueOnce(ratedAdviceDetailsResponse());
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toBeCalledTimes(2);
+    assertFetchAdviceDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
@@ -164,32 +170,50 @@ describe("AdviceDetails", () => {
       expect(screen.queryByText("Oceń jako przydatne")).toBeNull();
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
-    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(screen.getByText("6")).toBeInTheDocument();
+    assertAdviceRatedRequestExecuted();
   });
 
-  test("should successfully rate advice and display info", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
+  test("should button be enabled when user did not rate advice", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: false }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-            rating: 6,
-          }),
-      });
-    localStorage.setItem("userEmail", "email@test");
+      .mockResolvedValueOnce(ratedAdviceResponse(false));
+
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-    expect(globalThis.fetch).toBeCalledTimes(2);
+
+    const rateButton = screen.getByRole("button");
+    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
+    expect(rateButton).toBeEnabled();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toBeInTheDocument();
+    assertFetchAdviceDetailsRequestsExecuted();
+  });
+
+  test("should button be disabled and have changed text when user rated advice", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(ratedAdviceDetailsResponse())
+      .mockResolvedValueOnce(ratedAdviceResponse(true));
+
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
+
+    const rateButton = screen.getByRole("button");
+    expect(rateButton).toHaveTextContent("Oceniono");
+    expect(rateButton).toBeDisabled();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("6")).toBeInTheDocument();
+    assertFetchAdviceDetailsRequestsExecuted();
+  });
+
+  test("should successfully rate advice and display info", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(adviceDetailsResponse())
+      .mockResolvedValueOnce(ratedAdviceResponse(false))
+      .mockResolvedValueOnce(ratedAdviceDetailsResponse());
+    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
+    assertFetchAdviceDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
 
@@ -199,60 +223,41 @@ describe("AdviceDetails", () => {
     const rateSuccess = screen.getByText("Oceniono poradę.");
     expect(rateSuccess).toBeInTheDocument();
     expect(rateSuccess).toHaveClass("py-6 text-green-500");
-    expect(globalThis.fetch).toBeCalledTimes(3);
     expect(screen.getByText("Oceniono")).toBeDisabled();
-  });
-
-  test("should button be enabled when user did not rate advice", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: false }),
-      });
-
-    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
-    expect(rateButton).toBeEnabled();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-  });
-
-  test("should button be disabled and have changed text when user rated advice", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-            rating: 6,
-          }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: true }),
-      });
-
-    await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
-
-    expect(globalThis.fetch).toBeCalledTimes(2);
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toHaveTextContent("Oceniono");
-    expect(rateButton).toBeDisabled();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("6")).toBeInTheDocument();
+    assertAdviceRatedRequestExecuted();
   });
 });
+
+function assertFetchAdviceDetailsRequestsExecuted() {
+  expect(globalThis.fetch).toBeCalledTimes(2);
+  expect(globalThis.fetch).toBeCalledWith(
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+  );
+  expect(globalThis.fetch).toBeCalledWith(
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rated?userEmail=test@email",
+    {
+      headers: {
+        Authorization: "Bearer token",
+        "Content-Type": "application/json",
+      },
+    }
+  );
+}
+
+function assertAdviceRatedRequestExecuted() {
+  expect(globalThis.fetch).toBeCalledTimes(3);
+  expect(globalThis.fetch).toBeCalledWith(
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate",
+    {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer token",
+        "Content-Type": "application/json",
+      },
+      body: "test@email",
+    }
+  );
+}
 
 function adviceDetailsResponse() {
   return {
@@ -264,6 +269,20 @@ function adviceDetailsResponse() {
         categoryDisplayName: "Zdrowie",
         content: "Treść",
         rating: 5,
+      }),
+  };
+}
+
+function ratedAdviceDetailsResponse() {
+  return {
+    ok: true,
+    json: () =>
+      Promise.resolve({
+        name: "Nazwa porady",
+        categoryName: "Health",
+        categoryDisplayName: "Zdrowie",
+        content: "Treść",
+        rating: 6,
       }),
   };
 }

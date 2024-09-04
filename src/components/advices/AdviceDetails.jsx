@@ -1,43 +1,45 @@
 import { useEffect, useState } from "react";
-import ContainerSection from "../common/ContainerSection";
-import Button from "../common/Button";
 import { useParams } from "react-router";
-import { getUserEmail } from "../../util/auth";
 import { useAuth } from "../../store/auth-context";
+import { getUserEmail } from "../../util/auth";
+import Button from "../common/Button";
+import ContainerSection from "../common/ContainerSection";
 
 export default function AdviceDetails() {
+  const [adviceDetails, setAdviceDetails] = useState();
   const [adviceDetailsloading, setAdviceDetailsloading] = useState(false);
-  const [advice, setAdvice] = useState();
-  const [adviceFetchError, setAdviceFetchError] = useState();
+  const [adviceDetailsError, setAdviceDetailsError] = useState();
   const [rateAdviceLoading, setRateAdviceLoading] = useState(false);
   const [rateAdviceError, setRateAdviceError] = useState();
   const [rateAdviceSuccess, setRateAdviceSuccess] = useState();
   const [userVoted, setUserVoted] = useState(false);
+  const [userVotedError, setUserVotedError] = useState();
   const { adviceId } = useParams();
   const { token } = useAuth();
 
   useEffect(() => {
     async function fetchAdvice() {
-      setAdviceFetchError(null);
+      setAdviceDetailsError(null);
       const url = import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
       try {
         const response = await fetch(url);
         if (response.ok) {
           const advice = await response.json();
-          setAdvice(advice);
+          setAdviceDetails(advice);
         } else {
           if (response.status === 404) {
-            setAdviceFetchError("Nie znaleziono porady!");
+            setAdviceDetailsError("Nie znaleziono porady!");
           } else {
-            setAdviceFetchError("Nie udało się wyświetlić porady!");
+            setAdviceDetailsError("Nie udało się wyświetlić porady!");
           }
         }
       } catch (error) {
-        setAdviceFetchError("Nie udało się wyświetlić porady!");
+        setAdviceDetailsError("Nie udało się wyświetlić porady!");
       }
     }
 
     async function fetchUserRatedAdvice() {
+      setUserVotedError();
       const url =
         import.meta.env.VITE_BACKEND_URL +
         "advices/" +
@@ -53,6 +55,8 @@ export default function AdviceDetails() {
       if (response.ok) {
         const responseData = await response.json();
         setUserVoted(responseData.rated);
+      } else {
+        setUserVotedError("Nie udało się pobrać informacji o głosowaniu!");
       }
     }
     async function fetchAdviceDetails() {
@@ -65,7 +69,7 @@ export default function AdviceDetails() {
   }, [adviceId]);
 
   function handleRateAdvice() {
-    setAdviceFetchError(null);
+    setAdviceDetailsError(null);
     setRateAdviceLoading(true);
     async function sendRequest() {
       const url =
@@ -81,7 +85,7 @@ export default function AdviceDetails() {
         });
         if (response.ok) {
           const advice = await response.json();
-          setAdvice(advice);
+          setAdviceDetails(advice);
           setRateAdviceSuccess("Oceniono poradę.");
           setUserVoted(true);
         } else {
@@ -98,22 +102,22 @@ export default function AdviceDetails() {
   return (
     <ContainerSection data-testid="advice-details-section">
       {adviceDetailsloading && <p>Ładowanie...</p>}
-      {!adviceDetailsloading && advice && (
+      {!adviceDetailsloading && adviceDetails && (
         <>
-          <h1>{advice.name}</h1>
+          <h1>{adviceDetails.name}</h1>
           <h2 className="py-6 cursor-default">
             Kategoria:
             <p className="text-sky-500 text-lg ">
-              {advice.categoryDisplayName}
+              {adviceDetails.categoryDisplayName}
             </p>
           </h2>
 
           <p className="border border-sky-500 rounded py-6 px-6">
-            {advice.content}
+            {adviceDetails.content}
           </p>
           <div className="py-6">
             <p>Ocena przydatności:</p>
-            <p className="text-sky-500 text-lg">{advice.rating}</p>
+            <p className="text-sky-500 text-lg">{adviceDetails.rating}</p>
           </div>
           {token && (
             <Button
@@ -135,13 +139,15 @@ export default function AdviceDetails() {
         <p className="py-6 text-green-500">{rateAdviceSuccess}</p>
       )}
 
-      {adviceFetchError && (
-        <p className="py-6 text-red-500">{adviceFetchError}</p>
+      {adviceDetailsError && (
+        <p className="py-6 text-red-500">{adviceDetailsError}</p>
       )}
 
       {rateAdviceError && (
         <p className="py-6 text-red-500">{rateAdviceError}</p>
       )}
+
+      {userVotedError && <p className="py-6 text-red-500">{userVotedError}</p>}
     </ContainerSection>
   );
 }
