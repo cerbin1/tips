@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { useAuth } from "../../../store/auth-context";
 import Button from "../../common/Button";
 import Captcha from "../../common/form/Captcha";
 import FormInput from "../../common/form/FormInput";
-import { useAuth } from "../../../store/auth-context";
 
 export default function SuggestCategory() {
   const [captchaToken, setCaptchaToken] = useState();
@@ -91,7 +91,7 @@ export default function SuggestCategory() {
           className="flex flex-col gap-4 text-lg w-1/3"
           onSubmit={handleSubmit}
         >
-          <FormInput id="name" label="Nazwa kategorii" />
+          <FormInput id="name" label="Nazwa kategorii" required />
           <Captcha onCaptchaChange={handleCaptchaChange} />
           <Button disabled={isSubmitting}>
             {isSubmitting ? "Wysyłanie..." : "Wyślij propozycję"}
