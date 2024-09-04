@@ -1,5 +1,5 @@
-import Header from "./Header";
 import { renderWithRouterAndAuth } from "../../test/test-utils";
+import Header from "./Header";
 
 afterEach(() => {
   localStorage.clear();

@@ -1,25 +1,25 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Home from "./components/home/Home.jsx";
 import AdviceDetails from "./components/advices/AdviceDetails.jsx";
-import Ranking from "./components/advices/ranking/Ranking.jsx";
 import CategoriesStatistics from "./components/advices/categories/CategoriesStatistics.jsx";
 import CategoryDetails from "./components/advices/categories/CategoryDetails.jsx";
 import RandomAdvice from "./components/advices/RandomAdvice.jsx";
-import Register from "./components/user/Register.jsx";
-import RootLayout from "./router/RootLayout.jsx";
-import ActivateUser from "./components/user/ActivateUser.jsx";
+import Ranking from "./components/advices/ranking/Ranking.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
-import Login from "./components/user/Login.jsx";
-import Profile from "./components/user/Profile.jsx";
-import PasswordResetForm from "./components/user/PasswordResetForm.jsx";
-import PasswordChangeForm from "./components/user/PasswordChangeForm.jsx";
-import AuthProvider from "./store/auth-context.jsx";
-import Logout from "./components/user/Logout.jsx";
-import ProtectedRoute from "./router/ProtectedRoute.jsx";
+import Home from "./components/home/Home.jsx";
 import Suggestions from "./components/Suggestions.jsx";
+import ActivateUser from "./components/user/ActivateUser.jsx";
+import Login from "./components/user/Login.jsx";
+import Logout from "./components/user/Logout.jsx";
+import PasswordChangeForm from "./components/user/PasswordChangeForm.jsx";
+import PasswordResetForm from "./components/user/PasswordResetForm.jsx";
+import Profile from "./components/user/Profile.jsx";
+import Register from "./components/user/Register.jsx";
+import "./index.css";
+import ProtectedRoute from "./router/ProtectedRoute.jsx";
+import RootLayout from "./router/RootLayout.jsx";
+import AuthProvider from "./store/auth-context.jsx";
 
 const router = createBrowserRouter([
   {

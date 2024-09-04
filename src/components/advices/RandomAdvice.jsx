@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
-import { Link } from "react-router-dom";
 
 export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState();

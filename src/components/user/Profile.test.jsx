@@ -2,7 +2,6 @@ import { waitFor } from "@testing-library/react";
 import { act } from "react";
 import { renderWithAuth, renderWithRouterAndAuth } from "../../test/test-utils";
 import Profile from "./Profile";
-import { beforeEach } from "vitest";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";

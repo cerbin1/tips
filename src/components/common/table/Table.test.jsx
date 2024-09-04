@@ -1,10 +1,10 @@
+import { renderWithRouter } from "../../../test/test-utils";
 import Table from "./Table";
-import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
-import TableRow from "./TableRow";
 import TableData from "./TableData";
 import TableDataLink from "./TableDataLink";
-import { renderWithRouter } from "../../../test/test-utils";
+import TableHeader from "./TableHeader";
+import TableRow from "./TableRow";
 
 describe("Table", () => {
   test("should render component", () => {

@@ -1,7 +1,6 @@
 import { waitFor } from "@testing-library/react";
-import ActivateUser from "./ActivateUser";
 import { renderWithRouter } from "../../test/test-utils";
-import { beforeAll } from "vitest";
+import ActivateUser from "./ActivateUser";
 
 describe("ActivateUser", () => {
   beforeAll(() => {

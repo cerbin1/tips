@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../store/auth-context";
 import { getUserEmail, getUserRoles } from "../../util/auth";
 import ContainerSection from "../common/ContainerSection";
 import Table from "../common/table/Table";
-import { Link } from "react-router-dom";
-import TableHeader from "../common/table/TableHeader";
 import TableBody from "../common/table/TableBody";
-import { useAuth } from "../../store/auth-context";
+import TableHeader from "../common/table/TableHeader";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);

@@ -1,8 +1,8 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
-import { useNavigate, useParams } from "react-router";
 
 export default function PasswordChangeForm() {
   const navigate = useNavigate();

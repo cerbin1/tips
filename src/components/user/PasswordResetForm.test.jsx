@@ -1,6 +1,5 @@
-import { afterEach } from "vitest";
-import PasswordResetForm from "./PasswordResetForm";
 import { act, fireEvent, waitFor } from "@testing-library/react";
+import PasswordResetForm from "./PasswordResetForm";
 
 describe("PasswordResetForm", () => {
   beforeAll(() => {

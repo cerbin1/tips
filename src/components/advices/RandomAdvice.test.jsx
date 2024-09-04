@@ -1,7 +1,6 @@
 import { act, waitFor } from "@testing-library/react";
-import RandomAdvice from "./RandomAdvice";
-import { expect, vi } from "vitest";
 import { renderWithRouter } from "../../test/test-utils";
+import RandomAdvice from "./RandomAdvice";
 
 beforeEach(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";

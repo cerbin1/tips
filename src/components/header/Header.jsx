@@ -1,9 +1,9 @@
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../../store/auth-context";
 import Logo from "./Logo";
 import NavigationItem from "./NavigationItem";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { useAuth } from "../../store/auth-context";
 
 export default function Header() {
   const { token } = useAuth();

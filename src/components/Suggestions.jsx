@@ -1,7 +1,7 @@
-import ContainerSection from "./common/ContainerSection";
-import SuggestAdvice from "./advices/SuggestAdvice";
 import { useState } from "react";
 import SuggestCategory from "./advices/categories/SuggestCategory";
+import SuggestAdvice from "./advices/SuggestAdvice";
+import ContainerSection from "./common/ContainerSection";
 
 export default function Suggestions() {
   const [suggestAdvice, setSuggestAdvice] = useState(true);

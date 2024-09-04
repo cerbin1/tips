@@ -1,5 +1,5 @@
-import Home from "./Home";
 import { renderWithRouter } from "../../test/test-utils";
+import Home from "./Home";
 
 describe("Home", () => {
   test("should render component", () => {

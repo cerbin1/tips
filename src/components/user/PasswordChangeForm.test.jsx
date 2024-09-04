@@ -1,6 +1,6 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
-import PasswordChangeForm from "./PasswordChangeForm";
 import { renderWithRouter } from "../../test/test-utils";
+import PasswordChangeForm from "./PasswordChangeForm";
 
 const mockedUseNavigate = vi.fn();
 

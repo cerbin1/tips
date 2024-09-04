@@ -1,8 +1,8 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
-import { useState } from "react";
-import { Link } from "react-router-dom";
 import SecondaryButton from "../common/SecondaryButton";
 
 export default function Register() {
