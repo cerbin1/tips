@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>afterady</groupId>
-    <artifactId>afterady</artifactId>
+    <artifactId>afterady-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>afterady</name>
     <description>Demo project for Spring Boot</description>

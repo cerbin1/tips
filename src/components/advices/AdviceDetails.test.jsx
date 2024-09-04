@@ -3,25 +3,60 @@ import { afterEach, beforeAll } from "vitest";
 import { renderWithAuth, renderWithRouterAndAuth } from "../../test/test-utils";
 import AdviceDetails from "./AdviceDetails";
 
-describe("AdviceDetails", () => {
-  beforeAll(() => {
-    vi.mock("react-router", async () => {
-      const actual = await vi.importActual("react-router");
-      return {
-        ...actual,
-        useParams: () => {
-          return {
-            adviceId: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
-          };
-        },
-      };
-    });
-
-    import.meta.env.VITE_BACKEND_URL = "backend/";
+beforeAll(() => {
+  vi.mock("react-router", async () => {
+    const actual = await vi.importActual("react-router");
+    return {
+      ...actual,
+      useParams: () => {
+        return {
+          adviceId: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+        };
+      },
+    };
   });
 
-  afterEach(() => {
-    localStorage.clear();
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
+afterEach(() => {
+  localStorage.clear();
+});
+
+describe("AdviceDetails", () => {
+  test("should render component", async () => {
+    localStorage.setItem("token", "token");
+    localStorage.setItem("userEmail", "test@email");
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(adviceDetailsResponse())
+      .mockResolvedValueOnce(ratedAdviceResponse(false));
+
+    await act(async () => renderWithAuth(<AdviceDetails />));
+
+    expect(screen.getByTestId("advice-details-section")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Nazwa porady"
+    );
+    const categorySection = screen.getByRole("heading", { level: 2 });
+    expect(categorySection).toHaveTextContent("Kategoria:");
+    expect(categorySection).toHaveClass("py-6 cursor-default");
+    const categoryName = screen.getByText("Zdrowie");
+    expect(categoryName).toBeInTheDocument();
+    expect(categoryName).toHaveClass("text-sky-500 text-lg ");
+    expect(screen.getByText("Treść")).toBeInTheDocument();
+    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+    expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
+    const rateButton = screen.getByRole("button");
+    expect(rateButton).toBeInTheDocument();
+    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
+    expect(globalThis.fetch).toBeCalledTimes(2);
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+    );
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rated?userEmail=test@email"
+    );
   });
 
   test("should display error when advice is not found", async () => {
@@ -49,21 +84,8 @@ describe("AdviceDetails", () => {
   test("should display info when advice details are loading", async () => {
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-            rating: "5",
-          }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: false }),
-      });
+      .mockResolvedValueOnce(adviceDetailsResponse())
+      .mockResolvedValueOnce(ratedAdviceResponse(false));
 
     renderWithAuth(<AdviceDetails />);
 
@@ -75,51 +97,11 @@ describe("AdviceDetails", () => {
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
   });
 
-  test("should display advice details", async () => {
-    localStorage.setItem("token", "63b4072b-b8c8-4f9a-acf4-76d0948adc6e");
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve({
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-            rating: 5,
-          }),
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: false }),
-      });
-
-    await act(async () => renderWithAuth(<AdviceDetails />));
-
-    expect(screen.getByTestId("advice-details-section")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
-      "Nazwa porady"
-    );
-    const categorySection = screen.getByRole("heading", { level: 2 });
-    expect(categorySection).toHaveTextContent("Kategoria:");
-    expect(categorySection).toHaveClass("py-6 cursor-default");
-    expect(screen.getByText("Zdrowie")).toHaveClass("text-sky-500 text-lg ");
-    expect(screen.getByText("Treść")).toBeInTheDocument();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
-  });
-
   test("should rating button not appear when user is not logged in", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve({ rated: false }),
-      });
+      .mockResolvedValueOnce(ratedAdviceResponse(false));
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
@@ -283,5 +265,12 @@ function adviceDetailsResponse() {
         content: "Treść",
         rating: 5,
       }),
+  };
+}
+
+function ratedAdviceResponse(isRated) {
+  return {
+    ok: true,
+    json: () => Promise.resolve({ rated: isRated }),
   };
 }
