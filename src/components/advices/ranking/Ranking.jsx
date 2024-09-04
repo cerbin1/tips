@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom";
-import Table from "../../common/table/Table";
-import TableHeader from "../../common/table/TableHeader";
-import TableBody from "../../common/table/TableBody";
-import ContainerSection from "../../common/ContainerSection";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import ContainerSection from "../../common/ContainerSection";
+import Table from "../../common/table/Table";
+import TableBody from "../../common/table/TableBody";
+import TableHeader from "../../common/table/TableHeader";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -13,7 +13,7 @@ export default function rating() {
   useEffect(() => {
     async function fetchRanking() {
       try {
-        setError(null);
+        setError();
         setLoading(true);
         const response = await fetch(
           import.meta.env.VITE_BACKEND_URL + "advices/ranking"
