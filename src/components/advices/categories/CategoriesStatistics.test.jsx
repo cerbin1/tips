@@ -6,7 +6,7 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
-describe("Categories", () => {
+describe("CategoriesStatistics", () => {
   test("should render component", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
