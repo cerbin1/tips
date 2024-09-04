@@ -19,7 +19,7 @@ export default function AdviceDetails() {
 
   useEffect(() => {
     async function fetchAdvice() {
-      setAdviceDetailsError(null);
+      setAdviceDetailsError();
       const url = import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
       try {
         const response = await fetch(url);
@@ -69,7 +69,7 @@ export default function AdviceDetails() {
   }, [adviceId]);
 
   function handleRateAdvice() {
-    setAdviceDetailsError(null);
+    setAdviceDetailsError();
     setRateAdviceLoading(true);
     async function sendRequest() {
       const url =
