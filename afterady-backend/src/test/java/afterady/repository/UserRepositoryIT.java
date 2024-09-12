@@ -33,7 +33,6 @@ public class UserRepositoryIT {
     }
 
     @Test
-    @Transactional
     public void shouldSaveUser() {
         // arrange
         Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
@@ -52,7 +51,6 @@ public class UserRepositoryIT {
     }
 
     @Test
-    @Transactional
     public void shouldDeleteUser() {
         // arrange
         Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
@@ -68,26 +66,27 @@ public class UserRepositoryIT {
     }
 
     @Test
-    @Transactional
     public void shouldUpdateUser() {
         // arrange
-        User user = TestUtils.testUser();
+        Role role = roleRepository.save(new Role(RoleName.ROLE_USER));
+        User user = new User("username", "email", "password", role);
         userRepository.save(user);
+        Long createdUserId = user.getId();
         assertEquals(1, userRepository.count());
-        User created = userRepository.findById(1L).orElseThrow();
+        User created = userRepository.findById(createdUserId).orElseThrow();
         assertEquals("username", created.getUsername());
         assertEquals("email", created.getEmail());
         assertEquals("password", created.getPassword());
         assertFalse(created.getActive());
-        assertTrue(created.getRoles().isEmpty());
+        assertEquals(1, created.getRoles().size());
 
         // act
-        User userWithSameIdAndDifferentOtherData = new User(1L, "username2", "email2", "password2", true, emptySet());
+        User userWithSameIdAndDifferentOtherData = new User(createdUserId, "username2", "email2", "password2", true, Set.of(role));
         userRepository.save(userWithSameIdAndDifferentOtherData);
 
         // assert
         assertEquals(1, userRepository.count());
-        User updated = userRepository.findById(1L).orElseThrow();
+        User updated = userRepository.findById(createdUserId).orElseThrow();
         assertEquals("username2", updated.getUsername());
         assertEquals("email2", updated.getEmail());
         assertEquals("password2", updated.getPassword());
