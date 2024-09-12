@@ -47,7 +47,6 @@ public class EmailSendingServiceTest {
         verifyNoMoreInteractions(sender);
         verify(environment, times(1)).getEnv(AFTERADY_MAIL_SENDER);
         verify(environment, times(1)).getEnv(AFTERADY_MAIL_PWD);
-//        verify(environment, times(1)).getEnv(AFTERADY_MAIL_HOST);
         Mockito.verifyNoMoreInteractions(environment);
     }
 }
