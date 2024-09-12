@@ -1,18 +1,15 @@
 package afterady.service.password_reset;
 
+import integration.DatabaseSetupExtension;
 import afterady.domain.repository.ResetPasswordLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.ResetPasswordLink;
 import afterady.domain.user.User;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDateTime;
 
@@ -20,11 +17,8 @@ import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ResetPasswordServiceIT {
-
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            "postgres:16-alpine"
-    );
+@ExtendWith(DatabaseSetupExtension.class)
+class ResetPasswordServiceIT  {
 
     @Autowired
     private UserRepository userRepository;
@@ -33,27 +27,10 @@ class ResetPasswordServiceIT {
     @Autowired
     private ResetPasswordService resetPasswordService;
 
-    @BeforeAll
-    static void beforeAll() {
-        postgres.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        postgres.stop();
-    }
-
-    @BeforeEach
-    void beforeEach() {
+    @AfterEach
+    void cleanUp() {
         resetPasswordLinkRepository.deleteAll();
         userRepository.deleteAll();
-    }
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
     }
 
     @Test

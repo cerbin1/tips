@@ -38,7 +38,7 @@ public class AdviceServiceImplTest {
     private MongoTemplate mongoTemplate;
 
     @BeforeEach
-    public void setUp() {
+    public void init() {
         adviceService = new AdviceServiceImpl(suggestedAdviceRepository, adviceRepository, mongoTemplate);
     }
 

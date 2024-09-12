@@ -1,18 +1,15 @@
 package afterady.service.activation_link;
 
+import integration.DatabaseSetupExtension;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,34 +18,8 @@ import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ExtendWith(DatabaseSetupExtension.class)
 public class UserActivatorServiceIT {
-
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            "postgres:16-alpine"
-    );
-
-    @BeforeAll
-    static void beforeAll() {
-        postgres.start();
-    }
-
-    @AfterAll
-    static void afterAll() {
-        postgres.stop();
-    }
-
-    @BeforeEach
-    void beforeEach() {
-        userActivationLinkRepository.deleteAll();
-        userRepository.deleteAll();
-    }
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
-    }
 
     @Autowired
     private UserRepository userRepository;
@@ -56,6 +27,12 @@ public class UserActivatorServiceIT {
     private UserActivationLinkRepository userActivationLinkRepository;
     @Autowired
     private UserActivatorService userActivatorService;
+
+    @AfterEach
+    void cleanUp() {
+        userActivationLinkRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     public void shouldCreateLink() {
