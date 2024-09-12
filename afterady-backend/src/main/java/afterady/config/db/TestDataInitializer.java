@@ -2,10 +2,8 @@ package afterady.config.db;
 
 import afterady.cron.CronJobsService;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.category.CategoriesStatistics;
 import afterady.domain.advice.category.Category;
 import afterady.domain.repository.AdviceRepository;
-import afterady.domain.repository.CategoriesStatisticsRepository;
 import afterady.domain.repository.CategoryRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;

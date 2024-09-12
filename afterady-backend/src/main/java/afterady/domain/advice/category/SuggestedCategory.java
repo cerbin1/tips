@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-import static afterady.domain.advice.category.SuggestedCategory.*;
+import static afterady.domain.advice.category.SuggestedCategory.SUGGESTED_CATEGORY_COLLECTION;
 
 
 @Document(collection = SUGGESTED_CATEGORY_COLLECTION)

@@ -32,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         User user = userByEmail.get();
-        return new UserDetailsImpl(user.getId(),user.getEmail(), user.getPassword(), user.getRoles(), user.getActive());
+        return new UserDetailsImpl(user.getId(), user.getEmail(), user.getPassword(), user.getRoles(), user.getActive());
 
     }
 

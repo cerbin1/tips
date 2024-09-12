@@ -1,7 +1,6 @@
 package afterady.domain.repository;
 
 import afterady.domain.advice.category.Category;
-import afterady.domain.advice.category.SuggestedCategory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

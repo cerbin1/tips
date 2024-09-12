@@ -1,8 +1,8 @@
 package afterady.service.advice;
 
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.advice.SuggestedAdvice;
+import afterady.domain.advice.category.AdviceCategory;
 
 import java.util.List;
 import java.util.Optional;

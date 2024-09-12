@@ -7,7 +7,6 @@ import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
 import afterady.service.captcha.CaptchaService;
-import org.bson.types.ObjectId;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
