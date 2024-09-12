@@ -70,7 +70,7 @@ export default function AdviceDetails() {
   }, [adviceId]);
 
   function handleRateAdvice() {
-    setAdviceDetailsError();
+    setRateAdviceError();
     setRateAdviceLoading(true);
     async function sendRequest() {
       const url =
