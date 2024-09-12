@@ -21,7 +21,7 @@ import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UserActivatorServiceTest {
+public class UserActivatorServiceIT {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:16-alpine"

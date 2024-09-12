@@ -15,7 +15,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class RoleRepositoryTest {
+class RoleRepositoryIT {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:16-alpine"

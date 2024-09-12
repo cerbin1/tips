@@ -21,7 +21,7 @@ import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UserRepositoryTest {
+public class UserRepositoryIT {
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:16-alpine"
     );

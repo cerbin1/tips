@@ -57,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MongoDataAutoConfiguration.class}
 )
 @AutoConfigureMockMvc(addFilters = false)
-class AdviceControllerTest {
+class AdviceControllerIT {
 
     @Autowired
     private MockMvc mvc;

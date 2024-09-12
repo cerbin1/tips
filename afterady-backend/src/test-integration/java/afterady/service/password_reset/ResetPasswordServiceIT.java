@@ -20,7 +20,7 @@ import static afterady.TestUtils.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ResetPasswordServiceTest {
+class ResetPasswordServiceIT {
 
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:16-alpine"
