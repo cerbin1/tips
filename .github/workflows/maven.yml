@@ -32,3 +32,6 @@ jobs:
     - name: Run integration tests
       working-directory: ./afterady-backend
       run: mvn verify
+    # - name: Run integration tests
+    # working-directory: ./afterady-backend
+    # run: mvn verify
