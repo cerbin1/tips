@@ -5,9 +5,10 @@ import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import SecondaryButton from "../common/SecondaryButton";
 import RequestError from "../common/RequestError";
+import ValidationError from "../common/ValidationError";
 
 export default function Register() {
-  const [passwordsAreNotEqual, setPasswordsAreNotEqual] = useState(false);
+  const [userValidationError, setUserValidationError] = useState(false);
   const [userCreateLoading, setUserCreateLoading] = useState(false);
   const [userCreateError, setUserCreateError] = useState();
   const [resendLinkLoading, setResendLinkLoading] = useState(false);
@@ -20,7 +21,7 @@ export default function Register() {
 
     async function sendRequest() {
       setUserCreateLoading(true);
-      setPasswordsAreNotEqual(false);
+      setUserValidationError();
       setUserCreateError();
       const formData = new FormData(event.target);
       const email = formData.get("email").trim();
@@ -28,19 +29,19 @@ export default function Register() {
       const password = formData.get("password");
       const passwordRepeat = formData.get("password-repeat");
       if (email === "") {
-        setUserCreateError("Email nie może być pusty!");
+        setUserValidationError("Email nie może być pusty!");
         setUserCreateLoading(false);
         return;
       }
 
       if (username === "") {
-        setUserCreateError("Nazwa użytkownika nie może być pusta!");
+        setUserValidationError("Nazwa użytkownika nie może być pusta!");
         setUserCreateLoading(false);
         return;
       }
 
       if (password !== passwordRepeat) {
-        setPasswordsAreNotEqual(true);
+        setUserValidationError("Hasła muszą się zgadzać!");
         setUserCreateLoading(false);
         return;
       }
@@ -134,9 +135,6 @@ export default function Register() {
             minLength={8}
             required
           />
-          {passwordsAreNotEqual && (
-            <RequestError content="Hasła muszą się zgadzać!" />
-          )}
           <div className="flex justify-between">
             <SecondaryButton type="reset" disabled={userCreateLoading}>
               Wyczyść formularz
@@ -145,11 +143,10 @@ export default function Register() {
               {userCreateLoading ? "Wysyłanie..." : "Wyślij"}
             </Button>
           </div>
+          <ValidationError content={userValidationError} />
         </form>
       )}
-      {!activationLink && userCreateError && (
-        <RequestError content={userCreateError} />
-      )}
+      <RequestError content={userCreateError} />
 
       {activationLink && !resendLinkError && (
         <>
