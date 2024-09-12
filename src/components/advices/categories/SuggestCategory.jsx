@@ -8,7 +8,7 @@ import RequestError from "../../common/RequestError";
 export default function SuggestCategory() {
   const [captchaToken, setCaptchaToken] = useState();
   const [error, setError] = useState();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
   const { token } = useAuth();
 
@@ -33,7 +33,7 @@ export default function SuggestCategory() {
     const data = Object.fromEntries(formData.entries());
     data["captchaToken"] = captchaToken;
 
-    setIsSubmitting(true);
+    setSubmitting(true);
     async function sendRequest() {
       try {
         const response = await fetch(
@@ -65,7 +65,7 @@ export default function SuggestCategory() {
       } catch (error) {
         setError("Nie udało się wysłać propozycji!");
       }
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
 
     sendRequest();
@@ -94,8 +94,8 @@ export default function SuggestCategory() {
         >
           <FormInput id="name" label="Nazwa kategorii" required />
           <Captcha onCaptchaChange={handleCaptchaChange} />
-          <Button disabled={isSubmitting}>
-            {isSubmitting ? "Wysyłanie..." : "Wyślij propozycję"}
+          <Button disabled={submitting}>
+            {submitting ? "Wysyłanie..." : "Wyślij propozycję"}
           </Button>
         </form>
       )}

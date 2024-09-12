@@ -8,10 +8,11 @@ import TableDataLink from "../../common/table/TableDataLink";
 import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
 import RequestError from "../../common/RequestError";
+import Loader from "../../common/Loader";
 
 export default function CategoryDetails() {
   const [categoryDetails, setCategoryDetails] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
   const { categoryId } = useParams();
 
@@ -36,7 +37,7 @@ export default function CategoryDetails() {
 
   useEffect(() => {
     async function fetchAdvicesByCategory() {
-      setIsLoading(true);
+      setLoading(true);
       setError();
       try {
         const response = await fetch(
@@ -51,7 +52,7 @@ export default function CategoryDetails() {
       } catch (error) {
         setError("Nie udało się wyświetlić porad!");
       }
-      setIsLoading(false);
+      setLoading(false);
     }
 
     fetchAdvicesByCategory();
@@ -59,7 +60,7 @@ export default function CategoryDetails() {
 
   return (
     <ContainerSection data-testid="category-details-section">
-      {!error && !isLoading && categoryDetails && (
+      {!error && !loading && categoryDetails && (
         <>
           <h1>{categoryDetails.categoryDisplayName}</h1>
           <h2>{categoryDetails.description}</h2>
@@ -67,7 +68,7 @@ export default function CategoryDetails() {
           {tableWithAdvices}
         </>
       )}
-      {isLoading && <p>Ładowanie...</p>}
+      {loading && <Loader />}
       <RequestError content={error} />
     </ContainerSection>
   );

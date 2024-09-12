@@ -63,9 +63,9 @@ describe("AdviceDetails", () => {
 
     renderWithAuth(<AdviceDetails />);
 
-    expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByText("Ładowanie...")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
     });
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
     assertFetchAdviceDetailsRequestsExecuted();

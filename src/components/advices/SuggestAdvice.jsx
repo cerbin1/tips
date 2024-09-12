@@ -4,12 +4,13 @@ import Button from "../common/Button";
 import Captcha from "../common/form/Captcha";
 import FormInput from "../common/form/FormInput";
 import RequestError from "../common/RequestError";
+import Loader from "../common/Loader";
 
 export default function SuggestAdvice() {
-  const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [categories, setCategories] = useState();
-  const [categoriesLoadingError, setCategoriesLoadingError] = useState();
-  const [submitFormLoading, setSubmitFormLoading] = useState(false);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [categoriesError, setCategoriesError] = useState();
+  const [submitting, setSubmitting] = useState(false);
   const [submitFormError, setSubmitFormError] = useState();
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
   const [captchaToken, setCaptchaToken] = useState();
@@ -35,7 +36,7 @@ export default function SuggestAdvice() {
           throw new Error(response);
         }
       } catch (error) {
-        setCategoriesLoadingError("Nie udało się pobrać kategorii!");
+        setCategoriesError("Nie udało się pobrać kategorii!");
       }
       setCategoriesLoading(false);
     }
@@ -71,7 +72,7 @@ export default function SuggestAdvice() {
     const data = Object.fromEntries(formData.entries());
     data["captchaToken"] = captchaToken;
 
-    setSubmitFormLoading(true);
+    setSubmitting(true);
     async function sendRequest() {
       try {
         const response = await fetch(
@@ -104,7 +105,7 @@ export default function SuggestAdvice() {
       } catch (error) {
         setSubmitFormError("Nie udało się wysłać propozycji!");
       }
-      setSubmitFormLoading(false);
+      setSubmitting(false);
     }
 
     sendRequest();
@@ -135,8 +136,8 @@ export default function SuggestAdvice() {
           <FormInput id="name" label="Nazwa porady" maxLength={30} required />
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="category">Kategoria</label>
-            {categoriesLoading && <p>Ładowanie kategorii...</p>}
-            {!categoriesLoading && !categoriesLoadingError && (
+            {categoriesLoading && <Loader />}
+            {!categoriesLoading && !categoriesError && (
               <select
                 name="category"
                 id="category"
@@ -151,7 +152,7 @@ export default function SuggestAdvice() {
                   ))}
               </select>
             )}
-            <RequestError content={categoriesLoadingError} />
+            <RequestError content={categoriesError} />
           </div>
           <div className="flex flex-col gap-2 pt-4 border-t border-r border-l border-slate-200">
             <label htmlFor="content">Treść</label>
@@ -165,8 +166,8 @@ export default function SuggestAdvice() {
           </div>
 
           <Captcha onCaptchaChange={handleCaptchaChange} />
-          <Button disabled={submitFormLoading}>
-            {submitFormLoading ? "Wysyłanie..." : "Wyślij propozycję"}
+          <Button disabled={submitting}>
+            {submitting ? "Wysyłanie..." : "Wyślij propozycję"}
           </Button>
         </form>
       )}

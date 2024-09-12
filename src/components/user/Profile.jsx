@@ -7,6 +7,7 @@ import Table from "../common/table/Table";
 import TableBody from "../common/table/TableBody";
 import TableHeader from "../common/table/TableHeader";
 import RequestError from "../common/RequestError";
+import Loader from "../common/Loader";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
@@ -154,9 +155,7 @@ export default function Profile() {
           />
         </>
       )}
-      {votedAdvicesLoading && (
-        <div className="py-6">Ładowanie ocenionych porad...</div>
-      )}
+      {votedAdvicesLoading && <Loader />}
       <RequestError content={votedAdvicesError} />
 
       {!suggestedAdvicesError &&
@@ -174,9 +173,7 @@ export default function Profile() {
             />
           </>
         )}
-      {suggestedAdvicesLoading && (
-        <div className="py-6">Ładowanie proponowanych porad...</div>
-      )}
+      {suggestedAdvicesLoading && <Loader />}
       <RequestError content={suggestedAdvicesError} />
 
       {!suggestedCategoriesError &&
@@ -194,9 +191,7 @@ export default function Profile() {
             />
           </>
         )}
-      {suggestedCategoriesLoading && (
-        <div className="py-6">Ładowanie proponowanych kategorii...</div>
-      )}
+      {suggestedCategoriesLoading && <Loader />}
       <RequestError content={suggestedCategoriesError} />
     </ContainerSection>
   );

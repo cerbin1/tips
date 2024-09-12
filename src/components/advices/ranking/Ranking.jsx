@@ -5,6 +5,7 @@ import Table from "../../common/table/Table";
 import TableBody from "../../common/table/TableBody";
 import TableHeader from "../../common/table/TableHeader";
 import RequestError from "../../common/RequestError";
+import Loader from "../../common/Loader";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -62,7 +63,7 @@ export default function rating() {
           body={<TableBody rows={tableRows} />}
         />
       )}
-      {loading && <div className="py-6">Ładowanie...</div>}
+      {loading && <Loader />}
       <RequestError content={error} />
     </ContainerSection>
   );

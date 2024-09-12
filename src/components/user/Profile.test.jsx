@@ -140,34 +140,74 @@ describe("Profile", () => {
     );
   });
 
-  test("should display info when rated advices are loading", async () => {
+  test("should display info when profile details are loading", async () => {
     localStorage.setItem("userEmail", "test@test");
-    globalThis.fetch = vi.fn().mockResolvedValueOnce({
-      ok: true,
-      json: () =>
-        Promise.resolve([
-          {
-            id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
-            name: "Nazwa porady",
-            categoryName: "Health",
-            categoryDisplayName: "Zdrowie",
-            content: "Treść",
-          },
-        ]),
-    });
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "Nazwa porady",
+              categoryName: "Health",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+            },
+          ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa proponowanej porady",
+              category: "Health",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+            },
+          ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa proponowanej kategorii",
+              creatorId: "1",
+            },
+          ]),
+      });
 
     renderWithRouterAndAuth(<Profile />);
 
-    expect(
-      screen.getByText("Ładowanie ocenionych porad...")
-    ).toBeInTheDocument();
+    expect(screen.getAllByRole("status")).toHaveLength(3);
     await waitFor(() => {
-      expect(screen.queryByText("Ładowanie ocenionych porad...")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
     });
     expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
+    expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
+    expect(
+      screen.getByText("Nazwa proponowanej kategorii")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer token",
+      },
+    });
   });
 
   test("should display info when there are no suggested advices", async () => {
@@ -202,43 +242,6 @@ describe("Profile", () => {
 
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
-  });
-
-  test("should display info when suggested advices are loading", async () => {
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: false,
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve([
-            {
-              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
-              name: "Nazwa proponowanej porady",
-              category: "Health",
-              categoryDisplayName: "Zdrowie",
-              content: "Treść",
-            },
-          ]),
-      });
-
-    renderWithRouterAndAuth(<Profile />);
-
-    expect(
-      screen.getByText("Ładowanie proponowanych porad...")
-    ).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.queryByText("Ładowanie proponowanych porad...")).toBeNull();
-    });
-    expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -287,49 +290,6 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(3);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
-  });
-
-  test("should display info when suggested categories are loading", async () => {
-    3;
-    globalThis.fetch = vi
-      .fn()
-      .mockResolvedValueOnce({
-        ok: false,
-      })
-      .mockResolvedValueOnce({
-        ok: false,
-      })
-      .mockResolvedValueOnce({
-        ok: true,
-        json: () =>
-          Promise.resolve([
-            {
-              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
-              name: "Nazwa proponowanej kategorii",
-              creatorId: "1",
-            },
-          ]),
-      });
-
-    renderWithRouterAndAuth(<Profile />);
-
-    expect(
-      screen.getByText("Ładowanie proponowanych kategorii...")
-    ).toBeInTheDocument();
-    await waitFor(() => {
-      expect(
-        screen.queryByText("Ładowanie proponowanych kategorii...")
-      ).toBeNull();
-    });
-    expect(
-      screen.getByText("Nazwa proponowanej kategorii")
-    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
       headers: {
         "Content-Type": "application/json",

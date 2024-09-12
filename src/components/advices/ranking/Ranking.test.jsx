@@ -143,9 +143,9 @@ describe("Ranking", () => {
 
     renderWithRouter(<Ranking />);
 
-    expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     await waitFor(async () => {
-      expect(screen.queryByText("Ładowanie...")).not.toBeInTheDocument();
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
     });
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);

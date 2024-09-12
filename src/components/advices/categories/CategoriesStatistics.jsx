@@ -7,16 +7,17 @@ import TableDataLink from "../../common/table/TableDataLink";
 import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
 import RequestError from "../../common/RequestError";
+import Loader from "../../common/Loader";
 
 export default function CategoriesStatistics() {
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
   useEffect(() => {
     async function fetchCategories() {
       setError();
-      setIsLoading(true);
+      setLoading(true);
       try {
         const response = await fetch(
           import.meta.env.VITE_BACKEND_URL + "categories-statistics"
@@ -30,7 +31,7 @@ export default function CategoriesStatistics() {
       } catch (error) {
         setError("Nie udało się wyświetlić kategorii!");
       }
-      setIsLoading(false);
+      setLoading(false);
     }
     fetchCategories();
   }, []);
@@ -51,8 +52,8 @@ export default function CategoriesStatistics() {
     <ContainerSection data-testid="categories-section">
       <h1>Kategorie Porad</h1>
       <RequestError content={error} />
-      {isLoading && <p>Ładowanie...</p>}
-      {!error && !isLoading && categories && (
+      {loading && <Loader />}
+      {!error && !loading && categories && (
         <Table
           head={<TableHeader headers={tableHeaders} />}
           body={<TableBody rows={tableRows} />}

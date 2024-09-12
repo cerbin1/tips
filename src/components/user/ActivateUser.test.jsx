@@ -39,9 +39,9 @@ describe("ActivateUser", () => {
 
     render(<ActivateUser />);
 
-    expect(screen.getByText("Aktywacja konta...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.queryByText("Aktywacja konta...")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
     });
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");

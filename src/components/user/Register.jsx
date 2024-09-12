@@ -9,9 +9,9 @@ import ValidationError from "../common/ValidationError";
 
 export default function Register() {
   const [userValidationError, setUserValidationError] = useState(false);
-  const [userCreateLoading, setUserCreateLoading] = useState(false);
+  const [userCreateSubmitting, setUserCreateSubmitting] = useState(false);
   const [userCreateError, setUserCreateError] = useState();
-  const [resendLinkLoading, setResendLinkLoading] = useState(false);
+  const [resendLinkSubmitting, setResendLinkSubmitting] = useState(false);
   const [resendLinkSent, setResendLinkSent] = useState(false);
   const [resendLinkError, setResendLinkError] = useState();
   const [activationLink, setActivationLink] = useState();
@@ -20,7 +20,7 @@ export default function Register() {
     event.preventDefault();
 
     async function sendRequest() {
-      setUserCreateLoading(true);
+      setUserCreateSubmitting(true);
       setUserValidationError();
       setUserCreateError();
       const formData = new FormData(event.target);
@@ -30,19 +30,19 @@ export default function Register() {
       const passwordRepeat = formData.get("password-repeat");
       if (email === "") {
         setUserValidationError("Email nie może być pusty!");
-        setUserCreateLoading(false);
+        setUserCreateSubmitting(false);
         return;
       }
 
       if (username === "") {
         setUserValidationError("Nazwa użytkownika nie może być pusta!");
-        setUserCreateLoading(false);
+        setUserCreateSubmitting(false);
         return;
       }
 
       if (password !== passwordRepeat) {
         setUserValidationError("Hasła muszą się zgadzać!");
-        setUserCreateLoading(false);
+        setUserCreateSubmitting(false);
         return;
       }
       const url = import.meta.env.VITE_BACKEND_URL + "auth/register";
@@ -82,13 +82,13 @@ export default function Register() {
         setUserCreateError("Nie udało się utworzyć użytkownika!");
       }
 
-      setUserCreateLoading(false);
+      setUserCreateSubmitting(false);
     }
     sendRequest();
   }
 
   async function resendLink() {
-    setResendLinkLoading(true);
+    setResendLinkSubmitting(true);
     setResendLinkError();
     try {
       const url = import.meta.env.VITE_BACKEND_URL + "auth/resend/";
@@ -107,7 +107,7 @@ export default function Register() {
     } catch (error) {
       setResendLinkError("Nie udało się ponownie wysłać linka!");
     }
-    setResendLinkLoading(false);
+    setResendLinkSubmitting(false);
   }
 
   return (
@@ -136,11 +136,11 @@ export default function Register() {
             required
           />
           <div className="flex justify-between">
-            <SecondaryButton type="reset" disabled={userCreateLoading}>
+            <SecondaryButton type="reset" disabled={userCreateSubmitting}>
               Wyczyść formularz
             </SecondaryButton>
-            <Button type="submit" disabled={userCreateLoading}>
-              {userCreateLoading ? "Wysyłanie..." : "Wyślij"}
+            <Button type="submit" disabled={userCreateSubmitting}>
+              {userCreateSubmitting ? "Wysyłanie..." : "Wyślij"}
             </Button>
           </div>
           <ValidationError content={userValidationError} />
@@ -161,7 +161,7 @@ export default function Register() {
                   <button
                     onClick={resendLink}
                     className="text-blue-to-dark underline"
-                    disabled={resendLinkLoading}
+                    disabled={resendLinkSubmitting}
                   >
                     Kliknij tutaj
                   </button>{" "}

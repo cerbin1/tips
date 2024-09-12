@@ -7,7 +7,7 @@ import RequestError from "../common/RequestError";
 export default function PasswordResetForm() {
   const [email, setEmail] = useState();
   const [error, setError] = useState();
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitFormSuccess, setSubmitFormSuccess] = useState(false);
 
   function handleChange(event) {
@@ -16,7 +16,7 @@ export default function PasswordResetForm() {
   function handleSubmit(event) {
     event.preventDefault();
     setError();
-    setLoading(true);
+    setSubmitting(true);
     async function sendRequest() {
       try {
         const response = await fetch(
@@ -33,7 +33,7 @@ export default function PasswordResetForm() {
       } catch (error) {
         setError("Nie udało się wysłać linku resetującego hasło!");
       }
-      setLoading(false);
+      setSubmitting(false);
     }
 
     sendRequest();
@@ -54,8 +54,8 @@ export default function PasswordResetForm() {
             type="email"
             required
           />
-          <Button type="submit" disabled={loading}>
-            {loading ? "Wysyłanie..." : "Wyślij"}
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Wysyłanie..." : "Wyślij"}
           </Button>
         </form>
       )}

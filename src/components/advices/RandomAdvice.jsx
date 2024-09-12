@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import RequestError from "../common/RequestError";
+import Loader from "../common/Loader";
 
 export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState();
@@ -33,7 +34,7 @@ export default function RandomAdvice() {
 
   return (
     <ContainerSection data-testid="random-advice-section">
-      {loading && <p>Ładowanie...</p>}
+      {loading && <Loader />}
       {!loading && !error && randomAdvice && (
         <div className="flex flex-col items-center py-6 gap-4">
           <h1>{randomAdvice.name}</h1>

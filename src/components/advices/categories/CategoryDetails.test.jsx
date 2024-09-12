@@ -100,10 +100,10 @@ describe("CategoryDetails", () => {
     );
     expect(screen.queryByRole("table")).toBeNull();
     renderWithRouter(<CategoryDetails />);
-    expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
 
     await waitFor(() => {
-      expect(screen.queryByText("Ładowanie...")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
     });
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);

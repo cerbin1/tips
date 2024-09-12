@@ -8,13 +8,13 @@ import RequestError from "../common/RequestError";
 export default function PasswordChangeForm() {
   const navigate = useNavigate();
   const [password, setPassword] = useState();
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState();
   const { token } = useParams();
 
   function handleSubmit(event) {
     event.preventDefault();
-    setLoading(true);
+    setSubmitting(true);
 
     if (password.length < 8) {
       setError(
@@ -55,7 +55,7 @@ export default function PasswordChangeForm() {
       } catch (error) {
         setError("Nie udało się zmienić hasła!");
       }
-      setLoading(false);
+      setSubmitting(false);
     }
     sendRequest();
   }
@@ -77,8 +77,8 @@ export default function PasswordChangeForm() {
           required
         />
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Wysyłanie..." : "Wyślij"}
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Wysyłanie..." : "Wyślij"}
         </Button>
       </form>
 

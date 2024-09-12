@@ -9,7 +9,7 @@ import RequestError from "../common/RequestError";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState();
   const { setAuthToken } = useAuth();
 
@@ -20,7 +20,7 @@ export default function Login() {
 
     async function sendRequest() {
       const formData = new FormData(event.target);
-      setIsLoading(true);
+      setSubmitting(true);
       try {
         const response = await fetch(
           import.meta.env.VITE_BACKEND_URL + "auth/login",
@@ -56,7 +56,7 @@ export default function Login() {
       } catch (error) {
         setError("Nie udało się zalogować!");
       }
-      setIsLoading(false);
+      setSubmitting(false);
     }
     sendRequest();
   }
@@ -77,8 +77,8 @@ export default function Login() {
             path="/user/password-reset"
             label="Zresetuj hasło"
           />
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? "Logowanie..." : "Zaloguj"}
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Logowanie..." : "Zaloguj"}
           </Button>
         </div>
       </form>

@@ -5,6 +5,7 @@ import { getUserEmail } from "../../util/auth";
 import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import RequestError from "../common/RequestError";
+import Loader from "../common/Loader";
 
 export default function AdviceDetails() {
   const [adviceDetails, setAdviceDetails] = useState();
@@ -102,7 +103,7 @@ export default function AdviceDetails() {
 
   return (
     <ContainerSection data-testid="advice-details-section">
-      {adviceDetailsloading && <p>Ładowanie...</p>}
+      {adviceDetailsloading && <Loader />}
       {!adviceDetailsloading && adviceDetails && (
         <>
           <h1>{adviceDetails.name}</h1>

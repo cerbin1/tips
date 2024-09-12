@@ -4,6 +4,7 @@ import { useParams } from "react-router";
 import Button from "../common/Button";
 import { Link } from "react-router-dom";
 import RequestError from "../common/RequestError";
+import Loader from "../common/Loader";
 
 export default function ActivateUser() {
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,7 @@ export default function ActivateUser() {
 
   return (
     <ContainerSection data-testid="activate-user-section">
-      {loading && <p>Aktywacja konta...</p>}
+      {loading && <Loader />}
       {!loading && !error && (
         <>
           <p className="py-6 text-green-600">Konto zostało aktywowane.</p>

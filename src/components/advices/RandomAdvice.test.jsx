@@ -39,10 +39,10 @@ describe("RandomAdvice", () => {
 
     act(() => renderWithRouter(<RandomAdvice />));
 
-    expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     expect(screen.queryByText("Woda")).toBeNull();
     await waitFor(() => {
-      expect(screen.queryByText("Ładowanie...")).toBeNull();
+      expect(screen.queryByRole("status")).toBeNull();
     });
     expect(screen.getByText("Woda")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
@@ -60,10 +60,10 @@ describe("RandomAdvice", () => {
     userEvent.click(retryButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Ładowanie...")).toBeInTheDocument();
+      expect(screen.getByRole("status")).toBeInTheDocument();
       expect(screen.queryByText("Spróbuj ponownie")).toBeNull();
     });
-    expect(screen.queryByText("Ładowanie...")).toBeNull();
+    expect(screen.queryByRole("status")).toBeNull();
     expect(screen.getByText("Spróbuj ponownie")).toBeInTheDocument();
     expect(globalThis.fetch).nthCalledWith(2, "backend/advices/random");
   });
@@ -81,7 +81,7 @@ describe("RandomAdvice", () => {
 
     await userEvent.click(screen.getByText("Wylosuj nową poradę"));
 
-    expect(screen.queryByText("Ładowanie...")).toBeNull();
+    expect(screen.queryByRole("status")).toBeNull();
     expect(screen.queryByText("Woda")).toBeNull();
     expect(screen.queryByText("Pij dużo wody")).toBeNull();
     expect(screen.getByText("Wylosuj nową poradę")).toBeInTheDocument();

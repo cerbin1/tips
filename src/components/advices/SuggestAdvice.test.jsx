@@ -189,11 +189,9 @@ describe("SuggestAdvice", () => {
   test("should display message when categories are loading", async () => {
     renderWithAuth(<SuggestAdvice />);
 
-    expect(screen.getByText("Ładowanie kategorii...")).toBeInTheDocument();
+    expect(screen.getByRole("status")).toBeInTheDocument();
     await waitFor(() => {
-      expect(
-        screen.queryByText("Ładowanie kategorii...")
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
     });
     expect(screen.getByRole("form")).toBeInTheDocument();
     assertFetchCategoriesRequestExecuted();
