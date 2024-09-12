@@ -30,3 +30,6 @@ jobs:
     - name: Build with Maven
       working-directory: ./afterady-backend
       run: mvn -B package --file pom.xml
+    - name: Run integration tests
+      working-directory: ./afterady-backend
+      run: mvn verify
