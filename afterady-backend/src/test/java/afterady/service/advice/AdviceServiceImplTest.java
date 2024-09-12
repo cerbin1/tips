@@ -45,7 +45,7 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldCreateSuggestedAdvice() {
         // act
-        adviceService.createSuggestedAdvice("63b4072b-b8c8-4f9a-acf4-76d0948adc6e", "name", HOME, "content", 1L);
+        adviceService.createSuggestedAdvice(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), "name", HOME, "content", 1L);
 
         // assert
         verify(suggestedAdviceRepository, times(1)).save(any());
@@ -211,11 +211,11 @@ public class AdviceServiceImplTest {
         // arrange
         var userId = 1L;
         when(suggestedAdviceRepository.findByCreatorId(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID.randomUUID().toString(), "name 1", HOME, "content 1", 1L),
-                new SuggestedAdvice(UUID.randomUUID().toString(), "name 2", HOME, "content 2", 1L),
-                new SuggestedAdvice(UUID.randomUUID().toString(), "name 3", HOME, "content 3", 1L),
-                new SuggestedAdvice(UUID.randomUUID().toString(), "name 4", HOME, "content 4", 1L),
-                new SuggestedAdvice(UUID.randomUUID().toString(), "name 5", HOME, "content 5", 1L)
+                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L),
+                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L),
+                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L),
+                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L),
+                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L)
         ));
 
         // act

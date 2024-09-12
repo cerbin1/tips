@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface AdviceService {
 
-    void createSuggestedAdvice(String id, String name, AdviceCategory adviceCategory, String content, Long creatorId);
+    void createSuggestedAdvice(UUID id, String name, AdviceCategory adviceCategory, String content, Long creatorId);
 
     AdviceDetailsDto getRandomAdvice();
 

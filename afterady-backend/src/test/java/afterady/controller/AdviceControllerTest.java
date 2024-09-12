@@ -17,6 +17,7 @@ import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
@@ -31,17 +32,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.category.AdviceCategory.HEALTH;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static java.util.UUID.randomUUID;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -259,7 +256,7 @@ class AdviceControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(authUtil, times(1)).getLoggedUserId();
-        verify(adviceService).createSuggestedAdvice(anyString(), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq(1L));
+        verify(adviceService).createSuggestedAdvice(ArgumentMatchers.any(UUID.class), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq(1L));
         verifyNoMoreInteractions(authUtil, adviceService);
     }
 
@@ -433,8 +430,8 @@ class AdviceControllerTest {
         // arrange
         Long userId = 1L;
         when(adviceService.getSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1.toString(), "name 1", HOME, "content 1", 1L),
-                new SuggestedAdvice(UUID_2.toString(), "name 2", HEALTH, "content 2", 1L)));
+                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L),
+                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L)));
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert

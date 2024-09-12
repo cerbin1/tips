@@ -4,6 +4,8 @@ import afterady.domain.advice.category.AdviceCategory;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.UUID;
+
 @Document(collection = "suggestedAdvice")
-public record SuggestedAdvice(@MongoId String id, String name, AdviceCategory category, String content, Long creatorId) {
+public record SuggestedAdvice(@MongoId UUID id, String name, AdviceCategory category, String content, Long creatorId) {
 }

@@ -65,7 +65,7 @@ public class AdviceController {
             return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
         Long creatorId = authUtil.getLoggedUserId();
-        adviceService.createSuggestedAdvice(ObjectId.get().toString(), name, valueOf(category), content, creatorId);
+        adviceService.createSuggestedAdvice(UUID.randomUUID(), name, valueOf(category), content, creatorId);
 
         return ResponseEntity.ok().build();
     }

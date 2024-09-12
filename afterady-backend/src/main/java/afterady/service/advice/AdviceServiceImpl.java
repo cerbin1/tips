@@ -33,7 +33,7 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public void createSuggestedAdvice(String id, String name, AdviceCategory category, String content, Long creatorId) {
+    public void createSuggestedAdvice(UUID id, String name, AdviceCategory category, String content, Long creatorId) {
         suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId));
     }
 
