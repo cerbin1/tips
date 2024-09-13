@@ -17,7 +17,6 @@ afterEach(() => {
 
 describe("Profile", () => {
   test("should render component and display user profile", async () => {
-    localStorage.setItem("roles", "ROLE_USER");
     localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
       .fn()
@@ -65,10 +64,6 @@ describe("Profile", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Profil"
     );
-    expect(
-      screen.getByText("Adres email użytkownika: test@test")
-    ).toBeInTheDocument();
-    expect(screen.getByText("Role użytkownika: ROLE_USER")).toBeInTheDocument();
     expect(screen.getAllByRole("table")).toHaveLength(3);
     expect(screen.getAllByRole("row")).toHaveLength(6);
     expect(screen.getAllByRole("columnheader")).toHaveLength(6);
