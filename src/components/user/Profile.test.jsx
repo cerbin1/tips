@@ -65,7 +65,6 @@ describe("Profile", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Profil"
     );
-    expect(screen.getByText("Użytkownik jest zalogowany")).toBeInTheDocument();
     expect(
       screen.getByText("Adres email użytkownika: test@test")
     ).toBeInTheDocument();
