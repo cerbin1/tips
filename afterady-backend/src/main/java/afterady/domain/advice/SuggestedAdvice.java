@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.UUID;
 
-@Document(collection = "suggestedAdvice")
+@Document(collection = "suggested_advice")
 public record SuggestedAdvice(@MongoId UUID id, String name, AdviceCategory category, String content, Long creatorId) {
 }

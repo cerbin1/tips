@@ -34,7 +34,7 @@ public class MongoDbConfig {
     public void init() throws IOException {
         MongoDatabase database = mongoClient.getDatabase(databaseName);
         initCollection(database, "advice", adviceSchemaPath);
-        initCollection(database, "suggestedAdvice", suggestedAdviceSchemaPath);
+        initCollection(database, "suggested_advice", suggestedAdviceSchemaPath);
     }
 
     private void initCollection(MongoDatabase database, String collectionName, String schemaFilePath) throws IOException {
