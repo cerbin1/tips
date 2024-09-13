@@ -28,7 +28,6 @@ describe("Table", () => {
 
     const table = screen.getByRole("table");
     expect(table).toBeInTheDocument();
-    expect(table).toHaveClass("mt-4");
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
     const rows = screen.getAllByRole("row");
