@@ -111,7 +111,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    expect(screen.getByText("Brak ocenionych porad")).toBeInTheDocument();
+    const emptyList = screen.getByText("Nie oceniłeś jeszcze żadnej porady.");
+    expect(emptyList).toBeInTheDocument();
+    expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -218,7 +220,11 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    expect(screen.getByText("Brak proponowanych porad")).toBeInTheDocument();
+    const emptyList = screen.getByText(
+      "Nie zaproponowałeś jeszcze żadnej porady."
+    );
+    expect(emptyList).toBeInTheDocument();
+    expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -261,9 +267,11 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    expect(
-      screen.getByText("Brak proponowanych kategorii")
-    ).toBeInTheDocument();
+    const emptyList = screen.getByText(
+      "Nie zaproponowałeś jeszcze żadnej kategorii."
+    );
+    expect(emptyList).toBeInTheDocument();
+    expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
       headers: {
         "Content-Type": "application/json",

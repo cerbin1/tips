@@ -142,11 +142,13 @@ export default function Profile() {
       {!votedAdvicesError &&
         !votedAdvicesLoading &&
         votedAdvices &&
-        votedAdvices.length === 0 && <p>Brak ocenionych porad</p>}
+        votedAdvices.length === 0 && (
+          <p className="py-3">Nie oceniłeś jeszcze żadnej porady.</p>
+        )}
       {!votedAdvicesError && votedAdvices && votedAdvices.length > 0 && (
         <>
-          <h2>Ocenione porady:</h2>
           <Table
+            title="Ocenione porady:"
             head={<TableHeader headers={votedAdvicesTableHeaders} />}
             body={<TableBody rows={votedAdvicesTableRows} />}
           />
@@ -158,13 +160,15 @@ export default function Profile() {
       {!suggestedAdvicesError &&
         !suggestedAdvicesLoading &&
         suggestedAdvices &&
-        suggestedAdvices.length === 0 && <p>Brak proponowanych porad</p>}
+        suggestedAdvices.length === 0 && (
+          <p className="py-3">Nie zaproponowałeś jeszcze żadnej porady.</p>
+        )}
       {!suggestedAdvicesError &&
         suggestedAdvices &&
         suggestedAdvices.length > 0 && (
           <>
-            <h2>Proponowane porady:</h2>
             <Table
+              title="Proponowane porady:"
               head={<TableHeader headers={suggestedAdvicesTableHeaders} />}
               body={<TableBody rows={suggestedAdvicesTableRows} />}
             />
@@ -176,13 +180,15 @@ export default function Profile() {
       {!suggestedCategoriesError &&
         !suggestedCategoriesLoading &&
         suggestedCategories &&
-        suggestedCategories.length === 0 && <p>Brak proponowanych kategorii</p>}
+        suggestedCategories.length === 0 && (
+          <p className="py-3">Nie zaproponowałeś jeszcze żadnej kategorii.</p>
+        )}
       {!suggestedCategoriesError &&
         suggestedCategories &&
         suggestedCategories.length > 0 && (
           <>
-            <h2>Proponowane kategorie:</h2>
             <Table
+              title="Proponowane kategorie:"
               head={<TableHeader headers={suggestedCategoriesTableHeaders} />}
               body={<TableBody rows={suggestedCategoriesTableRows} />}
             />

@@ -19,6 +19,11 @@ h1 {
   margin-bottom: 2rem;
   cursor: default;
 }
+
+h2 {
+  font-size: 1.5rem;
+  cursor: default;
+}
 /* Global end */
 
 /* Commons start */

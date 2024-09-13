@@ -19,6 +19,7 @@ describe("Table", () => {
     ));
     renderWithRouter(
       <Table
+        title="test title"
         head={
           <TableHeader headers={["header1", "header2", "header3", "header4"]} />
         }
@@ -28,6 +29,9 @@ describe("Table", () => {
 
     const table = screen.getByRole("table");
     expect(table).toBeInTheDocument();
+    const title = screen.getByRole("heading", { level: 2 });
+    expect(title).toBeInTheDocument();
+    expect(title).toHaveTextContent("test title");
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
     const rows = screen.getAllByRole("row");
