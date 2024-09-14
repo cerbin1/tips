@@ -91,12 +91,15 @@ describe("Profile", () => {
         Authorization: "Bearer token",
       },
     });
-    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/user-suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when there are no voted advices", async () => {
@@ -198,12 +201,15 @@ describe("Profile", () => {
         Authorization: "Bearer token",
       },
     });
-    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/user-suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when there are no suggested advices", async () => {
@@ -272,12 +278,15 @@ describe("Profile", () => {
     );
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
-    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/user-suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 
   test("should display info when fetching suggested categories fails", async () => {
@@ -292,11 +301,14 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(3);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer token",
-      },
-    });
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/user-suggested",
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer token",
+        },
+      }
+    );
   });
 });

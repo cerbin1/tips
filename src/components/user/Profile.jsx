@@ -77,7 +77,7 @@ export default function Profile() {
       setSuggestedCategoriesLoading(true);
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "categories/suggested",
+          import.meta.env.VITE_BACKEND_URL + "categories/user-suggested",
           {
             headers: {
               "Content-Type": "application/json",

@@ -280,7 +280,7 @@ class CategoryControllerIT {
         when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(Collections.emptyList());
 
         // act & assert
-        mvc.perform(get("/categories/suggested"))
+        mvc.perform(get("/categories/user-suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -295,7 +295,7 @@ class CategoryControllerIT {
                         new SuggestedCategory(UUID.randomUUID(), "name 2", 1L)));
 
         // act & assert
-        mvc.perform(get("/categories/suggested"))
+        mvc.perform(get("/categories/user-suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
