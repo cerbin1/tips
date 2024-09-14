@@ -8,7 +8,7 @@ import RandomAdvice from "./components/advices/RandomAdvice.jsx";
 import Ranking from "./components/advices/ranking/Ranking.jsx";
 import ErrorPage from "./components/common/ErrorPage.jsx";
 import Home from "./components/home/Home.jsx";
-import Suggestions from "./components/Suggestions.jsx";
+import Suggest from "./components/advices/Suggest.jsx";
 import ActivateUser from "./components/user/ActivateUser.jsx";
 import Login from "./components/user/Login.jsx";
 import Logout from "./components/user/Logout.jsx";
@@ -20,6 +20,7 @@ import "./index.css";
 import ProtectedRoute from "./router/ProtectedRoute.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import AuthProvider from "./store/auth-context.jsx";
+import Suggestions from "./components/advices/Suggestions.jsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
       { path: "/ranking", element: <Ranking /> },
       {
         path: "/suggest",
+        element: (
+          <ProtectedRoute>
+            <Suggest />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/suggestions",
         element: (
           <ProtectedRoute>
             <Suggestions />

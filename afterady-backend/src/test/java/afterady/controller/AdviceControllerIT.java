@@ -426,12 +426,12 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldGetSuggestedAdvices() throws Exception {
+    public void shouldGetUserSuggestedAdvices() throws Exception {
         // arrange
         Long userId = 1L;
-        when(adviceService.getSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L),
-                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L)));
+        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
+                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL)),
+                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, Set.of(TEST_EMAIL))));
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -445,7 +445,7 @@ class AdviceControllerIT {
     public void shouldGetEmptyListWhenUserHaveNoSuggestedAdvices() throws Exception {
         // arrange
         Long userId = 1L;
-        when(adviceService.getSuggestedAdvices(userId)).thenReturn(Collections.emptyList());
+        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(Collections.emptyList());
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -453,5 +453,33 @@ class AdviceControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(content().json("[]"));
+    }
+
+    @Test
+    public void shouldGetEmptyListOfSuggestedAdvices() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdvices()).thenReturn(Collections.emptyList());
+
+        // act & assert
+        mvc.perform(get("/advices/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(content().json("[]"));
+    }
+
+    @Test
+    public void shouldGetSuggestedAdvices() throws Exception {
+        // arrange
+        Long userId = 1L;
+        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
+                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL)),
+                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, Set.of(TEST_EMAIL))));
+        when(authUtil.getLoggedUserId()).thenReturn(userId);
+
+        // act & assert
+        mvc.perform(get("/advices/user-suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
     }
 }

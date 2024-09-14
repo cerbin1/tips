@@ -26,5 +26,9 @@ public interface AdviceService {
 
     List<AdviceDetailsDto> getAdvicesBy(AdviceCategory category);
 
-    List<SuggestedAdvice> getSuggestedAdvices(Long userId);
+    List<SuggestedAdvice> getUserSuggestedAdvices(Long userId);
+
+    List<SuggestedAdvice> getSuggestedAdvices();
+
+    Optional<SuggestedAdvice> getSuggestedAdviceById(UUID id);
 }

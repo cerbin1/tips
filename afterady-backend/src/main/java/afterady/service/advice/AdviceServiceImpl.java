@@ -11,10 +11,7 @@ import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -34,7 +31,7 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     public void createSuggestedAdvice(UUID id, String name, AdviceCategory category, String content, Long creatorId) {
-        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId));
+        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId, Collections.emptySet()));
     }
 
     public AdviceDetailsDto getRandomAdvice() {
@@ -101,7 +98,17 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public List<SuggestedAdvice> getSuggestedAdvices(Long userId) {
+    public List<SuggestedAdvice> getUserSuggestedAdvices(Long userId) {
         return suggestedAdviceRepository.findByCreatorId(userId);
+    }
+
+    @Override
+    public List<SuggestedAdvice> getSuggestedAdvices() {
+        return suggestedAdviceRepository.findAll();
+    }
+
+    @Override
+    public Optional<SuggestedAdvice> getSuggestedAdviceById(UUID id) {
+        return suggestedAdviceRepository.findById(id);
     }
 }

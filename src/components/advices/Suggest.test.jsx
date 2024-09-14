@@ -1,11 +1,11 @@
-import { renderWithAuth } from "../test/test-utils";
-import Suggestions from "./Suggestions";
+import { renderWithAuth } from "../../test/test-utils";
+import Suggest from "./Suggest";
 
-describe("Suggestions", () => {
+describe("Suggest", () => {
   test("should render component", () => {
-    renderWithAuth(<Suggestions />);
+    renderWithAuth(<Suggest />);
 
-    expect(screen.getByTestId("suggestions-section")).toBeInTheDocument();
+    expect(screen.getByTestId("suggest-section")).toBeInTheDocument();
     const changeSuggestionTypeButton = screen.getByText(
       "Przejdź do propozycji kategorii"
     );
@@ -14,7 +14,7 @@ describe("Suggestions", () => {
   });
 
   test("should change to category suggestion on button click", async () => {
-    renderWithAuth(<Suggestions />);
+    renderWithAuth(<Suggest />);
 
     await userEvent.click(screen.getByText("Przejdź do propozycji kategorii"));
 

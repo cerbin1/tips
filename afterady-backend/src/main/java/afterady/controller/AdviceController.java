@@ -120,7 +120,12 @@ public class AdviceController {
 
     @GetMapping("/user-suggested")
     public ResponseEntity<List<SuggestedAdvice>> getUserSuggestedAdvices() {
-        return ResponseEntity.ok(adviceService.getSuggestedAdvices(authUtil.getLoggedUserId()));
+        return ResponseEntity.ok(adviceService.getUserSuggestedAdvices(authUtil.getLoggedUserId()));
+    }
+
+    @GetMapping("/suggested")
+    public ResponseEntity<List<SuggestedAdvice>> getSuggestedAdvices() {
+        return ResponseEntity.ok(adviceService.getSuggestedAdvices());
     }
 
     private MessageResponse validationError() {

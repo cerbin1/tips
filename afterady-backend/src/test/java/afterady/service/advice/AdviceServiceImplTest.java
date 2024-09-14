@@ -207,25 +207,72 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldGetSuggestedAdvices() {
+    public void shouldGetUserSuggestedAdvices() {
         // arrange
         var userId = 1L;
         when(suggestedAdviceRepository.findByCreatorId(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L),
-                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L),
-                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L),
-                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L),
-                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L)
+                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L, generateTestVotes(1)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, generateTestVotes(2)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, generateTestVotes(3)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, generateTestVotes(4)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L, generateTestVotes(5))
         ));
 
         // act
-        List<SuggestedAdvice> suggestedAdvices = adviceService.getSuggestedAdvices(userId);
+        List<SuggestedAdvice> suggestedAdvices = adviceService.getUserSuggestedAdvices(userId);
 
         // assert
         assertEquals(5, suggestedAdvices.size());
-        assertEquals("name 1", suggestedAdvices.get(0).name());
-        assertEquals("name 5", suggestedAdvices.get(4).name());
+        assertEquals("name 1", suggestedAdvices.get(0).getName());
+        assertEquals("name 5", suggestedAdvices.get(4).getName());
         verify(suggestedAdviceRepository, times(1)).findByCreatorId(userId);
+        verifyNoMoreInteractions(suggestedAdviceRepository);
+        verifyNoInteractions(adviceRepository, mongoTemplate);
+    }
+
+    @Test
+    public void shouldGetSuggestedAdvices() {
+        // arrange
+        var userId = 1L;
+        when(suggestedAdviceRepository.findAll()).thenReturn(List.of(
+                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L,  generateTestVotes(1)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L,  generateTestVotes(2)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L,  generateTestVotes(3)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L,  generateTestVotes(4)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L,  generateTestVotes(5))
+        ));
+
+        // act
+        List<SuggestedAdvice> suggestedAdvices = adviceService.getSuggestedAdvices();
+
+        // assert
+        assertEquals(5, suggestedAdvices.size());
+        assertEquals("name 1", suggestedAdvices.get(0).getName());
+        assertEquals("name 5", suggestedAdvices.get(4).getName());
+        verify(suggestedAdviceRepository, times(1)).findAll();
+        verifyNoMoreInteractions(suggestedAdviceRepository);
+        verifyNoInteractions(adviceRepository, mongoTemplate);
+    }
+
+    @Test
+    public void shouldGetSuggestedAdviceById() {
+        // arrange
+        when(suggestedAdviceRepository.findById(eq(UUID_1)))
+                .thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, generateTestVotes(1))));
+
+        // act
+        Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(UUID_1);
+
+        // assert
+        assertTrue(maybeAdvice.isPresent());
+        SuggestedAdvice adviceDetails = maybeAdvice.get();
+        assertEquals(UUID_1, adviceDetails.getId());
+        assertEquals("name", adviceDetails.getName());
+        assertEquals("Dom", adviceDetails.getCategory().getDisplayName());
+        assertEquals("HOME", adviceDetails.getCategory().name());
+        assertEquals("content", adviceDetails.getContent());
+        assertEquals(1, adviceDetails.getRating());
+        verify(suggestedAdviceRepository, times(1)).findById(eq(UUID_1));
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
     }

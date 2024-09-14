@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 export default function NavigationItem({ href, children }) {
-  const classes = "px-12 text-blue-to-light";
+  const classes = "px-8 text-blue-to-light";
 
   return (
     <NavLink

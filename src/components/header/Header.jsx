@@ -18,6 +18,9 @@ export default function Header() {
         <NavigationItem href="/categories">Kategorie</NavigationItem>
         <NavigationItem href="/ranking">Ranking</NavigationItem>
         {token && <NavigationItem href="/suggest">Zaproponuj</NavigationItem>}
+        {token && (
+          <NavigationItem href="/suggestions">Propozycje</NavigationItem>
+        )}
       </nav>
       {!token && (
         <div>

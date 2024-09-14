@@ -1,15 +1,15 @@
 import { useState } from "react";
-import SuggestCategory from "./advices/categories/SuggestCategory";
-import SuggestAdvice from "./advices/SuggestAdvice";
-import ContainerSection from "./common/ContainerSection";
+import SuggestCategory from "./categories/SuggestCategory";
+import SuggestAdvice from "./SuggestAdvice";
+import ContainerSection from "../common/ContainerSection";
 
-export default function Suggestions() {
+export default function Suggest() {
   const [suggestAdvice, setSuggestAdvice] = useState(true);
   function handleTypeChange() {
     setSuggestAdvice((previousType) => !previousType);
   }
   return (
-    <ContainerSection data-testid="suggestions-section">
+    <ContainerSection data-testid="suggest-section">
       <p
         className="text-blue-to-light cursor-pointer"
         onClick={handleTypeChange}

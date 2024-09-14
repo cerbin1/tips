@@ -54,7 +54,7 @@ describe("Header", () => {
     const navbar = screen.getByRole("navigation");
     expect(navbar).toBeInTheDocument();
     expect(navbar).toHaveClass("py-4");
-    expect(screen.getAllByRole("link")).toHaveLength(7);
+    expect(screen.getAllByRole("link")).toHaveLength(8);
 
     const randomAdviceLink = screen.getByText("Losowa porada");
     expect(randomAdviceLink).toBeInTheDocument();
@@ -68,6 +68,9 @@ describe("Header", () => {
     const suggestLink = screen.getByText("Zaproponuj");
     expect(suggestLink).toBeInTheDocument();
     expect(suggestLink).toHaveAttribute("href", "/suggest");
+    const suggestionsLink = screen.getByText("Propozycje");
+    expect(suggestionsLink).toBeInTheDocument();
+    expect(suggestionsLink).toHaveAttribute("href", "/suggestions");
     const userProfileLink = screen.getByText("Profil");
     expect(userProfileLink).toBeInTheDocument();
     expect(userProfileLink).toHaveAttribute("href", "/user/profile");
@@ -82,11 +85,11 @@ describe("Header", () => {
     renderWithRouterAndAuth(<Header />);
     const randomAdviceLink = screen.getByText("Losowa porada");
     expect(randomAdviceLink).toHaveClass(
-      "px-12 text-blue-to-light no-underline"
+      "px-8 text-blue-to-light no-underline"
     );
 
     await userEvent.click(randomAdviceLink);
 
-    expect(randomAdviceLink).toHaveClass("px-12 text-blue-to-light underline");
+    expect(randomAdviceLink).toHaveClass("px-8 text-blue-to-light underline");
   });
 });
