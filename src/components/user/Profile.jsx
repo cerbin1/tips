@@ -50,7 +50,7 @@ export default function Profile() {
       setSuggestedAdvicesLoading(true);
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/suggested",
+          import.meta.env.VITE_BACKEND_URL + "advices/user-suggested",
           {
             headers: {
               "Content-Type": "application/json",

@@ -85,7 +85,7 @@ describe("Profile", () => {
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -192,7 +192,7 @@ describe("Profile", () => {
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -225,7 +225,7 @@ describe("Profile", () => {
     );
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -242,7 +242,7 @@ describe("Profile", () => {
 
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",

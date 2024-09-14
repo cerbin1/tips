@@ -118,7 +118,7 @@ public class AdviceController {
         return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
     }
 
-    @GetMapping("/suggested")
+    @GetMapping("/user-suggested")
     public ResponseEntity<List<SuggestedAdvice>> getUserSuggestedAdvices() {
         return ResponseEntity.ok(adviceService.getSuggestedAdvices(authUtil.getLoggedUserId()));
     }

@@ -435,7 +435,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
-        mvc.perform(get("/advices/suggested"))
+        mvc.perform(get("/advices/user-suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
@@ -449,7 +449,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
-        mvc.perform(get("/advices/suggested"))
+        mvc.perform(get("/advices/user-suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(content().json("[]"));
