@@ -57,7 +57,7 @@ public class CategoryController {
             return unprocessableEntity().body(new MessageResponse("Error: name too long."));
         }
         if (!captchaService.isCaptchaTokenValid(captchaToken)) {
-            return unprocessableEntity().body(new AdviceController.MessageResponse("Error: captcha is not valid."));
+            return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
         Long creatorId = authUtil.getLoggedUserId();
         suggestedCategoryRepository.save(new SuggestedCategory(UUID.randomUUID(), name, creatorId));
