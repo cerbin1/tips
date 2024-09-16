@@ -1,7 +1,6 @@
-import { act } from "react";
 import Suggestions from "./Suggestions";
 import { renderWithRouter } from "../../test/test-utils";
-import { waitFor } from "@testing-library/react";
+import { act, waitFor } from "@testing-library/react";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
