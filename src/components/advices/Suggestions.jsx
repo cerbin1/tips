@@ -50,7 +50,7 @@ export default function Suggestions() {
       <td className="py-3 px-6 border border-slate-400">
         <Link
           className="text-blue-to-dark text-lg"
-          to={"/advices/TODO/" + advice.id}
+          to={"/advices/suggested/" + advice.id}
         >
           Wyświetl szczegóły
         </Link>

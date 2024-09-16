@@ -32,11 +32,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.category.AdviceCategory.HEALTH;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -274,7 +279,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnEmptyRankingWhenNoAdvicesYet() throws Exception {
         // arrange
-        when(adviceService.getTopTenAdvices()).thenReturn(Collections.emptyList());
+        when(adviceService.getTopTenAdvices()).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/advices/ranking"))
@@ -403,7 +408,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnEmptyUserVotedAdvices() throws Exception {
         // arrange
-        when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(Collections.emptyList());
+        when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/advices?userEmail=" + TEST_EMAIL))
@@ -430,8 +435,8 @@ class AdviceControllerIT {
         // arrange
         Long userId = 1L;
         when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL)),
-                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, Set.of(TEST_EMAIL))));
+                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
+                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, emptySet(), Set.of(TEST_EMAIL))));
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -445,7 +450,7 @@ class AdviceControllerIT {
     public void shouldGetEmptyListWhenUserHaveNoSuggestedAdvices() throws Exception {
         // arrange
         Long userId = 1L;
-        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(Collections.emptyList());
+        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(emptyList());
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -458,7 +463,7 @@ class AdviceControllerIT {
     @Test
     public void shouldGetEmptyListOfSuggestedAdvices() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdvices()).thenReturn(Collections.emptyList());
+        when(adviceService.getSuggestedAdvices()).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/advices/suggested"))
@@ -472,8 +477,8 @@ class AdviceControllerIT {
         // arrange
         Long userId = 1L;
         when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL)),
-                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, Set.of(TEST_EMAIL))));
+                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
+                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, emptySet(), Set.of(TEST_EMAIL))));
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -481,5 +486,119 @@ class AdviceControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
+    }
+
+    @Test
+    public void shouldReturn400IfSuggestedAdviceByIdNotExists() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Suggested advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+    }
+
+    @Test
+    public void shouldReturnSuggestedAdviceById() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), generateTestVotes(1))));
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(UUID_1.toString())))
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.rating", is(1)));
+    }
+
+    @Test
+    public void shouldReturn404WhenRatingSuggestedAdviceThatDoesNotExist() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+    }
+
+    @Test
+    public void shouldRateSuggestedAdviceUp() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
+        when(adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), emptySet())));
+
+        // act & assert
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.rating", is(2)));
+        verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
+        verify(adviceService, times(1)).rateSuggestedAdvice(UUID_1, TEST_EMAIL, true);
+        verifyNoMoreInteractions(adviceService);
+    }
+
+    @Test
+    public void shouldRateSuggestedAdviceDown() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(1))));
+        when(adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(2))));
+
+        // act & assert
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=false").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
+                .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.rating", is(-2)));
+        verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
+        verify(adviceService, times(1)).rateSuggestedAdvice(UUID_1, TEST_EMAIL, false);
+        verifyNoMoreInteractions(adviceService);
+    }
+
+    @Test
+    public void shouldReturn400WhenGettingUserSuggestedAdviceRateInfoAndAdviceNotExist() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isBadRequest());
+        verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
+        verifyNoMoreInteractions(adviceService);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUserNotRatedSuggestedAdvice() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content",1L,  generateTestVotes(1), emptySet())));
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(false)));
+        verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
+        verifyNoMoreInteractions(adviceService);
+    }
+
+    @Test
+    public void shouldReturnTrueWhenUserRatedSuggestedAdvice() throws Exception {
+        // arrange
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, Set.of(TEST_EMAIL), emptySet())));
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(true)));
+        verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
+        verifyNoMoreInteractions(adviceService);
     }
 }

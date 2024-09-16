@@ -21,6 +21,7 @@ import ProtectedRoute from "./router/ProtectedRoute.jsx";
 import RootLayout from "./router/RootLayout.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Suggestions from "./components/advices/Suggestions.jsx";
+import SuggestedAdviceDetails from "./components/advices/SuggestedAdviceDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,14 @@ const router = createBrowserRouter([
     id: "root",
     children: [
       { path: "/", element: <Home /> },
-      { path: "/advices/:adviceId", element: <AdviceDetails /> },
+      {
+        path: "/advices",
+        children: [
+          { path: ":adviceId", element: <AdviceDetails /> },
+          { path: "suggested/:id", element: <SuggestedAdviceDetails /> },
+        ],
+      },
+
       { path: "/categories", element: <CategoriesStatistics /> },
       { path: "/random", element: <RandomAdvice /> },
       { path: "/categories/:categoryId", element: <CategoryDetails /> },

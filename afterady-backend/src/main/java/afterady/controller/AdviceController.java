@@ -128,6 +128,41 @@ public class AdviceController {
         return ResponseEntity.ok(adviceService.getSuggestedAdvices());
     }
 
+    @GetMapping("/suggested/{id}")
+    public ResponseEntity<?> getSuggestedAdviceById(@PathVariable UUID id) {
+        Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(id);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Suggested advice with id %s not found!", id.toString())), NOT_FOUND);
+        }
+        return ResponseEntity.ok(maybeAdvice.get().toSuggestedAdviceDetailsDto());
+    }
+
+
+    @PostMapping("/suggested/{adviceId}/rate")
+    public ResponseEntity<?> rateSuggestedAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail, @RequestParam boolean rateType) {
+        Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(adviceId);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
+        }
+        Optional<SuggestedAdvice> updatedAdvice = adviceService.rateSuggestedAdvice(adviceId, userEmail, rateType);
+        if (updatedAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(updatedAdvice.get().toSuggestedAdviceDetailsDto(), OK);
+        }
+    }
+
+    @GetMapping("/suggested/{adviceId}/rated")
+    public ResponseEntity<UserRatingResultResponse> checkUserRatedSuggestedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
+        Optional<SuggestedAdvice> adviceById = adviceService.getSuggestedAdviceById(adviceId);
+        if (adviceById.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        SuggestedAdvice suggestedAdvice = adviceById.get();
+        boolean userRatedAdvice = suggestedAdvice.userVoted(userEmail);
+        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+    }
+
     private MessageResponse validationError() {
         return new MessageResponse("Error: validation failed.");
     }

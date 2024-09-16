@@ -68,7 +68,7 @@ describe("Suggestions", () => {
     expect(cells[3]).toHaveTextContent("Wyświetl szczegóły");
     expect(cells[3].querySelector("a")).toHaveAttribute(
       "href",
-      "/advices/TODO/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+      "/advices/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
     expect(cells[8]).toHaveTextContent("name 3");
     expect(cells[9]).toHaveTextContent("Finanse");
@@ -76,7 +76,7 @@ describe("Suggestions", () => {
     expect(cells[11]).toHaveTextContent("Wyświetl szczegóły");
     expect(cells[11].querySelector("a")).toHaveAttribute(
       "href",
-      "/advices/TODO/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+      "/advices/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested");

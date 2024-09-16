@@ -20,9 +20,26 @@ public final class SuggestedAdvice {
     private final AdviceCategory category;
     private final String content;
     private final Long creatorId;
-    private Set<String> userEmailVotes;
+    private Set<String> userEmailVotesUp;
+    private Set<String> userEmailVotesDown;
 
     public Integer getRating() {
-        return userEmailVotes.size();
+        return userEmailVotesUp.size() - userEmailVotesDown.size();
+    }
+
+    public SuggestedAdviceDetailsDto toSuggestedAdviceDetailsDto() {
+        return new SuggestedAdviceDetailsDto(id, name, category.getDisplayName(), content, getRating());
+    }
+
+    public void addUserVoteUp(String userEmail) {
+        userEmailVotesUp.add(userEmail);
+    }
+
+    public void addUserVoteDown(String userEmail) {
+        userEmailVotesDown.add(userEmail);
+    }
+
+    public boolean userVoted(String userEmail) {
+        return userEmailVotesUp.contains(userEmail) || userEmailVotesDown.contains(userEmail);
     }
 }

@@ -31,4 +31,6 @@ public interface AdviceService {
     List<SuggestedAdvice> getSuggestedAdvices();
 
     Optional<SuggestedAdvice> getSuggestedAdviceById(UUID id);
+
+    Optional<SuggestedAdvice> rateSuggestedAdvice(UUID id, String userEmail, boolean rateUp);
 }

@@ -31,7 +31,7 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     public void createSuggestedAdvice(UUID id, String name, AdviceCategory category, String content, Long creatorId) {
-        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId, Collections.emptySet()));
+        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId, Collections.emptySet(), Collections.emptySet()));
     }
 
     public AdviceDetailsDto getRandomAdvice() {
@@ -110,5 +110,20 @@ public class AdviceServiceImpl implements AdviceService {
     @Override
     public Optional<SuggestedAdvice> getSuggestedAdviceById(UUID id) {
         return suggestedAdviceRepository.findById(id);
+    }
+
+    @Override
+    public Optional<SuggestedAdvice> rateSuggestedAdvice(UUID id, String userEmail, boolean rateUp) {
+        Optional<SuggestedAdvice> maybeAdvice = suggestedAdviceRepository.findById(id);
+        if (maybeAdvice.isPresent()) {
+            SuggestedAdvice suggestedAdvice = maybeAdvice.get();
+            if (rateUp) {
+                suggestedAdvice.addUserVoteUp(userEmail);
+            } else {
+                suggestedAdvice.addUserVoteDown(userEmail);
+            }
+            return Optional.of(suggestedAdviceRepository.save(suggestedAdvice));
+        }
+        return Optional.empty();
     }
 }
