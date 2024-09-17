@@ -10,10 +10,15 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.Set;
 import java.util.UUID;
 
-@Document(collection = "suggested_advice")
+import static afterady.domain.advice.SuggestedAdvice.*;
+
+@Document(collection = SUGGESTED_ADVICE_COLLECTION)
 @AllArgsConstructor
 @Getter
 public final class SuggestedAdvice {
+
+    public static final String SUGGESTED_ADVICE_COLLECTION = "suggested_advice";
+
     @MongoId
     private final UUID id;
     private final String name;
