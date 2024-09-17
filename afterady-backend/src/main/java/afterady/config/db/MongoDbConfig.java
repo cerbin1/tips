@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
+import static afterady.domain.advice.SuggestedAdvice.SUGGESTED_ADVICE_COLLECTION;
+
 @Configuration
 public class MongoDbConfig {
 
@@ -33,8 +36,8 @@ public class MongoDbConfig {
     @PostConstruct
     public void init() throws IOException {
         MongoDatabase database = mongoClient.getDatabase(databaseName);
-        initCollection(database, "advice", adviceSchemaPath);
-        initCollection(database, "suggested_advice", suggestedAdviceSchemaPath);
+        initCollection(database, ADVICE_COLLECTION, adviceSchemaPath);
+        initCollection(database, SUGGESTED_ADVICE_COLLECTION, suggestedAdviceSchemaPath);
     }
 
     private void initCollection(MongoDatabase database, String collectionName, String schemaFilePath) throws IOException {
