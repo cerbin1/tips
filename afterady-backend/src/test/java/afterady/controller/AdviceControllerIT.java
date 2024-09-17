@@ -13,6 +13,7 @@ import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.SuggestedAdviceDetailsDto;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
+import afterady.service.advice.category.CategoryService;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -100,6 +101,8 @@ class AdviceControllerIT {
     private SuggestedCategoryRepository suggestedCategoryRepository;
     @MockBean
     private CategoryRepository categoryRepository;
+    @MockBean
+    private CategoryService categoryService;
 
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../store/auth-context";
-import { getUserEmail, getUserRoles } from "../../util/auth";
+import { getUserEmail } from "../../util/auth";
 import ContainerSection from "../common/ContainerSection";
 import Table from "../common/table/Table";
 import TableBody from "../common/table/TableBody";
@@ -25,6 +25,11 @@ export default function Profile() {
   const [suggestedCategoriesLoading, setSuggestedCategoriesLoading] =
     useState(false);
   const [suggestedCategoriesError, setSuggestedCategoriesError] = useState();
+  const [votedSuggestedCategories, setVotedSuggestedCategories] = useState([]);
+  const [votedSuggestedCategoriesLoading, setVotedSuggestedCategoriesLoading] =
+    useState(false);
+  const [votedSuggestedCategoriesError, setVotedSuggestedCategoriesError] =
+    useState();
   const { token } = useAuth();
 
   useEffect(() => {
@@ -131,6 +136,31 @@ export default function Profile() {
     fetchUserSuggestedCategories();
   }, []);
 
+  useEffect(() => {
+    async function fetchUserVotedSuggestedCategories() {
+      setVotedSuggestedCategoriesLoading(true);
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL +
+            "categories/suggested-voted?userEmail=" +
+            getUserEmail()
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          setVotedSuggestedCategories(responseData);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        setVotedSuggestedCategoriesError(
+          "Nie udało się pobrać ocenionych proponowanych kategorii!"
+        );
+      }
+      setVotedSuggestedCategoriesLoading(false);
+    }
+    fetchUserVotedSuggestedCategories();
+  }, []);
+
   const votedAdvicesTableHeaders = ["Nazwa", "Kategoria", "Szczegóły"];
   const votedAdvicesTableRows = votedAdvices.map((advice) => (
     <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
@@ -189,6 +219,16 @@ export default function Profile() {
       <td className="py-3 px-6 border border-slate-400">{category.name}</td>
     </tr>
   ));
+
+  const votedSuggestedCategoriesTableHeaders = ["Nazwa", "Ocena"];
+  const votedSuggestedCategoriesTableRows = votedSuggestedCategories.map(
+    (category) => (
+      <tr key={category.id} className="hover:bg-slate-200 even:bg-slate-100">
+        <td className="py-3 px-6 border border-slate-400">{category.name}</td>
+        <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
+      </tr>
+    )
+  );
 
   return (
     <ContainerSection data-testid="profile-section">
@@ -272,6 +312,30 @@ export default function Profile() {
         )}
       {suggestedCategoriesLoading && <Loader />}
       <RequestError content={suggestedCategoriesError} />
+
+      {!votedSuggestedCategoriesError &&
+        !votedSuggestedCategoriesLoading &&
+        votedSuggestedCategories &&
+        votedSuggestedCategories.length === 0 && (
+          <p className="py-3">
+            Nie oceniłeś jeszcze żadnej proponowanej kategorii.
+          </p>
+        )}
+      {!votedSuggestedCategoriesError &&
+        votedSuggestedCategories &&
+        votedSuggestedCategories.length > 0 && (
+          <>
+            <Table
+              title="Ocenione proponowane kategorie:"
+              head={
+                <TableHeader headers={votedSuggestedCategoriesTableHeaders} />
+              }
+              body={<TableBody rows={votedSuggestedCategoriesTableRows} />}
+            />
+          </>
+        )}
+      {votedSuggestedCategoriesLoading && <Loader />}
+      <RequestError content={votedSuggestedCategoriesError} />
     </ContainerSection>
   );
 }

@@ -11,6 +11,8 @@ import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.security.auth.AuthUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceService;
+import afterady.service.advice.category.CategoryService;
+import afterady.service.advice.category.SuggestedCategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +31,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -38,6 +39,8 @@ import java.util.stream.Stream;
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.category.AdviceCategory.HEALTH;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -91,6 +94,8 @@ class CategoryControllerIT {
     private SuggestedCategoryRepository suggestedCategoryRepository;
     @MockBean
     private CategoryRepository categoryRepository;
+    @MockBean
+    private CategoryService categoryService;
 
 
     @Test
@@ -121,7 +126,7 @@ class CategoryControllerIT {
     @Test
     public void shouldGetEmptyList() throws Exception {
         // arrange
-        when(categoriesStatisticsRepository.findAll()).thenReturn(Collections.emptyList());
+        when(categoriesStatisticsRepository.findAll()).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/categories-statistics"))
@@ -149,7 +154,7 @@ class CategoryControllerIT {
     public void shouldReturnEmptyListOfAdvices() throws Exception {
         // arrange
         when(categoryRepository.findById(UUID_1)).thenReturn(Optional.of(new Category(UUID_1, HOME, "description")));
-        when(adviceService.getAdvicesBy(HOME)).thenReturn(Collections.emptyList());
+        when(adviceService.getAdvicesBy(HOME)).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/categories/" + UUID_1))
@@ -277,7 +282,7 @@ class CategoryControllerIT {
     public void shouldGetEmptyListOfUserSuggestedCategories() throws Exception {
         // arrange
         when(authUtil.getLoggedUserId()).thenReturn(1L);
-        when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(Collections.emptyList());
+        when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(emptyList());
 
         // act & assert
         mvc.perform(get("/categories/user-suggested"))
@@ -291,8 +296,8 @@ class CategoryControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(1L);
         when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(
                 List.of(
-                        new SuggestedCategory(UUID_1, "name 1", 1L),
-                        new SuggestedCategory(UUID.randomUUID(), "name 2", 1L)));
+                        new SuggestedCategory(UUID_1, "name 1", 1L, generateTestVotes(5), emptySet()),
+                        new SuggestedCategory(UUID.randomUUID(), "name 2", 1L, emptySet(), emptySet())));
 
         // act & assert
         mvc.perform(get("/categories/user-suggested"))
@@ -300,6 +305,32 @@ class CategoryControllerIT {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
                 .andExpect(jsonPath("$[0].name", is("name 1")))
-                .andExpect(jsonPath("$[0].creatorId", is(1)));
+                .andExpect(jsonPath("$[0].creatorId", is(1)))
+                .andExpect(jsonPath("$[0].rating", is(5)));
+    }
+
+    @Test
+    public void shouldReturnEmptyListOfVotedSuggestedCategories() throws Exception {
+        // arrange
+        when(categoryService.getCategoriesVotedByUser(TEST_EMAIL)).thenReturn(emptyList());
+
+        // act & assert
+        mvc.perform(get("/categories/suggested-voted?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldReturnListOfUserVotedSuggestedCategories() throws Exception {
+        // arrange
+        when(categoryService.getCategoriesVotedByUser(TEST_EMAIL)).thenReturn(List.of(
+                new SuggestedCategoryDetailsDto(UUID_1, "name 1",  5),
+                new SuggestedCategoryDetailsDto(UUID_2, "name 2",  -5)));
+
+        // act & assert
+        mvc.perform(get("/categories/suggested-voted?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"rating\":-5}]"));
     }
 }

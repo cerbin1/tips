@@ -1,10 +1,12 @@
 package afterady.domain.advice.category;
 
+import afterady.service.advice.category.SuggestedCategoryDetailsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.Set;
 import java.util.UUID;
 
 import static afterady.domain.advice.category.SuggestedCategory.SUGGESTED_CATEGORY_COLLECTION;
@@ -20,4 +22,14 @@ public class SuggestedCategory {
     private final UUID id;
     private final String name;
     private final Long creatorId;
+    private Set<String> userEmailVotesUp;
+    private Set<String> userEmailVotesDown;
+
+    public Integer getRating() {
+        return userEmailVotesUp.size() - userEmailVotesDown.size();
+    }
+
+    public SuggestedCategoryDetailsDto toSuggestedCategoryDetailsDto() {
+        return new SuggestedCategoryDetailsDto(id, name, getRating());
+    }
 }

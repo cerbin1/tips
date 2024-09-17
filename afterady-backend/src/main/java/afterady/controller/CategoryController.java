@@ -10,6 +10,8 @@ import afterady.security.auth.AuthUtil;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.category.CategoryDetailsDto;
+import afterady.service.advice.category.CategoryService;
+import afterady.service.advice.category.SuggestedCategoryDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static java.util.Collections.emptySet;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
 @RestController
@@ -28,19 +31,22 @@ public class CategoryController {
     private final AuthUtil authUtil;
     private final SuggestedCategoryRepository suggestedCategoryRepository;
     private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     public CategoryController(CategoriesStatisticsRepository categoriesStatisticsRepository,
                               AdviceService adviceService,
                               CaptchaService captchaService,
                               AuthUtil authUtil,
                               SuggestedCategoryRepository suggestedCategoryRepository,
-                              CategoryRepository categoryRepository) {
+                              CategoryRepository categoryRepository,
+                              CategoryService categoryService) {
         this.categoriesStatisticsRepository = categoriesStatisticsRepository;
         this.adviceService = adviceService;
         this.captchaService = captchaService;
         this.authUtil = authUtil;
         this.suggestedCategoryRepository = suggestedCategoryRepository;
         this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
     @PostMapping("/categories")
@@ -60,7 +66,7 @@ public class CategoryController {
             return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
         Long creatorId = authUtil.getLoggedUserId();
-        suggestedCategoryRepository.save(new SuggestedCategory(UUID.randomUUID(), name, creatorId));
+        suggestedCategoryRepository.save(new SuggestedCategory(UUID.randomUUID(), name, creatorId, emptySet(), emptySet()));
         return ResponseEntity.ok().build();
     }
 
@@ -98,6 +104,12 @@ public class CategoryController {
         Long creatorId = authUtil.getLoggedUserId();
         return ResponseEntity.ok(suggestedCategoryRepository.findByCreatorId(creatorId));
     }
+
+    @GetMapping("/categories/suggested-voted")
+    public ResponseEntity<List<SuggestedCategoryDetailsDto>> getUserVotedSuggestedCategories(@RequestParam String userEmail) {
+        return ResponseEntity.ok(categoryService.getCategoriesVotedByUser(userEmail));
+    }
+
 
     record MessageResponse(String message) {
     }

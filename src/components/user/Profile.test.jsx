@@ -68,6 +68,17 @@ describe("Profile", () => {
               creatorId: "1",
             },
           ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa ocenionej proponowanej kategorii",
+              rating: "1",
+            },
+          ]),
       });
 
     await act(async () => renderWithRouterAndAuth(<Profile />));
@@ -76,9 +87,9 @@ describe("Profile", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Profil"
     );
-    expect(screen.getAllByRole("table")).toHaveLength(4);
-    expect(screen.getAllByRole("row")).toHaveLength(8);
-    expect(screen.getAllByRole("columnheader")).toHaveLength(10);
+    expect(screen.getAllByRole("table")).toHaveLength(5);
+    expect(screen.getAllByRole("row")).toHaveLength(10);
+    expect(screen.getAllByRole("columnheader")).toHaveLength(12);
     expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[0]).toHaveTextContent(
       "Nazwa ocenionej porady"
@@ -100,7 +111,10 @@ describe("Profile", () => {
     expect(screen.getAllByRole("table")[3]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
-    expect(globalThis.fetch).toBeCalledTimes(4);
+    expect(screen.getAllByRole("table")[4]).toHaveTextContent(
+      "Nazwa ocenionej proponowanej kategorii"
+    );
+    expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -121,6 +135,9 @@ describe("Profile", () => {
           Authorization: "Bearer token",
         },
       }
+    );
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/suggested-voted?userEmail=test@test"
     );
   });
 
@@ -255,11 +272,22 @@ describe("Profile", () => {
               creatorId: "1",
             },
           ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "5131ba80-4d83-42ef-a8e9-e7bcab17b019",
+              name: "Nazwa ocenionej proponowanej kategorii",
+              rating: "1",
+            },
+          ]),
       });
 
     renderWithRouterAndAuth(<Profile />);
 
-    expect(screen.getAllByRole("status")).toHaveLength(4);
+    expect(screen.getAllByRole("status")).toHaveLength(5);
     await waitFor(() => {
       expect(screen.queryByRole("status")).toBeNull();
     });
@@ -271,7 +299,7 @@ describe("Profile", () => {
     expect(
       screen.getByText("Nazwa proponowanej kategorii")
     ).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(4);
+    expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
     );
@@ -292,6 +320,9 @@ describe("Profile", () => {
           Authorization: "Bearer token",
         },
       }
+    );
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/suggested-voted?userEmail=test@test"
     );
   });
 
@@ -389,7 +420,7 @@ describe("Profile", () => {
       "Nie udało się pobrać proponowanych kategorii!"
     );
     expect(error).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(4);
+    expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/categories/user-suggested",
       {
@@ -398,6 +429,47 @@ describe("Profile", () => {
           Authorization: "Bearer token",
         },
       }
+    );
+  });
+
+  test("should display info when there are no rated suggested categories", async () => {
+    localStorage.setItem("userEmail", "test@test");
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+    );
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    expect(screen.queryByRole("table")).toBeNull();
+    const emptyList = screen.getByText(
+      "Nie oceniłeś jeszcze żadnej proponowanej kategorii."
+    );
+    expect(emptyList).toBeInTheDocument();
+    expect(emptyList).toHaveClass("py-3");
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/suggested-voted?userEmail=test@test"
+    );
+  });
+
+  test("should display info when fetching rated categories fails", async () => {
+    localStorage.setItem("userEmail", "test@test");
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    );
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    const error = screen.getByText(
+      "Nie udało się pobrać ocenionych proponowanych kategorii!"
+    );
+    expect(error).toBeInTheDocument();
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/categories/suggested-voted?userEmail=test@test"
     );
   });
 });
