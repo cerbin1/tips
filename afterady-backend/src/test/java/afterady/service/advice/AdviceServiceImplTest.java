@@ -21,6 +21,7 @@ import java.util.UUID;
 
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
+import static afterady.domain.advice.SuggestedAdvice.SUGGESTED_ADVICE_COLLECTION;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static java.util.Collections.emptySet;
 import static org.junit.jupiter.api.Assertions.*;
@@ -324,5 +325,27 @@ public class AdviceServiceImplTest {
         verify(suggestedAdviceRepository, times(1)).save(suggestedAdvice);
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
+    }
+
+    @Test
+    public void shouldGetListOfUserVotedSuggestedAdvices() {
+        // arrange
+        when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class)))
+                .thenReturn(new AggregationResults<>(List.of(
+                        new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1",1L, Set.of(TEST_EMAIL), emptySet()),
+                        new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, Set.of(TEST_EMAIL), emptySet()),
+                        new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, Set.of(TEST_EMAIL), emptySet()),
+                        new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, Set.of(TEST_EMAIL), emptySet()),
+                        new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L, Set.of(TEST_EMAIL), emptySet())
+                ), new Document()));
+
+        // act
+        List<SuggestedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL);
+
+        // assert
+        assertEquals(5, userVotedAdvices.size());
+        verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class));
+        verifyNoMoreInteractions(mongoTemplate);
+        verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
     }
 }

@@ -15,7 +15,7 @@ afterEach(() => {
 });
 
 describe("Profile", () => {
-  test("should render component and display user profile", async () => {
+  test("should render component", async () => {
     localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
       .fn()
@@ -29,6 +29,19 @@ describe("Profile", () => {
               categoryName: "Health",
               categoryDisplayName: "Zdrowie",
               content: "Treść",
+            },
+          ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "Nazwa ocenionej proponowanej porady",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+              ranking: 1,
             },
           ]),
       })
@@ -63,26 +76,36 @@ describe("Profile", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Profil"
     );
-    expect(screen.getAllByRole("table")).toHaveLength(3);
-    expect(screen.getAllByRole("row")).toHaveLength(6);
-    expect(screen.getAllByRole("columnheader")).toHaveLength(6);
+    expect(screen.getAllByRole("table")).toHaveLength(4);
+    expect(screen.getAllByRole("row")).toHaveLength(8);
+    expect(screen.getAllByRole("columnheader")).toHaveLength(10);
     expect(screen.getByText("Ocenione porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[0]).toHaveTextContent(
       "Nazwa ocenionej porady"
     );
     expect(screen.getAllByRole("table")[0]).toHaveTextContent("Zdrowie");
-    expect(screen.getByText("Proponowane porady:")).toBeInTheDocument();
+    expect(
+      screen.getByText("Ocenione proponowane porady:")
+    ).toBeInTheDocument();
     expect(screen.getAllByRole("table")[1]).toHaveTextContent(
-      "Nazwa proponowanej porady"
+      "Nazwa ocenionej proponowanej porady"
     );
     expect(screen.getAllByRole("table")[1]).toHaveTextContent("Zdrowie");
-    expect(screen.getByText("Proponowane kategorie:")).toBeInTheDocument();
+    expect(screen.getByText("Proponowane porady:")).toBeInTheDocument();
     expect(screen.getAllByRole("table")[2]).toHaveTextContent(
+      "Nazwa proponowanej porady"
+    );
+    expect(screen.getAllByRole("table")[2]).toHaveTextContent("Zdrowie");
+    expect(screen.getByText("Proponowane kategorie:")).toBeInTheDocument();
+    expect(screen.getAllByRole("table")[3]).toHaveTextContent(
       "Nazwa proponowanej kategorii"
     );
-    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledTimes(4);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
+    );
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/suggested-voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
@@ -101,7 +124,7 @@ describe("Profile", () => {
     );
   });
 
-  test("should display info when there are no voted advices", async () => {
+  test("should display info when there are no rated advices", async () => {
     localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
@@ -118,6 +141,47 @@ describe("Profile", () => {
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
+    );
+  });
+
+  test("should display info when fetching rated suggested advices fails", async () => {
+    localStorage.setItem("userEmail", "test@test");
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: false,
+      })
+    );
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    const error = screen.getByText(
+      "Nie udało się pobrać ocenionych proponowanych porad!"
+    );
+    expect(error).toBeInTheDocument();
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/suggested-voted?userEmail=test@test"
+    );
+  });
+
+  test("should display info when there are no rated suggested advices", async () => {
+    localStorage.setItem("userEmail", "test@test");
+    globalThis.fetch = vi.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve([]),
+      })
+    );
+
+    await act(async () => renderWithAuth(<Profile />));
+
+    expect(screen.queryByRole("table")).toBeNull();
+    const emptyList = screen.getByText(
+      "Nie oceniłeś jeszcze żadnej proponowanej porady."
+    );
+    expect(emptyList).toBeInTheDocument();
+    expect(emptyList).toHaveClass("py-3");
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/suggested-voted?userEmail=test@test"
     );
   });
 
@@ -148,10 +212,23 @@ describe("Profile", () => {
           Promise.resolve([
             {
               id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
-              name: "Nazwa porady",
+              name: "Nazwa ocenionej porady",
               categoryName: "Health",
               categoryDisplayName: "Zdrowie",
               content: "Treść",
+            },
+          ]),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        json: () =>
+          Promise.resolve([
+            {
+              id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+              name: "Nazwa ocenionej proponowanej porady",
+              categoryDisplayName: "Zdrowie",
+              content: "Treść",
+              ranking: 1,
             },
           ]),
       })
@@ -182,17 +259,24 @@ describe("Profile", () => {
 
     renderWithRouterAndAuth(<Profile />);
 
-    expect(screen.getAllByRole("status")).toHaveLength(3);
+    expect(screen.getAllByRole("status")).toHaveLength(4);
     await waitFor(() => {
       expect(screen.queryByRole("status")).toBeNull();
     });
-    expect(screen.getByText("Nazwa porady")).toBeInTheDocument();
+    expect(screen.getByText("Nazwa ocenionej porady")).toBeInTheDocument();
+    expect(
+      screen.getByText("Nazwa ocenionej proponowanej porady")
+    ).toBeInTheDocument();
     expect(screen.getByText("Nazwa proponowanej porady")).toBeInTheDocument();
     expect(
       screen.getByText("Nazwa proponowanej kategorii")
     ).toBeInTheDocument();
+    expect(globalThis.fetch).toBeCalledTimes(4);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices?userEmail=test@test"
+    );
+    expect(globalThis.fetch).toBeCalledWith(
+      "backend/advices/suggested-voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
       headers: {
@@ -214,6 +298,9 @@ describe("Profile", () => {
   test("should display info when there are no suggested advices", async () => {
     globalThis.fetch = vi
       .fn()
+      .mockResolvedValueOnce({
+        ok: false,
+      })
       .mockResolvedValueOnce({
         ok: false,
       })
@@ -265,6 +352,9 @@ describe("Profile", () => {
         ok: false,
       })
       .mockResolvedValueOnce({
+        ok: false,
+      })
+      .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve([]),
       });
@@ -299,7 +389,7 @@ describe("Profile", () => {
       "Nie udało się pobrać proponowanych kategorii!"
     );
     expect(error).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledTimes(3);
+    expect(globalThis.fetch).toBeCalledTimes(4);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/categories/user-suggested",
       {

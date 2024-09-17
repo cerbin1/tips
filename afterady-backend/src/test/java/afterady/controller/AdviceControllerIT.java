@@ -11,6 +11,7 @@ import afterady.security.auth.AuthUtil;
 import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
+import afterady.service.advice.SuggestedAdviceDetailsDto;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
@@ -579,7 +580,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnFalseWhenUserNotRatedSuggestedAdvice() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content",1L,  generateTestVotes(1), emptySet())));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
 
         // act & assert
         mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
@@ -600,5 +601,30 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.rated", is(true)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verifyNoMoreInteractions(adviceService);
+    }
+
+    @Test
+    public void shouldReturnEmptyUserVotedSuggestedAdvices() throws Exception {
+        // arrange
+        when(adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL)).thenReturn(emptyList());
+
+        // act & assert
+        mvc.perform(get("/advices/suggested?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldReturnListOfUserVotedSuggestedAdvices() throws Exception {
+        // arrange
+        when(adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL)).thenReturn(List.of(
+                new SuggestedAdviceDetailsDto(UUID_1, "name", "Dom", "content", 5),
+                new SuggestedAdviceDetailsDto(UUID_2, "name 2", "Zdrowie", "content", -5)));
+
+        // act & assert
+        mvc.perform(get("/advices/suggested-voted?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\",\"rating\":-5}]"));
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
+import static afterady.domain.advice.SuggestedAdvice.SUGGESTED_ADVICE_COLLECTION;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @Service
@@ -125,5 +126,23 @@ public class AdviceServiceImpl implements AdviceService {
             return Optional.of(suggestedAdviceRepository.save(suggestedAdvice));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<SuggestedAdviceDetailsDto> getUserVotedSuggestedAdvices(String userEmail) {
+        MatchOperation matchStage = match(new Criteria()
+                .orOperator(
+                        Criteria.where("userEmailVotesUp").in(userEmail),
+                        Criteria.where("userEmailVotesDown").in(userEmail))
+        );
+        ProjectionOperation projectStage = project("name", "category", "content", "userEmailVotesUp", "userEmailVotesDown");
+        SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "name"));
+        Aggregation aggregation = newAggregation(
+                matchStage,
+                projectStage,
+                sortStage
+        );
+        AggregationResults<SuggestedAdvice> userVotedAdvices = mongoTemplate.aggregate(aggregation, SUGGESTED_ADVICE_COLLECTION, SuggestedAdvice.class);
+        return userVotedAdvices.getMappedResults().stream().map(SuggestedAdvice::toSuggestedAdviceDetailsDto).toList();
     }
 }

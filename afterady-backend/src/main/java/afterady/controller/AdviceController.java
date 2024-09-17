@@ -5,6 +5,7 @@ import afterady.domain.advice.SuggestedAdvice;
 import afterady.security.auth.AuthUtil;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
+import afterady.service.advice.SuggestedAdviceDetailsDto;
 import afterady.service.advice.UserVotedAdviceDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import org.springframework.http.ResponseEntity;
@@ -161,6 +162,11 @@ public class AdviceController {
         SuggestedAdvice suggestedAdvice = adviceById.get();
         boolean userRatedAdvice = suggestedAdvice.userVoted(userEmail);
         return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+    }
+
+    @GetMapping("/suggested-voted")
+    public ResponseEntity<List<SuggestedAdviceDetailsDto>> getUserVotedSuggestedAdvices(@RequestParam String userEmail) {
+        return ResponseEntity.ok(adviceService.getUserVotedSuggestedAdvices(userEmail));
     }
 
     private MessageResponse validationError() {

@@ -13,6 +13,11 @@ export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
   const [votedAdvicesLoading, setVotedAdvicesLoading] = useState(false);
   const [votedAdvicesError, setVotedAdvicesError] = useState();
+  const [votedSuggestedAdvices, setVotedSuggestedAdvices] = useState([]);
+  const [votedSuggestedAdvicesLoading, setVotedSuggestedAdvicesLoading] =
+    useState(false);
+  const [votedSuggestedAdvicesError, setVotedSuggestedAdvicesError] =
+    useState();
   const [suggestedAdvices, setSuggestedAdvices] = useState([]);
   const [suggestedAdvicesLoading, setSuggestedAdvicesLoading] = useState(false);
   const [suggestedAdvicesError, setSuggestedAdvicesError] = useState();
@@ -43,6 +48,31 @@ export default function Profile() {
       setVotedAdvicesLoading(false);
     }
     fetchUserVotedAdvices();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUserVotedSuggestedAdvices() {
+      setVotedSuggestedAdvicesLoading(true);
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL +
+            "advices/suggested-voted?userEmail=" +
+            getUserEmail()
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          setVotedSuggestedAdvices(responseData);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        setVotedSuggestedAdvicesError(
+          "Nie udało się pobrać ocenionych proponowanych porad!"
+        );
+      }
+      setVotedSuggestedAdvicesLoading(false);
+    }
+    fetchUserVotedSuggestedAdvices();
   }, []);
 
   useEffect(() => {
@@ -119,6 +149,30 @@ export default function Profile() {
     </tr>
   ));
 
+  const votedSuggestedAdvicesTableHeaders = [
+    "Nazwa",
+    "Kategoria",
+    "Ocena",
+    "Szczegóły",
+  ];
+  const votedSuggestedAdvicesTableRows = votedSuggestedAdvices.map((advice) => (
+    <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
+      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
+      <td className="py-3 px-6 border border-slate-400">
+        {advice.categoryDisplayName}
+      </td>
+      <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
+      <td className="py-3 px-6 border border-slate-400">
+        <Link
+          className="text-blue-to-dark text-lg"
+          to={"/advices/suggested/" + advice.id}
+        >
+          Wyświetl szczegóły
+        </Link>
+      </td>
+    </tr>
+  ));
+
   const suggestedAdvicesTableHeaders = ["Nazwa", "Kategoria"];
   const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
     <tr key={advice.id} className="hover:bg-slate-200 even:bg-slate-100">
@@ -156,6 +210,28 @@ export default function Profile() {
       )}
       {votedAdvicesLoading && <Loader />}
       <RequestError content={votedAdvicesError} />
+
+      {!votedSuggestedAdvicesError &&
+        !votedSuggestedAdvicesLoading &&
+        votedSuggestedAdvices &&
+        votedSuggestedAdvices.length === 0 && (
+          <p className="py-3">
+            Nie oceniłeś jeszcze żadnej proponowanej porady.
+          </p>
+        )}
+      {!votedSuggestedAdvicesError &&
+        votedSuggestedAdvices &&
+        votedSuggestedAdvices.length > 0 && (
+          <>
+            <Table
+              title="Ocenione proponowane porady:"
+              head={<TableHeader headers={votedSuggestedAdvicesTableHeaders} />}
+              body={<TableBody rows={votedSuggestedAdvicesTableRows} />}
+            />
+          </>
+        )}
+      {votedSuggestedAdvicesLoading && <Loader />}
+      <RequestError content={votedSuggestedAdvicesError} />
 
       {!suggestedAdvicesError &&
         !suggestedAdvicesLoading &&
