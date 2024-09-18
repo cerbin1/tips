@@ -32,4 +32,16 @@ public class SuggestedCategory {
     public SuggestedCategoryDetailsDto toSuggestedCategoryDetailsDto() {
         return new SuggestedCategoryDetailsDto(id, name, getRating());
     }
+
+    public void addUserVoteUp(String userEmail) {
+        userEmailVotesUp.add(userEmail);
+    }
+
+    public void addUserVoteDown(String userEmail) {
+        userEmailVotesDown.add(userEmail);
+    }
+
+    public boolean userVoted(String userEmail) {
+        return userEmailVotesUp.contains(userEmail) || userEmailVotesDown.contains(userEmail);
+    }
 }

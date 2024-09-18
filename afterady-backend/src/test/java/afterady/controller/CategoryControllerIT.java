@@ -33,6 +33,7 @@ import org.testcontainers.shaded.org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -358,5 +359,133 @@ class CategoryControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0}]"));
+    }
+
+    @Test
+    public void shouldReturn400IfSuggestedCategoryByIdNotExists() throws Exception {
+        // arrange
+//        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/suggested/" + UUID_1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Suggested advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+    }
+
+    @Test
+    public void shouldReturnSuggestedCategoryById() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(2), generateTestVotes(1))));
+
+        // act & assert
+        mvc.perform(get("/advices/categories/suggested/" + UUID_1))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(UUID_1.toString())))
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.rating", is(1)));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturn404WhenSuggestedCategoryNotExists() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/advices/categories/suggested/" + UUID_1))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Suggested category with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturn404WhenRatingSuggestedCategoryThatDoesNotExist() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(post("/categories/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", is("Suggested category with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldRateSuggestedCategoryUp() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(1), emptySet())));
+        when(categoryService.rateSuggestedCategory(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(2), emptySet())));
+
+        // act & assert
+        mvc.perform(post("/categories/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(UUID_1.toString())))
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.rating", is(2)));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verify(categoryService, times(1)).rateSuggestedCategory(UUID_1, TEST_EMAIL, true);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+
+    @Test
+    public void shouldRateSuggestedCategoryDown() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, emptySet(), generateTestVotes(1))));
+        when(categoryService.rateSuggestedCategory(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, emptySet(), generateTestVotes(2))));
+
+        // act & assert
+        mvc.perform(post("/categories/suggested/" + UUID_1 + "/rate?rateType=false").content(TEST_EMAIL)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(UUID_1.toString())))
+                .andExpect(jsonPath("$.name", is("name")))
+                .andExpect(jsonPath("$.rating", is(-2)));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verify(categoryService, times(1)).rateSuggestedCategory(UUID_1, TEST_EMAIL, false);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturn400WhenGettingUserSuggestedCategoryRateInfoAndCategoryNotExist() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
+
+        // act & assert
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isBadRequest());
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturnFalseWhenUserNotRatedSuggestedCategory() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(1), emptySet())));
+
+        // act & assert
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(false)));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
+    }
+
+    @Test
+    public void shouldReturnTrueWhenUserRatedSuggestedCategory() throws Exception {
+        // arrange
+        when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, Set.of(TEST_EMAIL), emptySet())));
+
+        // act & assert
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rated", is(true)));
+        verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
+        verifyNoMoreInteractions(categoryService);
     }
 }

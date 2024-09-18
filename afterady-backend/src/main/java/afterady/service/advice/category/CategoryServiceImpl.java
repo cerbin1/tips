@@ -1,6 +1,7 @@
 package afterady.service.advice.category;
 
 import afterady.domain.advice.category.SuggestedCategory;
+import afterady.domain.repository.SuggestedCategoryRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
@@ -8,6 +9,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static afterady.domain.advice.category.SuggestedCategory.SUGGESTED_CATEGORY_COLLECTION;
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
@@ -15,9 +18,11 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 @Service
 public class CategoryServiceImpl implements CategoryService {
     private final MongoTemplate mongoTemplate;
+    private final SuggestedCategoryRepository suggestedCategoryRepository;
 
-    public CategoryServiceImpl(MongoTemplate mongoTemplate) {
+    public CategoryServiceImpl(MongoTemplate mongoTemplate, SuggestedCategoryRepository suggestedCategoryRepository) {
         this.mongoTemplate = mongoTemplate;
+        this.suggestedCategoryRepository = suggestedCategoryRepository;
     }
 
     @Override
@@ -36,5 +41,25 @@ public class CategoryServiceImpl implements CategoryService {
         );
         AggregationResults<SuggestedCategory> userVotedCategories = mongoTemplate.aggregate(aggregation, SUGGESTED_CATEGORY_COLLECTION, SuggestedCategory.class);
         return userVotedCategories.getMappedResults().stream().map(SuggestedCategory::toSuggestedCategoryDetailsDto).toList();
+    }
+
+    @Override
+    public Optional<SuggestedCategory> getSuggestedCategoryDetails(UUID categoryId) {
+        return suggestedCategoryRepository.findById(categoryId);
+    }
+
+    @Override
+    public Optional<SuggestedCategory> rateSuggestedCategory(UUID id, String userEmail, boolean rateUp) {
+        Optional<SuggestedCategory> maybeSuggestedCategory = suggestedCategoryRepository.findById(id);
+        if (maybeSuggestedCategory.isPresent()) {
+            SuggestedCategory suggestedCategory = maybeSuggestedCategory.get();
+            if (rateUp) {
+                suggestedCategory.addUserVoteUp(userEmail);
+            } else {
+                suggestedCategory.addUserVoteDown(userEmail);
+            }
+            return Optional.of(suggestedCategoryRepository.save(suggestedCategory));
+        }
+        return Optional.empty();
     }
 }

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Collections.emptySet;
+import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
 @RestController
@@ -113,6 +114,40 @@ public class CategoryController {
     @GetMapping("/advices/categories/suggested")
     public ResponseEntity<?> getSuggestedCategories() {
         return ResponseEntity.ok(suggestedCategoryRepository.findAll());
+    }
+
+    @GetMapping("/advices/categories/suggested/{id}")
+    public ResponseEntity<?> getSuggestedCategoryById(@PathVariable UUID id) {
+        Optional<SuggestedCategory> maybeCategory = categoryService.getSuggestedCategoryDetails(id);
+        if (maybeCategory.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Suggested category with id %s not found!", id.toString())), NOT_FOUND);
+        }
+        return ResponseEntity.ok(maybeCategory.get().toSuggestedCategoryDetailsDto());
+    }
+
+    @PostMapping("/categories/suggested/{categoryId}/rate")
+    public ResponseEntity<?> rateSuggestedCategory(@PathVariable UUID categoryId, @RequestBody String userEmail, @RequestParam boolean rateType) {
+        Optional<SuggestedCategory> maybeCategory = categoryService.getSuggestedCategoryDetails(categoryId);
+        if (maybeCategory.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Suggested category with id %s not found!", categoryId.toString())), NOT_FOUND);
+        }
+        Optional<SuggestedCategory> updatedCategory = categoryService.rateSuggestedCategory(categoryId, userEmail, rateType);
+        if (updatedCategory.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate category with id %s", categoryId.toString())), INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(updatedCategory.get().toSuggestedCategoryDetailsDto(), OK);
+        }
+    }
+
+    @GetMapping("/categories/suggested/{categoryId}/rated")
+    public ResponseEntity<UserRatingResultResponse> checkUserRatedSuggestedCategory(@RequestParam String userEmail, @PathVariable UUID categoryId) {
+        Optional<SuggestedCategory> maybeSuggestedCategory = categoryService.getSuggestedCategoryDetails(categoryId);
+        if (maybeSuggestedCategory.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        SuggestedCategory suggestedCategory = maybeSuggestedCategory.get();
+        boolean userRatedAdvice = suggestedCategory.userVoted(userEmail);
+        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
     }
 
     record MessageResponse(String message) {

@@ -22,6 +22,7 @@ import RootLayout from "./router/RootLayout.jsx";
 import AuthProvider from "./store/auth-context.jsx";
 import Suggestions from "./components/advices/Suggestions.jsx";
 import SuggestedAdviceDetails from "./components/advices/SuggestedAdviceDetails.jsx";
+import SuggestedCategoryDetails from "./components/advices/categories/SuggestedCategoryDetails.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,6 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     id: "root",
     children: [
-      { path: "/", element: <Home /> },
       {
         path: "/advices",
         children: [
@@ -38,11 +38,17 @@ const router = createBrowserRouter([
           { path: "suggested/:id", element: <SuggestedAdviceDetails /> },
         ],
       },
-
-      { path: "/categories", element: <CategoriesStatistics /> },
       { path: "/random", element: <RandomAdvice /> },
-      { path: "/categories/:categoryId", element: <CategoryDetails /> },
+      ,
       { path: "/ranking", element: <Ranking /> },
+      {
+        path: "/categories",
+        children: [
+          { path: "", element: <CategoriesStatistics /> },
+          { path: "suggested/:id", element: <SuggestedCategoryDetails /> },
+          { path: ":categoryId", element: <CategoryDetails /> },
+        ],
+      },
       {
         path: "/suggest",
         element: (
