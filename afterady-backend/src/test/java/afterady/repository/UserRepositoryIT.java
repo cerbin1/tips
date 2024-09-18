@@ -1,12 +1,12 @@
 package afterady.repository;
 
-import integration.DatabaseSetupExtension;
 import afterady.TestUtils;
 import afterady.domain.repository.RoleRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.Role;
 import afterady.domain.user.RoleName;
 import afterady.domain.user.User;
+import integration.DatabaseSetupExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

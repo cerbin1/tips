@@ -1,10 +1,10 @@
 package afterady.service.activation_link;
 
-import integration.DatabaseSetupExtension;
 import afterady.domain.repository.UserActivationLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.User;
 import afterady.domain.user.UserActivationLink;
+import integration.DatabaseSetupExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.Set;
 import java.util.UUID;
 
-import static afterady.domain.advice.SuggestedAdvice.*;
+import static afterady.domain.advice.SuggestedAdvice.SUGGESTED_ADVICE_COLLECTION;
 
 @Document(collection = SUGGESTED_ADVICE_COLLECTION)
 @AllArgsConstructor

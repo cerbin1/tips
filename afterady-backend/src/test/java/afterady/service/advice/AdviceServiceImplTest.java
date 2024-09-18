@@ -332,7 +332,7 @@ public class AdviceServiceImplTest {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
-                        new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1",1L, Set.of(TEST_EMAIL), emptySet()),
+                        new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
                         new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, Set.of(TEST_EMAIL), emptySet()),
                         new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, Set.of(TEST_EMAIL), emptySet()),
                         new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, Set.of(TEST_EMAIL), emptySet()),

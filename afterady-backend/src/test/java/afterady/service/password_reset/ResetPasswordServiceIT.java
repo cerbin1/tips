@@ -1,10 +1,10 @@
 package afterady.service.password_reset;
 
-import integration.DatabaseSetupExtension;
 import afterady.domain.repository.ResetPasswordLinkRepository;
 import afterady.domain.repository.UserRepository;
 import afterady.domain.user.ResetPasswordLink;
 import afterady.domain.user.User;
+import integration.DatabaseSetupExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(DatabaseSetupExtension.class)
-class ResetPasswordServiceIT  {
+class ResetPasswordServiceIT {
 
     @Autowired
     private UserRepository userRepository;
