@@ -138,7 +138,6 @@ public class AdviceController {
         return ResponseEntity.ok(maybeAdvice.get().toSuggestedAdviceDetailsDto());
     }
 
-
     @PostMapping("/suggested/{adviceId}/rate")
     public ResponseEntity<?> rateSuggestedAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail, @RequestParam boolean rateType) {
         Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(adviceId);
