@@ -10,6 +10,7 @@ import RequestError from "../common/RequestError";
 export default function Suggestions() {
   const [advicesView, setAdvicesView] = useState(true);
   const [suggestedAdvices, setSuggestedAdvices] = useState([]);
+  const [suggestedCategories, setSuggestedCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState();
 
@@ -32,15 +33,44 @@ export default function Suggestions() {
       }
       setLoading(false);
     }
-    fetchSuggestedAdvices();
-  }, []);
+
+    async function fetchSuggestedCategories() {
+      try {
+        setError();
+        setLoading(true);
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "advices/categories/suggested"
+        );
+        if (response.ok) {
+          const responseData = await response.json();
+          setSuggestedCategories(responseData);
+        } else {
+          throw new Error();
+        }
+      } catch (error) {
+        setError("Nie udało się wyświetlić proponowanych kategorii!");
+      }
+      setLoading(false);
+    }
+
+    if (advicesView) {
+      fetchSuggestedAdvices();
+    } else {
+      fetchSuggestedCategories();
+    }
+  }, [advicesView]);
 
   function handleTypeChange() {
     setAdvicesView((previousType) => !previousType);
   }
 
-  const tableHeaders = ["Nazwa", "Kategoria", "Ocena", "Szczegóły"];
-  const tableRows = suggestedAdvices.map((advice) => (
+  const suggestedAdvicesTableHeaders = [
+    "Nazwa",
+    "Kategoria",
+    "Ocena",
+    "Szczegóły",
+  ];
+  const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
     <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
@@ -58,6 +88,22 @@ export default function Suggestions() {
     </tr>
   ));
 
+  const suggestedCategoriesTableHeaders = ["Nazwa", "Ocena", "Szczegóły"];
+  const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
+    <tr key={category.name} className="hover:bg-slate-200 even:bg-slate-100">
+      <td className="py-3 px-6 border border-slate-400">{category.name}</td>
+      <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
+      <td className="py-3 px-6 border border-slate-400">
+        <Link
+          className="text-blue-to-dark text-lg"
+          to={"/categories/suggested/" + category.id}
+        >
+          Wyświetl szczegóły
+        </Link>
+      </td>
+    </tr>
+  ));
+
   return (
     <ContainerSection data-testid="suggestions">
       <p
@@ -66,19 +112,45 @@ export default function Suggestions() {
       >
         {advicesView ? "Przejdź do kategorii" : "Przejdź do porad"}
       </p>
-      <h1>Propozycje porad</h1>
-      {loading && <Loader />}
-      {suggestedAdvices && suggestedAdvices.length > 0 && (
-        <Table
-          head={<TableHeader headers={tableHeaders} />}
-          body={<TableBody rows={tableRows} />}
-        />
+      {advicesView && (
+        <>
+          <h1>Propozycje porad</h1>
+          {loading && <Loader />}
+          {!loading && suggestedAdvices && suggestedAdvices.length > 0 && (
+            <Table
+              head={<TableHeader headers={suggestedAdvicesTableHeaders} />}
+              body={<TableBody rows={suggestedAdvicesTableRows} />}
+            />
+          )}
+          {!loading &&
+            !error &&
+            suggestedAdvices &&
+            suggestedAdvices.length === 0 && <p>Brak propozycji porad.</p>}
+          <RequestError content={error} />
+        </>
       )}
-      {!loading &&
-        !error &&
-        suggestedAdvices &&
-        suggestedAdvices.length === 0 && <p>Brak propozycji porad.</p>}
-      <RequestError content={error} />
+      {!advicesView && (
+        <>
+          <h1>Propozycje kategorii</h1>
+          {loading && <Loader />}
+          {!loading &&
+            suggestedCategories &&
+            suggestedCategories.length > 0 && (
+              <Table
+                head={<TableHeader headers={suggestedCategoriesTableHeaders} />}
+                body={<TableBody rows={suggestedCategoriesTableRows} />}
+              />
+            )}
+
+          {!loading &&
+            !error &&
+            suggestedCategories &&
+            suggestedCategories.length === 0 && (
+              <p>Brak propozycji kategorii.</p>
+            )}
+          <RequestError content={error} />
+        </>
+      )}
     </ContainerSection>
   );
 }

@@ -110,6 +110,10 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoriesVotedByUser(userEmail));
     }
 
+    @GetMapping("/advices/categories/suggested")
+    public ResponseEntity<?> getSuggestedCategories() {
+        return ResponseEntity.ok(suggestedCategoryRepository.findAll());
+    }
 
     record MessageResponse(String message) {
     }

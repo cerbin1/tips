@@ -324,13 +324,39 @@ class CategoryControllerIT {
     public void shouldReturnListOfUserVotedSuggestedCategories() throws Exception {
         // arrange
         when(categoryService.getCategoriesVotedByUser(TEST_EMAIL)).thenReturn(List.of(
-                new SuggestedCategoryDetailsDto(UUID_1, "name 1",  5),
-                new SuggestedCategoryDetailsDto(UUID_2, "name 2",  -5)));
+                new SuggestedCategoryDetailsDto(UUID_1, "name 1", 5),
+                new SuggestedCategoryDetailsDto(UUID_2, "name 2", -5)));
 
         // act & assert
         mvc.perform(get("/categories/suggested-voted?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"rating\":-5}]"));
+    }
+
+    @Test
+    public void shouldGetEmptyListOfSuggestedCategories() throws Exception {
+        // arrange
+        when(suggestedCategoryRepository.findAll()).thenReturn(emptyList());
+
+        // act & assert
+        mvc.perform(get("/advices/categories/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    public void shouldGetListOfSuggestedCategories() throws Exception {
+        // arrange
+        when(suggestedCategoryRepository.findAll()).thenReturn(List.of(
+                new SuggestedCategory(UUID_1, "name", 1L, emptySet(), emptySet()),
+                new SuggestedCategory(UUID_1, "name", 1L, emptySet(), emptySet()),
+                new SuggestedCategory(UUID_1, "name", 1L, emptySet(), emptySet())));
+
+        // act & assert
+        mvc.perform(get("/advices/categories/suggested"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0}]"));
     }
 }
