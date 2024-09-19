@@ -25,7 +25,7 @@ describe("Suggestions", () => {
             rating: 3,
           },
           {
-            id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+            id: "8c689037-d083-43ec-8c68-384e184be911",
             name: "name 2",
             category: { name: "Health", displayName: "Zdrowie" },
             content: "Treść",
@@ -33,7 +33,7 @@ describe("Suggestions", () => {
             rating: 2,
           },
           {
-            id: "63b4072b-b8c8-4f9a-acf4-76d0948adc6e",
+            id: "9ea9682e-d4aa-46d4-9689-104ae1a0b5b6",
             name: "name 3",
             category: { name: "Finances", displayName: "Finanse" },
             content: "Treść",
@@ -80,7 +80,7 @@ describe("Suggestions", () => {
     expect(cells[11]).toHaveTextContent("Wyświetl szczegóły");
     expect(cells[11].querySelector("a")).toHaveAttribute(
       "href",
-      "/advices/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+      "/advices/suggested/9ea9682e-d4aa-46d4-9689-104ae1a0b5b6"
     );
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested");

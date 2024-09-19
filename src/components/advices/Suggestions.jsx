@@ -6,6 +6,7 @@ import TableBody from "../common/table/TableBody";
 import { Link } from "react-router-dom";
 import Loader from "../common/Loader";
 import RequestError from "../common/RequestError";
+import TableRow from "../common/table/TableRow";
 
 export default function Suggestions() {
   const [advicesView, setAdvicesView] = useState(true);
@@ -71,7 +72,7 @@ export default function Suggestions() {
     "Szczegóły",
   ];
   const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
-    <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={advice.id}>
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
         {advice.category.displayName}
@@ -85,12 +86,12 @@ export default function Suggestions() {
           Wyświetl szczegóły
         </Link>
       </td>
-    </tr>
+    </TableRow>
   ));
 
   const suggestedCategoriesTableHeaders = ["Nazwa", "Ocena", "Szczegóły"];
   const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
-    <tr key={category.name} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={category.name}>
       <td className="py-3 px-6 border border-slate-400">{category.name}</td>
       <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
       <td className="py-3 px-6 border border-slate-400">
@@ -101,7 +102,7 @@ export default function Suggestions() {
           Wyświetl szczegóły
         </Link>
       </td>
-    </tr>
+    </TableRow>
   ));
 
   return (

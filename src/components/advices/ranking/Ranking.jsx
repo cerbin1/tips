@@ -6,6 +6,7 @@ import TableBody from "../../common/table/TableBody";
 import TableHeader from "../../common/table/TableHeader";
 import RequestError from "../../common/RequestError";
 import Loader from "../../common/Loader";
+import TableRow from "../../common/table/TableRow";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -37,7 +38,7 @@ export default function rating() {
 
   const tableHeaders = ["Nazwa", "Kategoria", "Ocena", "Szczegóły"];
   const tableRows = topAdvices.map((advice) => (
-    <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={advice.name}>
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
         {advice.categoryDisplayName}
@@ -51,7 +52,7 @@ export default function rating() {
           Wyświetl szczegóły
         </Link>
       </td>
-    </tr>
+    </TableRow>
   ));
 
   return (

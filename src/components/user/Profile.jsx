@@ -8,6 +8,7 @@ import TableBody from "../common/table/TableBody";
 import TableHeader from "../common/table/TableHeader";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
+import TableRow from "../common/table/TableRow";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
@@ -163,7 +164,7 @@ export default function Profile() {
 
   const votedAdvicesTableHeaders = ["Nazwa", "Kategoria", "Szczegóły"];
   const votedAdvicesTableRows = votedAdvices.map((advice) => (
-    <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={advice.name}>
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
         {advice.categoryDisplayName}
@@ -176,7 +177,7 @@ export default function Profile() {
           Wyświetl szczegóły
         </Link>
       </td>
-    </tr>
+    </TableRow>
   ));
 
   const votedSuggestedAdvicesTableHeaders = [
@@ -186,7 +187,7 @@ export default function Profile() {
     "Szczegóły",
   ];
   const votedSuggestedAdvicesTableRows = votedSuggestedAdvices.map((advice) => (
-    <tr key={advice.name} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={advice.name}>
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
         {advice.categoryDisplayName}
@@ -200,33 +201,33 @@ export default function Profile() {
           Wyświetl szczegóły
         </Link>
       </td>
-    </tr>
+    </TableRow>
   ));
 
   const suggestedAdvicesTableHeaders = ["Nazwa", "Kategoria"];
   const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
-    <tr key={advice.id} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={advice.id}>
       <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
       <td className="py-3 px-6 border border-slate-400">
         {advice.category.displayName}
       </td>
-    </tr>
+    </TableRow>
   ));
 
   const suggestedCategoriesTableHeaders = ["Nazwa"];
   const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
-    <tr key={category.id} className="hover:bg-slate-200 even:bg-slate-100">
+    <TableRow key={category.id}>
       <td className="py-3 px-6 border border-slate-400">{category.name}</td>
-    </tr>
+    </TableRow>
   ));
 
   const votedSuggestedCategoriesTableHeaders = ["Nazwa", "Ocena"];
   const votedSuggestedCategoriesTableRows = votedSuggestedCategories.map(
     (category) => (
-      <tr key={category.id} className="hover:bg-slate-200 even:bg-slate-100">
+      <TableRow key={category.id}>
         <td className="py-3 px-6 border border-slate-400">{category.name}</td>
         <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
-      </tr>
+      </TableRow>
     )
   );
 

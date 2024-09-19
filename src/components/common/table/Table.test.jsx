@@ -10,7 +10,7 @@ describe("Table", () => {
   test("should render component", () => {
     const ids = [1, 2, 3, 4];
     const tableRows = ids.map((id) => (
-      <TableRow key={id} rowKey={id}>
+      <TableRow key={id}>
         <TableData>test1</TableData>
         <TableData>test2</TableData>
         <TableData>test3</TableData>
