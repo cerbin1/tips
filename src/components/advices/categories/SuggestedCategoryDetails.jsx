@@ -7,6 +7,11 @@ import ContainerSection from "../../common/ContainerSection";
 import Loader from "../../common/Loader";
 import RequestError from "../../common/RequestError";
 import SecondaryButton from "../../common/SecondaryButton";
+import {
+  getSuggestedCategoryDetailsUrl,
+  getUserRatedSuggestedCategoryInfoUrl,
+  rateSuggestedCategoryUrl,
+} from "../../../util/endpoints";
 
 export default function SuggestedCategoryDetails() {
   const [details, setDetails] = useState();
@@ -53,15 +58,9 @@ export default function SuggestedCategoryDetails() {
     setRateCategoryUpLoading(false);
   }
 
-  async function sendRateCategoryRequest(rateUp) {
-    const url =
-      import.meta.env.VITE_BACKEND_URL +
-      "categories/suggested/" +
-      id +
-      "/rate?rateType=" +
-      rateUp;
+  async function sendRateCategoryRequest(rateType) {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(rateSuggestedCategoryUrl(id, rateType), {
         method: "POST",
         body: getUserEmail(),
         headers: {
@@ -78,10 +77,8 @@ export default function SuggestedCategoryDetails() {
   useEffect(() => {
     async function fetchSuggestedCategoryDetails() {
       setDetailsError();
-      const url =
-        import.meta.env.VITE_BACKEND_URL + "advices/categories/suggested/" + id;
       try {
-        const response = await fetch(url);
+        const response = await fetch(getSuggestedCategoryDetailsUrl(id));
         if (response.ok) {
           const categoryDetails = await response.json();
           setDetails(categoryDetails);
@@ -99,18 +96,15 @@ export default function SuggestedCategoryDetails() {
 
     async function fetchUserRatedCategory() {
       setUserVotedError();
-      const url =
-        import.meta.env.VITE_BACKEND_URL +
-        "categories/suggested/" +
-        id +
-        "/rated?userEmail=" +
-        getUserEmail();
-      const response = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
+      const response = await fetch(
+        getUserRatedSuggestedCategoryInfoUrl(id, getUserEmail()),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (response.ok) {
         const responseData = await response.json();
         setUserVoted(responseData.rated);

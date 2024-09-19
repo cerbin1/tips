@@ -22,7 +22,6 @@ import static org.springframework.http.ResponseEntity.badRequest;
 import static org.springframework.http.ResponseEntity.unprocessableEntity;
 
 @RestController
-@RequestMapping("/advices")
 public class AdviceController {
     private final AdviceService adviceService;
     private final CaptchaService captchaService;
@@ -34,7 +33,51 @@ public class AdviceController {
         this.authUtil = authUtil;
     }
 
-    @PostMapping
+    @GetMapping("/advices/random")
+    public ResponseEntity<AdviceDetailsDto> getRandomAdvice() {
+        return ResponseEntity.ok(adviceService.getRandomAdvice());
+    }
+
+    @GetMapping("/advices/ranking")
+    public ResponseEntity<List<AdviceDetailsDto>> getTopTenAdvices() {
+        return ResponseEntity.ok(adviceService.getTopTenAdvices());
+    }
+
+    @GetMapping("/advices/{id}")
+    public ResponseEntity<?> getAdviceById(@PathVariable UUID id) {
+        Optional<Advice> maybeAdvice = adviceService.getAdviceById(id);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", id.toString())), NOT_FOUND);
+        }
+        return ResponseEntity.ok(maybeAdvice.get().toAdviceDetailsDto());
+    }
+
+    @PostMapping("/advices/{adviceId}/rate")
+    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail) {
+        Optional<Advice> maybeAdvice = adviceService.getAdviceById(adviceId);
+        if (maybeAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
+        }
+        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId, userEmail);
+        if (updatedAdvice.isEmpty()) {
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
+        } else {
+            return new ResponseEntity<>(updatedAdvice.get().toAdviceDetailsDto(), OK);
+        }
+    }
+
+    @GetMapping("/advices/{adviceId}/rate/check")
+    public ResponseEntity<UserRatingResultResponse> checkUserRatedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
+        Optional<Advice> adviceById = adviceService.getAdviceById(adviceId);
+        if (adviceById.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        Advice advice = adviceById.get();
+        boolean userRatedAdvice = advice.getUserEmailVotes().contains(userEmail);
+        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+    }
+
+    @PostMapping("/advices/suggested")
     public ResponseEntity<?> suggestAdvice(@RequestBody SuggestAdviceRequest request) {
         String name = request.name();
         if (name == null || name.isBlank()) {
@@ -70,66 +113,12 @@ public class AdviceController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/random")
-    public ResponseEntity<AdviceDetailsDto> getRandomAdvice() {
-        return ResponseEntity.ok(adviceService.getRandomAdvice());
-    }
-
-    @GetMapping("/ranking")
-    public ResponseEntity<List<AdviceDetailsDto>> getTopTenAdvices() {
-        return ResponseEntity.ok(adviceService.getTopTenAdvices());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getAdviceById(@PathVariable UUID id) {
-        Optional<Advice> maybeAdvice = adviceService.getAdviceById(id);
-        if (maybeAdvice.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", id.toString())), NOT_FOUND);
-        }
-        return ResponseEntity.ok(maybeAdvice.get().toAdviceDetailsDto());
-    }
-
-    @PostMapping("/{adviceId}/rate")
-    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail) {
-        Optional<Advice> maybeAdvice = adviceService.getAdviceById(adviceId);
-        if (maybeAdvice.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
-        }
-        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId, userEmail);
-        if (updatedAdvice.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
-        } else {
-            return new ResponseEntity<>(updatedAdvice.get().toAdviceDetailsDto(), OK);
-        }
-    }
-
-    @GetMapping("/{adviceId}/rated")
-    public ResponseEntity<UserRatingResultResponse> checkUserRatedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
-        Optional<Advice> adviceById = adviceService.getAdviceById(adviceId);
-        if (adviceById.isEmpty()) {
-            return ResponseEntity.badRequest().build();
-        }
-        Advice advice = adviceById.get();
-        boolean userRatedAdvice = advice.getUserEmailVotes().contains(userEmail);
-        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<UserVotedAdviceDetailsDto>> getUserVotedAdvices(@RequestParam String userEmail) {
-        return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
-    }
-
-    @GetMapping("/user-suggested")
-    public ResponseEntity<List<SuggestedAdvice>> getUserSuggestedAdvices() {
-        return ResponseEntity.ok(adviceService.getUserSuggestedAdvices(authUtil.getLoggedUserId()));
-    }
-
-    @GetMapping("/suggested")
+    @GetMapping("/advices/suggested")
     public ResponseEntity<List<SuggestedAdvice>> getSuggestedAdvices() {
         return ResponseEntity.ok(adviceService.getSuggestedAdvices());
     }
 
-    @GetMapping("/suggested/{id}")
+    @GetMapping("/advices/suggested/{id}")
     public ResponseEntity<?> getSuggestedAdviceById(@PathVariable UUID id) {
         Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(id);
         if (maybeAdvice.isEmpty()) {
@@ -138,7 +127,7 @@ public class AdviceController {
         return ResponseEntity.ok(maybeAdvice.get().toSuggestedAdviceDetailsDto());
     }
 
-    @PostMapping("/suggested/{adviceId}/rate")
+    @PostMapping("/advices/suggested/{adviceId}/rate")
     public ResponseEntity<?> rateSuggestedAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail, @RequestParam boolean rateType) {
         Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(adviceId);
         if (maybeAdvice.isEmpty()) {
@@ -152,7 +141,7 @@ public class AdviceController {
         }
     }
 
-    @GetMapping("/suggested/{adviceId}/rated")
+    @GetMapping("/advices/suggested/{adviceId}/rate/check")
     public ResponseEntity<UserRatingResultResponse> checkUserRatedSuggestedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
         Optional<SuggestedAdvice> adviceById = adviceService.getSuggestedAdviceById(adviceId);
         if (adviceById.isEmpty()) {
@@ -163,7 +152,17 @@ public class AdviceController {
         return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
     }
 
-    @GetMapping("/suggested-voted")
+    @GetMapping("/users/advices/rated")
+    public ResponseEntity<List<UserVotedAdviceDetailsDto>> getUserVotedAdvices(@RequestParam String userEmail) {
+        return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
+    }
+
+    @GetMapping("/users/advices/suggested")
+    public ResponseEntity<List<SuggestedAdvice>> getUserSuggestedAdvices() {
+        return ResponseEntity.ok(adviceService.getUserSuggestedAdvices(authUtil.getLoggedUserId()));
+    }
+
+    @GetMapping("/users/advices/suggested/rated")
     public ResponseEntity<List<SuggestedAdviceDetailsDto>> getUserVotedSuggestedAdvices(@RequestParam String userEmail) {
         return ResponseEntity.ok(adviceService.getUserVotedSuggestedAdvices(userEmail));
     }

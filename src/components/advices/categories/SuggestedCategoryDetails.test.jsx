@@ -306,10 +306,10 @@ function suggestedCategoryDetailsResponse() {
 function assertFetchCategoryDetailsRequestsExecuted() {
   expect(globalThis.fetch).toBeCalledTimes(2);
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/advices/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
+    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
   );
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rated?userEmail=test@email",
+    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate/check?userEmail=test@email",
     {
       headers: {
         Authorization: "Bearer token",

@@ -4,6 +4,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
+import { getRandomAdviceUrl } from "../../util/endpoints";
 
 export default function RandomAdvice() {
   const [randomAdvice, setRandomAdvice] = useState();
@@ -13,9 +14,8 @@ export default function RandomAdvice() {
   async function fetchRandomAdvice() {
     setLoading(true);
     setError();
-    const url = import.meta.env.VITE_BACKEND_URL + "advices/random";
     try {
-      const response = await fetch(url);
+      const response = await fetch(getRandomAdviceUrl());
       if (response.ok) {
         const advice = await response.json();
         setRandomAdvice(advice);

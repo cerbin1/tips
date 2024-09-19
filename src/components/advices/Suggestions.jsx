@@ -9,6 +9,10 @@ import RequestError from "../common/RequestError";
 import TableRow from "../common/table/TableRow";
 import TableData from "../common/table/TableData";
 import TableDataLink from "../common/table/TableDataLink";
+import {
+  getSuggestedAdvicesUrl,
+  getSuggestedCategoriesUrl,
+} from "../../util/endpoints";
 
 export default function Suggestions() {
   const [advicesView, setAdvicesView] = useState(true);
@@ -22,9 +26,7 @@ export default function Suggestions() {
       try {
         setError();
         setLoading(true);
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/suggested"
-        );
+        const response = await fetch(getSuggestedAdvicesUrl());
         if (response.ok) {
           const responseData = await response.json();
           setSuggestedAdvices(responseData);
@@ -41,9 +43,7 @@ export default function Suggestions() {
       try {
         setError();
         setLoading(true);
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/categories/suggested"
-        );
+        const response = await fetch(getSuggestedCategoriesUrl());
         if (response.ok) {
           const responseData = await response.json();
           setSuggestedCategories(responseData);

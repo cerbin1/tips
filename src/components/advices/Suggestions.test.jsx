@@ -203,9 +203,7 @@ describe("Suggestions", () => {
       "/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
     );
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/categories/suggested"
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested");
   });
 
   test("should display info when there are no suggested categories", async () => {
@@ -229,9 +227,7 @@ describe("Suggestions", () => {
     expect(screen.getByText("Propozycje kategorii")).toBeInTheDocument();
     expect(screen.getByText("Brak propozycji kategorii.")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/categories/suggested"
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested");
   });
 
   test("should display info when suggested categories are loading", async () => {
@@ -268,9 +264,7 @@ describe("Suggestions", () => {
     expect(cells[0]).toHaveTextContent("name 1");
     expect(cells[1]).toHaveTextContent("3");
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/categories/suggested"
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested");
   });
 
   test("should display error when fetching suggested categories response is not ok", async () => {
@@ -287,8 +281,6 @@ describe("Suggestions", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/categories/suggested"
-    );
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested");
   });
 });

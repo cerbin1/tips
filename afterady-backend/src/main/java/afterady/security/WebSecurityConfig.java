@@ -72,11 +72,11 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         auth
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/**").permitAll()
-                                .requestMatchers("/advices/random").permitAll()
-                                .requestMatchers("/advices/ranking").permitAll()
                                 .requestMatchers("/advices/**").permitAll()
-                                .requestMatchers("/categories-statistics").permitAll()
                                 .requestMatchers("/categories/**").permitAll()
+                                .requestMatchers("/users/advices/**").permitAll()
+                                .requestMatchers("/users/categories/**").permitAll()
+
 
                                 .anyRequest().authenticated()
                 );

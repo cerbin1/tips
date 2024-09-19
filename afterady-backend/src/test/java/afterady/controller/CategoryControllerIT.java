@@ -109,7 +109,7 @@ class CategoryControllerIT {
         );
 
         // act & assert
-        mvc.perform(get("/categories-statistics"))
+        mvc.perform(get("/categories/statistics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
@@ -130,7 +130,7 @@ class CategoryControllerIT {
         when(categoriesStatisticsRepository.findAll()).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/categories-statistics"))
+        mvc.perform(get("/categories/statistics"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -138,7 +138,7 @@ class CategoryControllerIT {
     @Test
     public void shouldGetCategories() throws Exception {
         // act & assert
-        mvc.perform(get("/advices/categories"))
+        mvc.perform(get("/categories"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath(("$"), hasSize(5)))
                 .andExpect(content().json("[{\"name\":\"PERSONAL_DEVELOPMENT\", \"displayName\":\"Rozwój osobisty\"},{\"name\":\"HEALTH\", \"displayName\":\"Zdrowie\"}, {\"name\":\"HOME\", \"displayName\":\"Dom\"}, {\"name\":\"FINANCE\", \"displayName\":\"Finanse\"}, {\"name\":\"TECHNOLOGY\", \"displayName\":\"Technologia\"}]"));
@@ -286,7 +286,7 @@ class CategoryControllerIT {
         when(suggestedCategoryRepository.findByCreatorId(1L)).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/categories/user-suggested"))
+        mvc.perform(get("/users/categories/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -301,7 +301,7 @@ class CategoryControllerIT {
                         new SuggestedCategory(UUID.randomUUID(), "name 2", 1L, emptySet(), emptySet())));
 
         // act & assert
-        mvc.perform(get("/categories/user-suggested"))
+        mvc.perform(get("/users/categories/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id", is(UUID_1.toString())))
@@ -316,7 +316,7 @@ class CategoryControllerIT {
         when(categoryService.getCategoriesVotedByUser(TEST_EMAIL)).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/categories/suggested-voted?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/categories/suggested/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -329,7 +329,7 @@ class CategoryControllerIT {
                 new SuggestedCategoryDetailsDto(UUID_2, "name 2", -5)));
 
         // act & assert
-        mvc.perform(get("/categories/suggested-voted?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/categories/suggested/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"rating\":-5}]"));
@@ -341,7 +341,7 @@ class CategoryControllerIT {
         when(suggestedCategoryRepository.findAll()).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/advices/categories/suggested"))
+        mvc.perform(get("/categories/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -355,7 +355,7 @@ class CategoryControllerIT {
                 new SuggestedCategory(UUID_1, "name", 1L, emptySet(), emptySet())));
 
         // act & assert
-        mvc.perform(get("/advices/categories/suggested"))
+        mvc.perform(get("/categories/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0},{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"creatorId\":1,\"userEmailVotesUp\":[],\"userEmailVotesDown\":[],\"rating\":0}]"));
@@ -378,7 +378,7 @@ class CategoryControllerIT {
         when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(2), generateTestVotes(1))));
 
         // act & assert
-        mvc.perform(get("/advices/categories/suggested/" + UUID_1))
+        mvc.perform(get("/categories/suggested/" + UUID_1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(UUID_1.toString())))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -393,7 +393,7 @@ class CategoryControllerIT {
         when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/advices/categories/suggested/" + UUID_1))
+        mvc.perform(get("/categories/suggested/" + UUID_1))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Suggested category with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
         verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
@@ -457,7 +457,7 @@ class CategoryControllerIT {
         when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isBadRequest());
         verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
         verifyNoMoreInteractions(categoryService);
@@ -469,7 +469,7 @@ class CategoryControllerIT {
         when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(1), emptySet())));
 
         // act & assert
-        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(false)));
         verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);
@@ -482,7 +482,7 @@ class CategoryControllerIT {
         when(categoryService.getSuggestedCategoryDetails(UUID_1)).thenReturn(Optional.of(new SuggestedCategory(UUID_1, "name", 1L, Set.of(TEST_EMAIL), emptySet())));
 
         // act & assert
-        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/categories/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(true)));
         verify(categoryService, times(1)).getSuggestedCategoryDetails(UUID_1);

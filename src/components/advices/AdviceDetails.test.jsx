@@ -233,7 +233,7 @@ function assertFetchAdviceDetailsRequestsExecuted() {
     "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
   );
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rated?userEmail=test@email",
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate/check?userEmail=test@email",
     {
       headers: {
         Authorization: "Bearer token",

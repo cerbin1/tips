@@ -56,7 +56,7 @@ describe("CategoriesStatistics", () => {
       "/categories/cab77578-7452-4a6d-a52f-f95126bd2dd1"
     );
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories-statistics");
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/statistics");
   });
 
   test("should display info when categories are loading", async () => {
@@ -88,7 +88,7 @@ describe("CategoriesStatistics", () => {
     });
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories-statistics");
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/statistics");
   });
 
   test("should display error when response is not ok", async () => {
@@ -100,6 +100,6 @@ describe("CategoriesStatistics", () => {
     expect(error).toBeInTheDocument();
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
-    expect(globalThis.fetch).toBeCalledWith("backend/categories-statistics");
+    expect(globalThis.fetch).toBeCalledWith("backend/categories/statistics");
   });
 });

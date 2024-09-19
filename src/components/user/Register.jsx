@@ -6,6 +6,7 @@ import FormInput from "../common/form/FormInput";
 import SecondaryButton from "../common/SecondaryButton";
 import RequestError from "../common/RequestError";
 import ValidationError from "../common/ValidationError";
+import { registerUrl, resendActivationLinkUrl } from "../../util/endpoints";
 
 export default function Register() {
   const [userValidationError, setUserValidationError] = useState(false);
@@ -45,10 +46,10 @@ export default function Register() {
         setUserCreateSubmitting(false);
         return;
       }
-      const url = import.meta.env.VITE_BACKEND_URL + "auth/register";
+
       const userData = { email, username, password, passwordRepeat };
       try {
-        const response = await fetch(url, {
+        const response = await fetch(registerUrl(), {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -91,8 +92,7 @@ export default function Register() {
     setResendLinkSubmitting(true);
     setResendLinkError();
     try {
-      const url = import.meta.env.VITE_BACKEND_URL + "auth/resend/";
-      const response = await fetch(url + activationLink, {
+      const response = await fetch(resendActivationLinkUrl(activationLink), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

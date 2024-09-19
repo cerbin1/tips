@@ -5,6 +5,7 @@ import Button from "../common/Button";
 import { Link } from "react-router-dom";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
+import { activateUserUrl } from "../../util/endpoints";
 
 export default function ActivateUser() {
   const [loading, setLoading] = useState(true);
@@ -15,9 +16,7 @@ export default function ActivateUser() {
   useEffect(() => {
     async function sendRequest() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "auth/activate/" + token
-        );
+        const response = await fetch(activateUserUrl(token));
 
         if (response.ok) {
           setLoading(false);

@@ -7,6 +7,11 @@ import ContainerSection from "../common/ContainerSection";
 import Loader from "../common/Loader";
 import RequestError from "../common/RequestError";
 import SecondaryButton from "../common/SecondaryButton";
+import {
+  getSuggestedAdviceDetailsUrl,
+  getUserRatedSuggestedAdviceInfoUrl,
+  rateSuggestedAdviceUrl,
+} from "../../util/endpoints";
 
 export default function SuggestedAdviceDetails() {
   const [suggestedAdviceDetails, setSuggestedAdviceDetails] = useState();
@@ -55,15 +60,9 @@ export default function SuggestedAdviceDetails() {
     setRateAdviceDownLoading(false);
   }
 
-  async function sendRateAdviceRequest(rateUp) {
-    const url =
-      import.meta.env.VITE_BACKEND_URL +
-      "advices/suggested/" +
-      id +
-      "/rate?rateType=" +
-      rateUp;
+  async function sendRateAdviceRequest(rateType) {
     try {
-      const response = await fetch(url, {
+      const response = await fetch(rateSuggestedAdviceUrl(id, rateType), {
         method: "POST",
         body: getUserEmail(),
         headers: {
@@ -80,9 +79,8 @@ export default function SuggestedAdviceDetails() {
   useEffect(() => {
     async function fetchSuggestedAdviceDetails() {
       setSuggestedAdviceDetailsError();
-      const url = import.meta.env.VITE_BACKEND_URL + "advices/suggested/" + id;
       try {
-        const response = await fetch(url);
+        const response = await fetch(getSuggestedAdviceDetailsUrl(id));
         if (response.ok) {
           const advice = await response.json();
           setSuggestedAdviceDetails(advice);
@@ -100,18 +98,15 @@ export default function SuggestedAdviceDetails() {
 
     async function fetchUserRatedAdvice() {
       setUserVotedError();
-      const url =
-        import.meta.env.VITE_BACKEND_URL +
-        "advices/suggested/" +
-        id +
-        "/rated?userEmail=" +
-        getUserEmail();
-      const response = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
+      const response = await fetch(
+        getUserRatedSuggestedAdviceInfoUrl(id, getUserEmail()),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (response.ok) {
         const responseData = await response.json();
         setUserVoted(responseData.rated);

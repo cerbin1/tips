@@ -4,6 +4,7 @@ import Button from "../../common/Button";
 import Captcha from "../../common/form/Captcha";
 import FormInput from "../../common/form/FormInput";
 import RequestError from "../../common/RequestError";
+import { createSuggestedCategoryUrl } from "../../../util/endpoints";
 
 export default function SuggestCategory() {
   const [captchaToken, setCaptchaToken] = useState();
@@ -36,17 +37,14 @@ export default function SuggestCategory() {
     setSubmitting(true);
     async function sendRequest() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "categories",
-          {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer " + token,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch(createSuggestedCategoryUrl(), {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
 
         if (response.ok) {
           setSubmitFormSuccess(true);

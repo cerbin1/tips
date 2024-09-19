@@ -6,6 +6,11 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
+import {
+  getAdviceDetailsUrl,
+  getUserRatedAdviceInfoUrl,
+  rateAdviceUrl,
+} from "../../util/endpoints";
 
 export default function AdviceDetails() {
   const [adviceDetails, setAdviceDetails] = useState();
@@ -22,9 +27,9 @@ export default function AdviceDetails() {
   useEffect(() => {
     async function fetchAdvice() {
       setAdviceDetailsError();
-      const url = import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
+
       try {
-        const response = await fetch(url);
+        const response = await fetch(getAdviceDetailsUrl(adviceId));
         if (response.ok) {
           const advice = await response.json();
           setAdviceDetails(advice);
@@ -42,18 +47,15 @@ export default function AdviceDetails() {
 
     async function fetchUserRatedAdvice() {
       setUserVotedError();
-      const url =
-        import.meta.env.VITE_BACKEND_URL +
-        "advices/" +
-        adviceId +
-        "/rated?userEmail=" +
-        getUserEmail();
-      const response = await fetch(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
+      const response = await fetch(
+        getUserRatedAdviceInfoUrl(adviceId, getUserEmail()),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       if (response.ok) {
         const responseData = await response.json();
         setUserVoted(responseData.rated);
@@ -74,10 +76,8 @@ export default function AdviceDetails() {
     setRateAdviceError();
     setRateAdviceLoading(true);
     async function sendRequest() {
-      const url =
-        import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId + "/rate";
       try {
-        const response = await fetch(url, {
+        const response = await fetch(rateAdviceUrl(adviceId), {
           method: "POST",
           body: getUserEmail(),
           headers: {

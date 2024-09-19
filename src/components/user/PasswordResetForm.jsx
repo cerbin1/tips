@@ -3,6 +3,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import RequestError from "../common/RequestError";
+import { resetPasswordUrl } from "../../util/endpoints";
 
 export default function PasswordResetForm() {
   const [email, setEmail] = useState();
@@ -19,12 +20,9 @@ export default function PasswordResetForm() {
     setSubmitting(true);
     async function sendRequest() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL +
-            "auth/account/password-reset?email=" +
-            email,
-          { method: "PUT" }
-        );
+        const response = await fetch(resetPasswordUrl(email), {
+          method: "PUT",
+        });
         if (response.ok) {
           setSubmitFormSuccess(true);
         } else {

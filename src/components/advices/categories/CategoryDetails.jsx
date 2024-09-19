@@ -9,6 +9,7 @@ import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
 import RequestError from "../../common/RequestError";
 import Loader from "../../common/Loader";
+import { getCategoryDetailsUrl } from "../../../util/endpoints";
 
 export default function CategoryDetails() {
   const [categoryDetails, setCategoryDetails] = useState();
@@ -40,9 +41,7 @@ export default function CategoryDetails() {
       setLoading(true);
       setError();
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "categories/" + categoryId
-        );
+        const response = await fetch(getCategoryDetailsUrl(categoryId));
         if (response.ok) {
           const categoryDetails = await response.json();
           setCategoryDetails(categoryDetails);

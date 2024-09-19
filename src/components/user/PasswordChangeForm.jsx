@@ -4,6 +4,7 @@ import Button from "../common/Button";
 import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import RequestError from "../common/RequestError";
+import { changePasswordUrl } from "../../util/endpoints";
 
 export default function PasswordChangeForm() {
   const navigate = useNavigate();
@@ -24,13 +25,8 @@ export default function PasswordChangeForm() {
     }
 
     async function sendRequest() {
-      const url =
-        import.meta.env.VITE_BACKEND_URL +
-        "auth/account/password-change/" +
-        token;
-
       try {
-        const response = await fetch(url, {
+        const response = await fetch(changePasswordUrl(token), {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: password,

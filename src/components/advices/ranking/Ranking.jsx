@@ -9,6 +9,7 @@ import Loader from "../../common/Loader";
 import TableRow from "../../common/table/TableRow";
 import TableDataLink from "../../common/table/TableDataLink";
 import TableData from "../../common/table/TableData";
+import { getAdvicesRankingUrl } from "../../../util/endpoints";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -20,9 +21,7 @@ export default function rating() {
       try {
         setError();
         setLoading(true);
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/ranking"
-        );
+        const response = await fetch(getAdvicesRankingUrl());
         if (response.ok) {
           const responseData = await response.json();
           setTopAdvices(responseData);

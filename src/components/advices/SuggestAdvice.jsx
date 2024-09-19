@@ -5,6 +5,10 @@ import Captcha from "../common/form/Captcha";
 import FormInput from "../common/form/FormInput";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
+import {
+  createSuggestedAdviceUrl,
+  getAvailableCategoriesUrl,
+} from "../../util/endpoints";
 
 export default function SuggestAdvice() {
   const [categories, setCategories] = useState();
@@ -20,15 +24,11 @@ export default function SuggestAdvice() {
     async function sendRequest() {
       setCategoriesLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/categories",
-          {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await fetch(getAvailableCategoriesUrl(), {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
         if (response.ok) {
           const data = await response.json();
           setCategories(data);
@@ -75,17 +75,14 @@ export default function SuggestAdvice() {
     setSubmitting(true);
     async function sendRequest() {
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices",
-          {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer " + token,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch(createSuggestedAdviceUrl(), {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + token,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
         if (response.ok) {
           setSubmitFormSuccess(true);
         } else {

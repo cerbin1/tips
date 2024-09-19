@@ -10,6 +10,13 @@ import Loader from "../common/Loader";
 import TableRow from "../common/table/TableRow";
 import TableData from "../common/table/TableData";
 import TableDataLink from "../common/table/TableDataLink";
+import {
+  getUserRatedAdvicesUrl,
+  getUserRatedSuggestedAdvicesUrl,
+  getUserRatedSuggestedCategoriesUrl,
+  getUserSuggestedAdvicesUrl,
+  getUserSuggestedCategoriesUrl,
+} from "../../util/endpoints";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
@@ -38,11 +45,7 @@ export default function Profile() {
     async function fetchUserVotedAdvices() {
       setVotedAdvicesLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL +
-            "advices?userEmail=" +
-            getUserEmail()
-        );
+        const response = await fetch(getUserRatedAdvicesUrl(getUserEmail()));
         if (response.ok) {
           const responseData = await response.json();
           setVotedAdvices(responseData);
@@ -62,9 +65,7 @@ export default function Profile() {
       setVotedSuggestedAdvicesLoading(true);
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL +
-            "advices/suggested-voted?userEmail=" +
-            getUserEmail()
+          getUserRatedSuggestedAdvicesUrl(getUserEmail())
         );
         if (response.ok) {
           const responseData = await response.json();
@@ -86,15 +87,12 @@ export default function Profile() {
     async function fetchUserSuggestedAdvices() {
       setSuggestedAdvicesLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "advices/user-suggested",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await fetch(getUserSuggestedAdvicesUrl(), {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
         if (response.ok) {
           const responseData = await response.json();
           setSuggestedAdvices(responseData);
@@ -113,15 +111,12 @@ export default function Profile() {
     async function fetchUserSuggestedCategories() {
       setSuggestedCategoriesLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "categories/user-suggested",
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: "Bearer " + token,
-            },
-          }
-        );
+        const response = await fetch(getUserSuggestedCategoriesUrl(), {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
         if (response.ok) {
           const responseData = await response.json();
           setSuggestedCategories(responseData);
@@ -143,9 +138,7 @@ export default function Profile() {
       setVotedSuggestedCategoriesLoading(true);
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL +
-            "categories/suggested-voted?userEmail=" +
-            getUserEmail()
+          getUserRatedSuggestedCategoriesUrl(getUserEmail())
         );
         if (response.ok) {
           const responseData = await response.json();

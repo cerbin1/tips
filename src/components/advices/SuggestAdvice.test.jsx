@@ -9,7 +9,7 @@ beforeAll(() => {
 beforeEach(() => {
   localStorage.setItem("token", "token");
   globalThis.fetch = vi.fn((url) => {
-    if (url === "backend/advices/categories") {
+    if (url === "backend/categories") {
       return Promise.resolve({
         ok: true,
         status: 200,
@@ -21,7 +21,7 @@ beforeEach(() => {
           ]),
       });
     }
-    if (url === "backend/advices") {
+    if (url === "backend/advices/suggested") {
       return Promise.resolve({
         ok: true,
         status: 200,
@@ -348,14 +348,13 @@ async function fillFormWithDefaultValues() {
 }
 
 function assertFetchCategoriesRequestExecuted() {
-  expect(globalThis.fetch).nthCalledWith(1, "backend/advices/categories", {
-    method: "GET",
+  expect(globalThis.fetch).nthCalledWith(1, "backend/categories", {
     headers: { Authorization: "Bearer token" },
   });
 }
 
 function assertSubmitFormRequestIsExecuted() {
-  expect(globalThis.fetch).toBeCalledWith("backend/advices", {
+  expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested", {
     method: "POST",
     headers: {
       Authorization: "Bearer token",

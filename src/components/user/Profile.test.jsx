@@ -117,19 +117,19 @@ describe("Profile", () => {
     );
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices?userEmail=test@test"
+      "backend/users/advices/rated?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/suggested-voted?userEmail=test@test"
+      "backend/users/advices/suggested/rated?userEmail=test@test"
     );
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
       },
     });
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/user-suggested",
+      "backend/users/categories/suggested",
       {
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +138,7 @@ describe("Profile", () => {
       }
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/suggested-voted?userEmail=test@test"
+      "backend/users/categories/suggested/rated?userEmail=test@test"
     );
   });
 
@@ -157,7 +157,7 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices?userEmail=test@test"
+      "backend/users/advices/rated?userEmail=test@test"
     );
   });
 
@@ -175,7 +175,7 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/suggested-voted?userEmail=test@test"
+      "backend/users/advices/suggested/rated?userEmail=test@test"
     );
   });
 
@@ -196,7 +196,7 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/suggested-voted?userEmail=test@test"
+      "backend/users/advices/suggested/rated?userEmail=test@test"
     );
   });
 
@@ -212,7 +212,7 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices?userEmail=test@test"
+      "backend/users/advices/rated?userEmail=test@test"
     );
   });
 
@@ -297,19 +297,19 @@ describe("Profile", () => {
     ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices?userEmail=test@test"
+      "backend/users/advices/rated?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/advices/suggested-voted?userEmail=test@test"
+      "backend/users/advices/suggested/rated?userEmail=test@test"
     );
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
       },
     });
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/user-suggested",
+      "backend/users/categories/suggested",
       {
         headers: {
           "Content-Type": "application/json",
@@ -318,7 +318,7 @@ describe("Profile", () => {
       }
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/suggested-voted?userEmail=test@test"
+      "backend/users/categories/suggested/rated?userEmail=test@test"
     );
   });
 
@@ -344,7 +344,7 @@ describe("Profile", () => {
     );
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -361,7 +361,7 @@ describe("Profile", () => {
 
     const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
     expect(error).toBeInTheDocument();
-    expect(globalThis.fetch).toBeCalledWith("backend/advices/user-suggested", {
+    expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
         Authorization: "Bearer token",
@@ -395,7 +395,7 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/user-suggested",
+      "backend/users/categories/suggested",
       {
         headers: {
           "Content-Type": "application/json",
@@ -418,7 +418,7 @@ describe("Profile", () => {
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/user-suggested",
+      "backend/users/categories/suggested",
       {
         headers: {
           "Content-Type": "application/json",
@@ -445,7 +445,7 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/suggested-voted?userEmail=test@test"
+      "backend/users/categories/suggested/rated?userEmail=test@test"
     );
   });
 
@@ -463,7 +463,7 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/categories/suggested-voted?userEmail=test@test"
+      "backend/users/categories/suggested/rated?userEmail=test@test"
     );
   });
 });

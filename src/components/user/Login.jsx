@@ -6,6 +6,7 @@ import ContainerSection from "../common/ContainerSection";
 import FormInput from "../common/form/FormInput";
 import SecondaryLinkButton from "../common/SecondaryLinkButton";
 import RequestError from "../common/RequestError";
+import { loginUrl } from "../../util/endpoints";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -22,19 +23,16 @@ export default function Login() {
       const formData = new FormData(event.target);
       setSubmitting(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "auth/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: formData.get("email"),
-              password: formData.get("password"),
-            }),
-          }
-        );
+        const response = await fetch(loginUrl(), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.get("email"),
+            password: formData.get("password"),
+          }),
+        });
         if (response.ok) {
           const responseData = await response.json();
           const token = responseData.jwt;

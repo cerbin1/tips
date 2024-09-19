@@ -8,6 +8,7 @@ import TableHeader from "../../common/table/TableHeader";
 import TableRow from "../../common/table/TableRow";
 import RequestError from "../../common/RequestError";
 import Loader from "../../common/Loader";
+import { getCategoriesUrl } from "../../../util/endpoints";
 
 export default function CategoriesStatistics() {
   const [categories, setCategories] = useState([]);
@@ -19,9 +20,7 @@ export default function CategoriesStatistics() {
       setError();
       setLoading(true);
       try {
-        const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "categories-statistics"
-        );
+        const response = await fetch(getCategoriesUrl());
         if (response.ok) {
           const responseData = await response.json();
           setCategories(responseData);

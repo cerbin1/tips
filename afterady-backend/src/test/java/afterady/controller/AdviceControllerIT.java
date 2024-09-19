@@ -107,7 +107,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsNull() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest(null, "HOME", "content", "captchaToken")))
@@ -119,7 +119,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamNameIsEmpty() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("", "HOME", "content", "captchaToken")))
@@ -131,7 +131,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn422WhenSuggestAdviceRequestParamNameIsTooLong() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content", "captchaToken")))
@@ -143,7 +143,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsNull() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", null, "content", "captchaToken")))
@@ -155,7 +155,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsEmpty() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "", "content", "captchaToken")))
@@ -167,7 +167,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamCategoryIsNotValid() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "category", "content", "captchaToken")))
@@ -179,7 +179,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamContentIsNull() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", null, "captchaToken")))
@@ -191,7 +191,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamContentIsEmpty() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", "", "captchaToken")))
@@ -203,7 +203,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsNull() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", "content", null)))
@@ -215,7 +215,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn400WhenSuggestAdviceRequestParamCaptchaTokenIsEmpty() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", "content", "")))
@@ -230,7 +230,7 @@ class AdviceControllerIT {
         when(captchaService.isCaptchaTokenValid("not-valid-captcha-token")).thenReturn(false);
 
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", "content", "not-valid-captcha-token")))
@@ -242,7 +242,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturn422WhenSuggestAdviceRequestParamContentIsTooLong() throws Exception {
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001), "captchaToken")))
@@ -258,7 +258,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(1L);
 
         // act & assert
-        mvc.perform(post("/advices")
+        mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
                                         new SuggestAdviceRequest("name", "HOME", "content", "captchaToken")))
@@ -383,7 +383,7 @@ class AdviceControllerIT {
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isBadRequest());
     }
 
@@ -393,7 +393,7 @@ class AdviceControllerIT {
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(false)));
     }
@@ -404,7 +404,7 @@ class AdviceControllerIT {
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", Set.of(TEST_EMAIL))));
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(true)));
     }
@@ -415,7 +415,7 @@ class AdviceControllerIT {
         when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/advices?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
@@ -428,7 +428,7 @@ class AdviceControllerIT {
                 new UserVotedAdviceDetailsDto(UUID_2, "name 2", "HEALTH", "Zdrowie", "content")));
 
         // act & assert
-        mvc.perform(get("/advices?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryName\":\"HOME\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\"},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryName\":\"HEALTH\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\"}]"));
@@ -444,7 +444,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
-        mvc.perform(get("/advices/user-suggested"))
+        mvc.perform(get("/users/advices/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
@@ -458,7 +458,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
-        mvc.perform(get("/advices/user-suggested"))
+        mvc.perform(get("/users/advices/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)))
                 .andExpect(content().json("[]"));
@@ -486,7 +486,7 @@ class AdviceControllerIT {
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
-        mvc.perform(get("/advices/user-suggested"))
+        mvc.perform(get("/users/advices/suggested"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
@@ -574,7 +574,7 @@ class AdviceControllerIT {
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isBadRequest());
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verifyNoMoreInteractions(adviceService);
@@ -586,7 +586,7 @@ class AdviceControllerIT {
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(false)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
@@ -599,7 +599,7 @@ class AdviceControllerIT {
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, Set.of(TEST_EMAIL), emptySet())));
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.rated", is(true)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
@@ -625,7 +625,7 @@ class AdviceControllerIT {
                 new SuggestedAdviceDetailsDto(UUID_2, "name 2", "Zdrowie", "content", -5)));
 
         // act & assert
-        mvc.perform(get("/advices/suggested-voted?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/suggested/rated?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\",\"rating\":-5}]"));
