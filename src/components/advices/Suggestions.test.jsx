@@ -217,7 +217,6 @@ describe("Suggestions", () => {
       })
     );
 
-    // screen.getByText("Przejdź do kategorii").click();
     act(() => screen.getByText("Przejdź do kategorii").click());
     waitFor(() => {
       expect(screen.getByRole("status")).toBeInTheDocument();
