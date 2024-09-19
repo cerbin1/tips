@@ -7,6 +7,8 @@ import TableHeader from "../../common/table/TableHeader";
 import RequestError from "../../common/RequestError";
 import Loader from "../../common/Loader";
 import TableRow from "../../common/table/TableRow";
+import TableDataLink from "../../common/table/TableDataLink";
+import TableData from "../../common/table/TableData";
 
 export default function rating() {
   const [topAdvices, setTopAdvices] = useState([]);
@@ -39,19 +41,12 @@ export default function rating() {
   const tableHeaders = ["Nazwa", "Kategoria", "Ocena", "Szczegóły"];
   const tableRows = topAdvices.map((advice) => (
     <TableRow key={advice.name}>
-      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        {advice.categoryDisplayName}
-      </td>
-      <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        <Link
-          className="text-blue-to-dark text-lg"
-          to={"/advices/" + advice.id}
-        >
-          Wyświetl szczegóły
-        </Link>
-      </td>
+      <TableData>{advice.name}</TableData>
+      <TableData>{advice.categoryDisplayName}</TableData>
+      <TableData>{advice.rating}</TableData>
+      <TableDataLink href={"/advices/" + advice.id}>
+        Wyświetl szczegóły
+      </TableDataLink>
     </TableRow>
   ));
 

@@ -7,6 +7,8 @@ import { Link } from "react-router-dom";
 import Loader from "../common/Loader";
 import RequestError from "../common/RequestError";
 import TableRow from "../common/table/TableRow";
+import TableData from "../common/table/TableData";
+import TableDataLink from "../common/table/TableDataLink";
 
 export default function Suggestions() {
   const [advicesView, setAdvicesView] = useState(true);
@@ -73,35 +75,23 @@ export default function Suggestions() {
   ];
   const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
     <TableRow key={advice.id}>
-      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        {advice.category.displayName}
-      </td>
-      <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        <Link
-          className="text-blue-to-dark text-lg"
-          to={"/advices/suggested/" + advice.id}
-        >
-          Wyświetl szczegóły
-        </Link>
-      </td>
+      <TableData>{advice.name}</TableData>
+      <TableData>{advice.category.displayName}</TableData>
+      <TableData>{advice.rating}</TableData>
+      <TableDataLink href={"/advices/suggested/" + advice.id}>
+        Wyświetl szczegóły
+      </TableDataLink>
     </TableRow>
   ));
 
   const suggestedCategoriesTableHeaders = ["Nazwa", "Ocena", "Szczegóły"];
   const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
     <TableRow key={category.name}>
-      <td className="py-3 px-6 border border-slate-400">{category.name}</td>
-      <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        <Link
-          className="text-blue-to-dark text-lg"
-          to={"/categories/suggested/" + category.id}
-        >
-          Wyświetl szczegóły
-        </Link>
-      </td>
+      <TableData>{category.name}</TableData>
+      <TableData>{category.rating}</TableData>
+      <TableDataLink href={"/categories/suggested/" + category.id}>
+        Wyświetl szczegóły
+      </TableDataLink>
     </TableRow>
   ));
 

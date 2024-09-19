@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../store/auth-context";
 import { getUserEmail } from "../../util/auth";
 import ContainerSection from "../common/ContainerSection";
@@ -9,6 +8,8 @@ import TableHeader from "../common/table/TableHeader";
 import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
 import TableRow from "../common/table/TableRow";
+import TableData from "../common/table/TableData";
+import TableDataLink from "../common/table/TableDataLink";
 
 export default function Profile() {
   const [votedAdvices, setVotedAdvices] = useState([]);
@@ -165,18 +166,11 @@ export default function Profile() {
   const votedAdvicesTableHeaders = ["Nazwa", "Kategoria", "Szczegóły"];
   const votedAdvicesTableRows = votedAdvices.map((advice) => (
     <TableRow key={advice.name}>
-      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        {advice.categoryDisplayName}
-      </td>
-      <td className="py-3 px-6 border border-slate-400">
-        <Link
-          className="text-blue-to-dark text-lg"
-          to={"/advices/" + advice.id}
-        >
-          Wyświetl szczegóły
-        </Link>
-      </td>
+      <TableData>{advice.name}</TableData>
+      <TableData>{advice.categoryDisplayName}</TableData>
+      <TableDataLink href={"/advices/" + advice.id}>
+        Wyświetl szczegóły
+      </TableDataLink>
     </TableRow>
   ));
 
@@ -188,36 +182,27 @@ export default function Profile() {
   ];
   const votedSuggestedAdvicesTableRows = votedSuggestedAdvices.map((advice) => (
     <TableRow key={advice.name}>
-      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        {advice.categoryDisplayName}
-      </td>
-      <td className="py-3 px-6 border border-slate-400">{advice.rating}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        <Link
-          className="text-blue-to-dark text-lg"
-          to={"/advices/suggested/" + advice.id}
-        >
-          Wyświetl szczegóły
-        </Link>
-      </td>
+      <TableData>{advice.name}</TableData>
+      <TableData>{advice.categoryDisplayName}</TableData>
+      <TableData>{advice.rating}</TableData>
+      <TableDataLink href={"/advices/suggested/" + advice.id}>
+        Wyświetl szczegóły
+      </TableDataLink>
     </TableRow>
   ));
 
   const suggestedAdvicesTableHeaders = ["Nazwa", "Kategoria"];
   const suggestedAdvicesTableRows = suggestedAdvices.map((advice) => (
     <TableRow key={advice.id}>
-      <td className="py-3 px-6 border border-slate-400">{advice.name}</td>
-      <td className="py-3 px-6 border border-slate-400">
-        {advice.category.displayName}
-      </td>
+      <TableData>{advice.name}</TableData>
+      <TableData>{advice.category.displayName}</TableData>
     </TableRow>
   ));
 
   const suggestedCategoriesTableHeaders = ["Nazwa"];
   const suggestedCategoriesTableRows = suggestedCategories.map((category) => (
     <TableRow key={category.id}>
-      <td className="py-3 px-6 border border-slate-400">{category.name}</td>
+      <TableData>{category.name}</TableData>
     </TableRow>
   ));
 
@@ -225,8 +210,8 @@ export default function Profile() {
   const votedSuggestedCategoriesTableRows = votedSuggestedCategories.map(
     (category) => (
       <TableRow key={category.id}>
-        <td className="py-3 px-6 border border-slate-400">{category.name}</td>
-        <td className="py-3 px-6 border border-slate-400">{category.rating}</td>
+        <TableData>{category.name}</TableData>
+        <TableData>{category.rating}</TableData>
       </TableRow>
     )
   );
