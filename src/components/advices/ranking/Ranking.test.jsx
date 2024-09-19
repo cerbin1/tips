@@ -5,6 +5,11 @@ import Ranking from "./Ranking";
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
+
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
 describe("Ranking", () => {
   test("should render component", async () => {
     globalThis.fetch = vi.fn(() =>

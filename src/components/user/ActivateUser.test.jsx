@@ -2,11 +2,15 @@ import { waitFor } from "@testing-library/react";
 import { renderWithRouter } from "../../test/test-utils";
 import ActivateUser from "./ActivateUser";
 
-describe("ActivateUser", () => {
-  beforeAll(() => {
-    import.meta.env.VITE_BACKEND_URL = "backend/";
-  });
+beforeAll(() => {
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
 
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
+describe("ActivateUser", () => {
   test("should render component and display user activated successfully info", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
     vi.mock("react-router", async () => {

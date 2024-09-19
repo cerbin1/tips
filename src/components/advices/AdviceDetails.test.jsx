@@ -24,6 +24,10 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.resetAllMocks();
+});
+
+afterAll(() => {
   localStorage.clear();
 });
 

@@ -4,25 +4,29 @@ import PasswordChangeForm from "./PasswordChangeForm";
 
 const mockedUseNavigate = vi.fn();
 
-describe("PasswordChangeForm", () => {
-  beforeAll(() => {
-    vi.mock("react-router", async () => {
-      const actual = await vi.importActual("react-router");
-      return {
-        ...actual,
-        useParams: () => {
-          return {
-            token: "token",
-          };
-        },
-        useNavigate: () => mockedUseNavigate,
-      };
-    });
-
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-    import.meta.env.VITE_BACKEND_URL = "backend/";
+beforeAll(() => {
+  vi.mock("react-router", async () => {
+    const actual = await vi.importActual("react-router");
+    return {
+      ...actual,
+      useParams: () => {
+        return {
+          token: "token",
+        };
+      },
+      useNavigate: () => mockedUseNavigate,
+    };
   });
 
+  globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
+describe("PasswordChangeForm", () => {
   test("should render component", () => {
     renderWithRouter(<PasswordChangeForm />);
 

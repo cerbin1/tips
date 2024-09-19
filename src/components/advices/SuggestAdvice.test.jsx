@@ -2,7 +2,12 @@ import { act, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithAuth } from "../../test/test-utils";
 import SuggestAdvice from "./SuggestAdvice";
 
+beforeAll(() => {
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
 beforeEach(() => {
+  localStorage.setItem("token", "token");
   globalThis.fetch = vi.fn((url) => {
     if (url === "backend/advices/categories") {
       return Promise.resolve({
@@ -41,13 +46,11 @@ beforeEach(() => {
       );
     },
   }));
-
-  import.meta.env.VITE_BACKEND_URL = "backend/";
-  localStorage.setItem("token", "token");
 });
 
 afterEach(() => {
   localStorage.clear();
+  vi.resetAllMocks();
 });
 
 describe("SuggestAdvice", () => {

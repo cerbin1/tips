@@ -2,8 +2,12 @@ import { act, waitFor } from "@testing-library/react";
 import { renderWithRouter } from "../../test/test-utils";
 import RandomAdvice from "./RandomAdvice";
 
-beforeEach(() => {
+beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
+});
+
+afterEach(() => {
+  vi.resetAllMocks();
 });
 
 describe("RandomAdvice", () => {

@@ -25,6 +25,7 @@ beforeEach(() => {
 
 afterEach(() => {
   localStorage.clear();
+  vi.resetAllMocks();
 });
 
 describe("SuggestedAdviceDetails", () => {

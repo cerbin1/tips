@@ -7,8 +7,8 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
-beforeEach(() => {
-  globalThis.fetch.mockClear();
+afterEach(() => {
+  vi.resetAllMocks();
 });
 
 describe("Register", () => {

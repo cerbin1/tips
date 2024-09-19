@@ -4,19 +4,20 @@ import Profile from "./Profile";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
-});
-
-beforeEach(() => {
   localStorage.setItem("token", "token");
+  localStorage.setItem("userEmail", "test@test");
 });
 
 afterEach(() => {
+  vi.resetAllMocks();
+});
+
+afterAll(() => {
   localStorage.clear();
 });
 
 describe("Profile", () => {
   test("should render component", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -142,7 +143,6 @@ describe("Profile", () => {
   });
 
   test("should display info when there are no rated advices", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -162,7 +162,6 @@ describe("Profile", () => {
   });
 
   test("should display info when fetching rated suggested advices fails", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -181,7 +180,6 @@ describe("Profile", () => {
   });
 
   test("should display info when there are no rated suggested advices", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -203,7 +201,6 @@ describe("Profile", () => {
   });
 
   test("should display info when fetching rated advices fails", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -220,7 +217,6 @@ describe("Profile", () => {
   });
 
   test("should display info when profile details are loading", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce({
@@ -433,7 +429,6 @@ describe("Profile", () => {
   });
 
   test("should display info when there are no rated suggested categories", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -455,7 +450,6 @@ describe("Profile", () => {
   });
 
   test("should display info when fetching rated categories fails", async () => {
-    localStorage.setItem("userEmail", "test@test");
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,

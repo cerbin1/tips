@@ -2,7 +2,7 @@ import { act, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithAuth } from "../../../test/test-utils";
 import SuggestCategory from "./SuggestCategory";
 
-beforeEach(() => {
+beforeAll(() => {
   globalThis.fetch = vi.fn(() => {
     return Promise.resolve({
       ok: true,
@@ -31,7 +31,9 @@ beforeEach(() => {
 
 afterEach(() => {
   localStorage.clear();
+  vi.resetAllMocks();
 });
+
 describe("SuggestCategory", () => {
   test("should render component", async () => {
     await act(async () => renderWithAuth(<SuggestCategory />));

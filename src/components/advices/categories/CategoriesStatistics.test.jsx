@@ -6,6 +6,10 @@ beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
 });
 
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
 describe("CategoriesStatistics", () => {
   test("should render component", async () => {
     globalThis.fetch = vi.fn(() =>

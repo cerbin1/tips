@@ -10,6 +10,7 @@ beforeAll(() => {
 
 afterEach(() => {
   localStorage.clear();
+  vi.resetAllMocks();
 });
 
 describe("Login", () => {

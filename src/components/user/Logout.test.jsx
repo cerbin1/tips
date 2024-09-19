@@ -3,6 +3,15 @@ import Logout from "./Logout";
 
 const mockedUseNavigate = vi.fn();
 
+beforeAll(() => {
+  vi.mock("react-router", async () => {
+    const actual = await vi.importActual("react-router");
+    return {
+      ...actual,
+      useNavigate: () => mockedUseNavigate,
+    };
+  });
+});
 afterEach(() => {
   localStorage.clear();
 });
@@ -15,13 +24,6 @@ describe("Logout", () => {
     expect(localStorage.getItem("token")).toBe("token");
     expect(localStorage.getItem("roles")).toBe('["ROLE_USER"]');
     expect(localStorage.getItem("userEmail")).toBe("test@test");
-    vi.mock("react-router", async () => {
-      const actual = await vi.importActual("react-router");
-      return {
-        ...actual,
-        useNavigate: () => mockedUseNavigate,
-      };
-    });
     expect(mockedUseNavigate).not.toBeCalled();
 
     renderWithRouterAndAuth(<Logout />);

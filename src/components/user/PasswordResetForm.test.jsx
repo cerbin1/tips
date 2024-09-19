@@ -1,17 +1,16 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import PasswordResetForm from "./PasswordResetForm";
 
-describe("PasswordResetForm", () => {
-  beforeAll(() => {
-    import.meta.env.VITE_BACKEND_URL = "backend/";
-  });
-  beforeEach(() => {
-    globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
-  });
-  afterEach(() => {
-    globalThis.fetch.mockClear();
-  });
+beforeAll(() => {
+  globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
+  import.meta.env.VITE_BACKEND_URL = "backend/";
+});
 
+afterEach(() => {
+  vi.resetAllMocks();
+});
+
+describe("PasswordResetForm", () => {
   test("should render component and display form", () => {
     render(<PasswordResetForm />);
 
