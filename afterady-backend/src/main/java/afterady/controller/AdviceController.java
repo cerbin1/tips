@@ -73,7 +73,7 @@ public class AdviceController {
             return ResponseEntity.badRequest().build();
         }
         Advice advice = adviceById.get();
-        boolean userVotedAdvice = advice.getVotes().contains(userEmail);
+        boolean userVotedAdvice = advice.userVoted(userEmail);
         return new ResponseEntity<>(new UserVotedCheckResponse(userVotedAdvice), OK);
     }
 

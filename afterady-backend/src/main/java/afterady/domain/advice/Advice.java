@@ -42,4 +42,8 @@ public class Advice {
     public Integer getRating() {
         return votes.size();
     }
+
+    public boolean userVoted(String userEmail) {
+        return votes.contains(userEmail);
+    }
 }
