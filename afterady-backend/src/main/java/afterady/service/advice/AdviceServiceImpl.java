@@ -31,8 +31,8 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public void createSuggestedAdvice(UUID id, String name, AdviceCategory category, String content, Long creatorId) {
-        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, creatorId, Collections.emptySet(), Collections.emptySet()));
+    public void createSuggestedAdvice(UUID id, String name, AdviceCategory category, String content, String source, Long creatorId) {
+        suggestedAdviceRepository.save(new SuggestedAdvice(id, name, category, content, source, creatorId, Collections.emptySet(), Collections.emptySet()));
     }
 
     public AdviceDetailsDto getRandomAdvice() {

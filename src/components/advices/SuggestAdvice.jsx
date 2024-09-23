@@ -161,6 +161,7 @@ export default function SuggestAdvice() {
               maxLength={1000}
             ></textarea>
           </div>
+          <FormInput id="source" label="Źródło" maxLength={200} />
 
           <Captcha onCaptchaChange={handleCaptchaChange} />
           <Button disabled={submitting}>

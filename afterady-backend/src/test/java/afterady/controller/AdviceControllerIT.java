@@ -42,6 +42,7 @@ import java.util.UUID;
 import static afterady.TestUtils.*;
 import static afterady.domain.advice.category.AdviceCategory.HEALTH;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
+import static afterady.service.advice.Fixtures.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
 import static java.util.UUID.randomUUID;
@@ -110,7 +111,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest(null, "HOME", "content", "captchaToken")))
+                                        new SuggestAdviceRequest(null, "HOME", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -122,7 +123,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("", "HOME", "content", "captchaToken")))
+                                        new SuggestAdviceRequest("", "HOME", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -134,7 +135,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content", "captchaToken")))
+                                        new SuggestAdviceRequest("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "HOME", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: name too long.")));
@@ -146,7 +147,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", null, "content", "captchaToken")))
+                                        new SuggestAdviceRequest("name", null, "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -158,7 +159,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "", "content", "captchaToken")))
+                                        new SuggestAdviceRequest("name", "", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -170,7 +171,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "category", "content", "captchaToken")))
+                                        new SuggestAdviceRequest("name", "category", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -182,7 +183,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", null, "captchaToken")))
+                                        new SuggestAdviceRequest("name", "HOME", null, "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -194,7 +195,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "", "captchaToken")))
+                                        new SuggestAdviceRequest("name", "HOME", "", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -206,7 +207,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", null)))
+                                        new SuggestAdviceRequest("name", "HOME", "content", "source", null)))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -218,7 +219,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", "")))
+                                        new SuggestAdviceRequest("name", "HOME", "content", "source", "")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", is("Error: validation failed.")));
@@ -233,7 +234,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", "not-valid-captcha-token")))
+                                        new SuggestAdviceRequest("name", "HOME", "content", "source", "not-valid-captcha-token")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: captcha is not valid.")));
@@ -245,7 +246,7 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001), "captchaToken")))
+                                        new SuggestAdviceRequest("name", "HOME", StringUtils.repeat("a", 1001), "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message", is("Error: content too long.")));
@@ -261,11 +262,11 @@ class AdviceControllerIT {
         mvc.perform(post("/advices/suggested")
                         .content(new ObjectMapper()
                                 .writeValueAsString(
-                                        new SuggestAdviceRequest("name", "HOME", "content", "captchaToken")))
+                                        new SuggestAdviceRequest("name", "HOME", "content", "source", "captchaToken")))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(authUtil, times(1)).getLoggedUserId();
-        verify(adviceService).createSuggestedAdvice(ArgumentMatchers.any(UUID.class), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq(1L));
+        verify(adviceService).createSuggestedAdvice(ArgumentMatchers.any(UUID.class), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq("source"), eq(1L));
         verifyNoMoreInteractions(authUtil, adviceService);
     }
 
@@ -438,9 +439,7 @@ class AdviceControllerIT {
     public void shouldGetUserSuggestedAdvices() throws Exception {
         // arrange
         Long userId = 1L;
-        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
-                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, emptySet(), Set.of(TEST_EMAIL))));
+        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(VOTED_SUGGESTED_ADVICES);
         when(authUtil.getLoggedUserId()).thenReturn(userId);
 
         // act & assert
@@ -477,22 +476,6 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldGetSuggestedAdvices() throws Exception {
-        // arrange
-        Long userId = 1L;
-        when(adviceService.getUserSuggestedAdvices(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID_1, "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
-                new SuggestedAdvice(UUID_2, "name 2", HEALTH, "content 2", 1L, emptySet(), Set.of(TEST_EMAIL))));
-        when(authUtil.getLoggedUserId()).thenReturn(userId);
-
-        // act & assert
-        mvc.perform(get("/users/advices/suggested"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name 1\",\"category\":{\"displayName\":\"Dom\"},\"content\":\"content 1\",\"creatorId\":1},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"category\":{\"displayName\":\"Zdrowie\"},\"content\":\"content 2\",\"creatorId\":1}]"));
-    }
-
-    @Test
     public void shouldReturn400IfSuggestedAdviceByIdNotExists() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
@@ -506,7 +489,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnSuggestedAdviceById() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), generateTestVotes(1))));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(SUGGESTED_ADVICE));
 
         // act & assert
         mvc.perform(get("/advices/suggested/" + UUID_1))
@@ -515,7 +498,7 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.name", is("name")))
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
-                .andExpect(jsonPath("$.rating", is(1)));
+                .andExpect(jsonPath("$.rating", is(0)));
     }
 
     @Test
@@ -533,8 +516,8 @@ class AdviceControllerIT {
     @Test
     public void shouldVoteSuggestedAdviceUp() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
-        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), emptySet())));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(UNVOTED_SUGGESTED_ADVICE));
+        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(VOTED_SUGGESTED_ADVICE_UP));
 
         // act & assert
         mvc.perform(post("/advices/suggested/" + UUID_1 + "/vote?voteType=true").content(TEST_EMAIL)
@@ -543,7 +526,7 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.name", is("name")))
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
-                .andExpect(jsonPath("$.rating", is(2)));
+                .andExpect(jsonPath("$.rating", is(1)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verify(adviceService, times(1)).voteSuggestedAdvice(UUID_1, TEST_EMAIL, true);
         verifyNoMoreInteractions(adviceService);
@@ -552,8 +535,8 @@ class AdviceControllerIT {
     @Test
     public void shouldVoteSuggestedAdviceDown() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(1))));
-        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(2))));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(UNVOTED_SUGGESTED_ADVICE));
+        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(VOTED_SUGGESTED_ADVICE_DOWN));
 
         // act & assert
         mvc.perform(post("/advices/suggested/" + UUID_1 + "/vote?voteType=false").content(TEST_EMAIL)
@@ -562,7 +545,7 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.name", is("name")))
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
-                .andExpect(jsonPath("$.rating", is(-2)));
+                .andExpect(jsonPath("$.rating", is(-1)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verify(adviceService, times(1)).voteSuggestedAdvice(UUID_1, TEST_EMAIL, false);
         verifyNoMoreInteractions(adviceService);
@@ -583,7 +566,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnFalseWhenUserNotVotedSuggestedAdvice() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(UNVOTED_SUGGESTED_ADVICE));
 
         // act & assert
         mvc.perform(get("/advices/suggested/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
@@ -596,7 +579,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnTrueWhenUserVotedSuggestedAdvice() throws Exception {
         // arrange
-        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, Set.of(TEST_EMAIL), emptySet())));
+        when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(VOTED_SUGGESTED_ADVICE_UP));
 
         // act & assert
         mvc.perform(get("/advices/suggested/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))

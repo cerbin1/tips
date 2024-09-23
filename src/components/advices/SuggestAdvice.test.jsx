@@ -1,6 +1,7 @@
 import { act, fireEvent, waitFor } from "@testing-library/react";
 import { renderWithAuth } from "../../test/test-utils";
 import SuggestAdvice from "./SuggestAdvice";
+import { expect } from "vitest";
 
 beforeAll(() => {
   import.meta.env.VITE_BACKEND_URL = "backend/";
@@ -61,7 +62,7 @@ describe("SuggestAdvice", () => {
     const form = screen.getByRole("form");
     expect(form).toBeInTheDocument();
     expect(form).toHaveClass("flex flex-col gap-4 text-lg w-1/3");
-    expect(screen.getAllByRole("textbox")).toHaveLength(2);
+    expect(screen.getAllByRole("textbox")).toHaveLength(3);
     expect(screen.getAllByRole("combobox")).toHaveLength(1);
     expect(screen.getByRole("combobox")).toHaveLength(3);
     expect(screen.getAllByRole("button")).toHaveLength(1);
@@ -92,6 +93,11 @@ describe("SuggestAdvice", () => {
     expect(contentInput).toHaveAttribute("id", "content");
     expect(contentInput).toHaveAttribute("name", "content");
     expect(contentInput).toHaveAttribute("maxLength", "1000");
+    const sourceInput = screen.getByLabelText("Źródło");
+    expect(sourceInput).toBeInTheDocument();
+    expect(sourceInput).toHaveAttribute("id", "source");
+    expect(sourceInput).toHaveAttribute("name", "source");
+    expect(sourceInput).toHaveAttribute("maxLength", "200");
     const submitButton = screen.getByRole("button");
     expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveTextContent("Wyślij propozycję");
@@ -339,12 +345,15 @@ async function fillFormWithDefaultValues() {
   const name = screen.getByLabelText("Nazwa porady");
   const category = screen.getByLabelText("Kategoria");
   const content = screen.getByLabelText("Treść");
+  const source = screen.getByLabelText("Źródło");
   fireEvent.change(name, { target: { value: "name" } });
   fireEvent.change(category, { target: { value: "CATEGORY_1" } });
   fireEvent.change(content, { target: { value: "content" } });
+  fireEvent.change(source, { target: { value: "source" } });
   await waitFor(() => expect(name).toHaveValue("name"));
   await waitFor(() => expect(category).toHaveValue("CATEGORY_1"));
   await waitFor(() => expect(content).toHaveValue("content"));
+  await waitFor(() => expect(source).toHaveValue("source"));
 }
 
 function assertFetchCategoriesRequestExecuted() {
@@ -364,6 +373,7 @@ function assertSubmitFormRequestIsExecuted() {
       name: "name",
       category: "CATEGORY_1",
       content: "content",
+      source: "source",
       captchaToken: "mock-token",
     }),
   });

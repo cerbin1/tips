@@ -23,7 +23,7 @@ import static afterady.TestUtils.*;
 import static afterady.domain.advice.Advice.ADVICE_COLLECTION;
 import static afterady.domain.advice.SuggestedAdvice.SUGGESTED_ADVICE_COLLECTION;
 import static afterady.domain.advice.category.AdviceCategory.HOME;
-import static java.util.Collections.emptySet;
+import static afterady.service.advice.Fixtures.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -47,7 +47,7 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldCreateSuggestedAdvice() {
         // act
-        adviceService.createSuggestedAdvice(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), "name", HOME, "content", 1L);
+        adviceService.createSuggestedAdvice(UUID.fromString("63b4072b-b8c8-4f9a-acf4-76d0948adc6e"), "name", HOME, "content", "source", 1L);
 
         // assert
         verify(suggestedAdviceRepository, times(1)).save(any());
@@ -212,23 +212,13 @@ public class AdviceServiceImplTest {
     public void shouldGetUserSuggestedAdvices() {
         // arrange
         var userId = 1L;
-        when(suggestedAdviceRepository.findByCreatorId(userId)).thenReturn(List.of(
-                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L, generateTestVotes(1), generateTestVotes(1)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, generateTestVotes(2), generateTestVotes(2)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, generateTestVotes(3), generateTestVotes(3)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, generateTestVotes(4), generateTestVotes(4)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L, generateTestVotes(5), generateTestVotes(5))
-        ));
+        when(suggestedAdviceRepository.findByCreatorId(userId)).thenReturn(SUGGESTED_ADVICES);
 
         // act
         List<SuggestedAdvice> suggestedAdvices = adviceService.getUserSuggestedAdvices(userId);
 
         // assert
-        assertEquals(5, suggestedAdvices.size());
-        assertEquals("name 1", suggestedAdvices.get(0).getName());
-        assertEquals(0, suggestedAdvices.get(0).getRating());
-        assertEquals("name 5", suggestedAdvices.get(4).getName());
-        assertEquals(0, suggestedAdvices.get(4).getRating());
+        assertListOfSuggestedAdvices(suggestedAdvices);
         verify(suggestedAdviceRepository, times(1)).findByCreatorId(userId);
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
@@ -237,24 +227,13 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldGetSuggestedAdvices() {
         // arrange
-        var userId = 1L;
-        when(suggestedAdviceRepository.findAll()).thenReturn(List.of(
-                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", userId, generateTestVotes(1), generateTestVotes(1)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", userId, generateTestVotes(2), generateTestVotes(2)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", userId, generateTestVotes(3), generateTestVotes(3)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", userId, generateTestVotes(4), generateTestVotes(4)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", userId, generateTestVotes(5), generateTestVotes(5))
-        ));
+        when(suggestedAdviceRepository.findAll()).thenReturn(SUGGESTED_ADVICES);
 
         // act
         List<SuggestedAdvice> suggestedAdvices = adviceService.getSuggestedAdvices();
 
         // assert
-        assertEquals(5, suggestedAdvices.size());
-        assertEquals("name 1", suggestedAdvices.get(0).getName());
-        assertEquals(0, suggestedAdvices.get(0).getRating());
-        assertEquals("name 5", suggestedAdvices.get(4).getName());
-        assertEquals(0, suggestedAdvices.get(4).getRating());
+        assertListOfSuggestedAdvices(suggestedAdvices);
         verify(suggestedAdviceRepository, times(1)).findAll();
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
@@ -264,7 +243,7 @@ public class AdviceServiceImplTest {
     public void shouldGetSuggestedAdviceById() {
         // arrange
         when(suggestedAdviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, generateTestVotes(2), generateTestVotes(1))));
+                .thenReturn(Optional.of(SUGGESTED_ADVICE));
 
         // act
         Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(UUID_1);
@@ -277,7 +256,7 @@ public class AdviceServiceImplTest {
         assertEquals("Dom", adviceDetails.getCategory().getDisplayName());
         assertEquals("HOME", adviceDetails.getCategory().name());
         assertEquals("content", adviceDetails.getContent());
-        assertEquals(1, adviceDetails.getRating());
+        assertEquals(0, adviceDetails.getRating());
         verify(suggestedAdviceRepository, times(1)).findById(eq(UUID_1));
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
@@ -286,10 +265,9 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldVoteSuggestedAdviceUp() {
         // arrange
-        SuggestedAdvice suggestedAdvice = new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, generateTestVotes(1), emptySet());
         when(suggestedAdviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(suggestedAdvice));
-        when(suggestedAdviceRepository.save(suggestedAdvice)).thenReturn(suggestedAdvice);
+                .thenReturn(Optional.of(SUGGESTED_ADVICE));
+        when(suggestedAdviceRepository.save(SUGGESTED_ADVICE)).thenReturn(SUGGESTED_ADVICE);
 
         // act
         Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, true);
@@ -298,9 +276,9 @@ public class AdviceServiceImplTest {
         assertTrue(maybeUpdatedAdvice.isPresent());
         SuggestedAdvice updatedAdvice = maybeUpdatedAdvice.get();
         assertEquals(UUID_1, updatedAdvice.getId());
-        assertEquals(2, updatedAdvice.getRating());
+        assertEquals(1, updatedAdvice.getRating());
         verify(suggestedAdviceRepository, times(1)).findById(eq(UUID_1));
-        verify(suggestedAdviceRepository, times(1)).save(suggestedAdvice);
+        verify(suggestedAdviceRepository, times(1)).save(SUGGESTED_ADVICE);
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
     }
@@ -308,10 +286,9 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldVoteSuggestedAdviceDown() {
         // arrange
-        SuggestedAdvice suggestedAdvice = new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, emptySet(), generateTestVotes(1));
         when(suggestedAdviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(suggestedAdvice));
-        when(suggestedAdviceRepository.save(suggestedAdvice)).thenReturn(suggestedAdvice);
+                .thenReturn(Optional.of(SUGGESTED_ADVICE));
+        when(suggestedAdviceRepository.save(SUGGESTED_ADVICE)).thenReturn(SUGGESTED_ADVICE);
 
         // act
         Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, false);
@@ -320,9 +297,9 @@ public class AdviceServiceImplTest {
         assertTrue(maybeUpdatedAdvice.isPresent());
         SuggestedAdvice updatedAdvice = maybeUpdatedAdvice.get();
         assertEquals(UUID_1, updatedAdvice.getId());
-        assertEquals(-2, updatedAdvice.getRating());
+        assertEquals(0, updatedAdvice.getRating());
         verify(suggestedAdviceRepository, times(1)).findById(eq(UUID_1));
-        verify(suggestedAdviceRepository, times(1)).save(suggestedAdvice);
+        verify(suggestedAdviceRepository, times(1)).save(SUGGESTED_ADVICE);
         verifyNoMoreInteractions(suggestedAdviceRepository);
         verifyNoInteractions(adviceRepository, mongoTemplate);
     }
@@ -331,19 +308,13 @@ public class AdviceServiceImplTest {
     public void shouldGetListOfVotedSuggestedAdvices() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class)))
-                .thenReturn(new AggregationResults<>(List.of(
-                        new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L, Set.of(TEST_EMAIL), emptySet()),
-                        new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, Set.of(TEST_EMAIL), emptySet()),
-                        new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, Set.of(TEST_EMAIL), emptySet()),
-                        new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, Set.of(TEST_EMAIL), emptySet()),
-                        new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L, Set.of(TEST_EMAIL), emptySet())
-                ), new Document()));
+                .thenReturn(new AggregationResults<>(VOTED_SUGGESTED_ADVICES, new Document()));
 
         // act
         List<SuggestedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL);
 
         // assert
-        assertEquals(5, userVotedAdvices.size());
+        assertEquals(2, userVotedAdvices.size());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class));
         verifyNoMoreInteractions(mongoTemplate);
         verifyNoInteractions(suggestedAdviceRepository, adviceRepository);

@@ -107,8 +107,12 @@ public class AdviceController {
         if (!captchaService.isCaptchaTokenValid(captchaToken)) {
             return unprocessableEntity().body(new MessageResponse("Error: captcha is not valid."));
         }
+        String source = request.source();
+        if (source == null) {
+            source = "";
+        }
         Long creatorId = authUtil.getLoggedUserId();
-        adviceService.createSuggestedAdvice(UUID.randomUUID(), name, valueOf(category), content, creatorId);
+        adviceService.createSuggestedAdvice(UUID.randomUUID(), name, valueOf(category), content, source, creatorId);
 
         return ResponseEntity.ok().build();
     }

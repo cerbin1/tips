@@ -24,6 +24,7 @@ public final class SuggestedAdvice {
     private final String name;
     private final AdviceCategory category;
     private final String content;
+    private final String source;
     private final Long creatorId;
     private Set<String> votesUp;
     private Set<String> votesDown;
