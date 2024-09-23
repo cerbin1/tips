@@ -239,11 +239,11 @@ public class AdviceServiceImplTest {
         // arrange
         var userId = 1L;
         when(suggestedAdviceRepository.findAll()).thenReturn(List.of(
-                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", 1L, generateTestVotes(1), generateTestVotes(1)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", 1L, generateTestVotes(2), generateTestVotes(2)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", 1L, generateTestVotes(3), generateTestVotes(3)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", 1L, generateTestVotes(4), generateTestVotes(4)),
-                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", 1L, generateTestVotes(5), generateTestVotes(5))
+                new SuggestedAdvice(UUID.randomUUID(), "name 1", HOME, "content 1", userId, generateTestVotes(1), generateTestVotes(1)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 2", HOME, "content 2", userId, generateTestVotes(2), generateTestVotes(2)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 3", HOME, "content 3", userId, generateTestVotes(3), generateTestVotes(3)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 4", HOME, "content 4", userId, generateTestVotes(4), generateTestVotes(4)),
+                new SuggestedAdvice(UUID.randomUUID(), "name 5", HOME, "content 5", userId, generateTestVotes(5), generateTestVotes(5))
         ));
 
         // act
