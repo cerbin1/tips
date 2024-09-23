@@ -9,8 +9,8 @@ import RequestError from "../../common/RequestError";
 import SecondaryButton from "../../common/SecondaryButton";
 import {
   getSuggestedCategoryDetailsUrl,
-  getUserRatedSuggestedCategoryInfoUrl,
-  rateSuggestedCategoryUrl,
+  getUserVotedSuggestedCategoryInfoUrl,
+  voteSuggestedCategoryUrl,
 } from "../../../util/endpoints";
 
 export default function SuggestedCategoryDetails() {
@@ -19,48 +19,48 @@ export default function SuggestedCategoryDetails() {
   const [detailsError, setDetailsError] = useState();
   const [userVoted, setUserVoted] = useState();
   const [userVotedError, setUserVotedError] = useState();
-  const [rateCategoryError, setRateCategoryError] = useState();
-  const [rateCategoryUpLoading, setRateCategoryUpLoading] = useState(false);
-  const [rateCategoryUp, setRateCategoryUp] = useState(false);
-  const [rateCategoryDownLoading, setRateCategoryDownLoading] = useState(false);
-  const [rateCategoryDown, setRateCategoryDown] = useState(false);
-  const [rateCategorySuccess, setRateCategorySuccess] = useState();
+  const [voteCategoryError, setVoteCategoryError] = useState();
+  const [voteCategoryUpLoading, setVoteCategoryUpLoading] = useState(false);
+  const [voteCategoryUp, setVoteCategoryUp] = useState(false);
+  const [voteCategoryDownLoading, setVoteCategoryDownLoading] = useState(false);
+  const [voteCategoryDown, setVoteCategoryDown] = useState(false);
+  const [voteCategorySuccess, setVoteCategorySuccess] = useState();
   const { id } = useParams();
   const { token } = useAuth();
 
-  async function handleRateCategoryUp() {
-    setRateCategoryError();
-    setRateCategoryUpLoading(true);
-    const response = await sendRateCategoryRequest(true);
+  async function handleVoteCategoryUp() {
+    setVoteCategoryError();
+    setVoteCategoryUpLoading(true);
+    const response = await sendVoteCategoryRequest(true);
     if (response.ok) {
-      setRateCategoryUp(true);
+      setVoteCategoryUp(true);
       const category = await response.json();
       setDetails(category);
-      setRateCategorySuccess("Ocena podwyższona pomyślnie.");
+      setVoteCategorySuccess("Ocena podwyższona pomyślnie.");
     } else {
-      setRateCategoryError("Nie udało się ocenić kategorii!");
+      setVoteCategoryError("Nie udało się ocenić kategorii!");
     }
-    setRateCategoryUpLoading(false);
+    setVoteCategoryUpLoading(false);
   }
 
-  async function handleRateCategoryDown() {
-    setRateCategoryError();
-    setRateCategoryUpLoading(true);
-    const response = await sendRateCategoryRequest(false);
+  async function handleVoteCategoryDown() {
+    setVoteCategoryError();
+    setVoteCategoryUpLoading(true);
+    const response = await sendVoteCategoryRequest(false);
     if (response.ok) {
-      setRateCategoryDown(true);
+      setVoteCategoryDown(true);
       const category = await response.json();
       setDetails(category);
-      setRateCategorySuccess("Ocena obniżona pomyślnie.");
+      setVoteCategorySuccess("Ocena obniżona pomyślnie.");
     } else {
-      setRateCategoryError("Nie udało się ocenić kategorii!");
+      setVoteCategoryError("Nie udało się ocenić kategorii!");
     }
-    setRateCategoryUpLoading(false);
+    setVoteCategoryUpLoading(false);
   }
 
-  async function sendRateCategoryRequest(rateType) {
+  async function sendVoteCategoryRequest(voteType) {
     try {
-      const response = await fetch(rateSuggestedCategoryUrl(id, rateType), {
+      const response = await fetch(voteSuggestedCategoryUrl(id, voteType), {
         method: "POST",
         body: getUserEmail(),
         headers: {
@@ -70,7 +70,7 @@ export default function SuggestedCategoryDetails() {
       });
       return response;
     } catch (error) {
-      setRateCategoryError("Nie udało się ocenić kategorii!");
+      setVoteCategoryError("Nie udało się ocenić kategorii!");
     }
   }
 
@@ -94,10 +94,10 @@ export default function SuggestedCategoryDetails() {
       }
     }
 
-    async function fetchUserRatedCategory() {
+    async function fetchUserVotedCategory() {
       setUserVotedError();
       const response = await fetch(
-        getUserRatedSuggestedCategoryInfoUrl(id, getUserEmail()),
+        getUserVotedSuggestedCategoryInfoUrl(id, getUserEmail()),
         {
           headers: {
             "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export default function SuggestedCategoryDetails() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        setUserVoted(responseData.rated);
+        setUserVoted(responseData.voted);
       } else {
         setUserVotedError("Nie udało się pobrać informacji o głosowaniu!");
       }
@@ -116,7 +116,7 @@ export default function SuggestedCategoryDetails() {
     async function fetchDetails() {
       setDetailsLoading(true);
       await fetchSuggestedCategoryDetails();
-      await fetchUserRatedCategory();
+      await fetchUserVotedCategory();
       setDetailsLoading(false);
     }
 
@@ -139,27 +139,27 @@ export default function SuggestedCategoryDetails() {
             <div className="flex gap-4">
               <SecondaryButton
                 disabled={
-                  rateCategoryDownLoading ||
-                  rateCategoryDown ||
-                  rateCategorySuccess
+                  voteCategoryDownLoading ||
+                  voteCategoryDown ||
+                  voteCategorySuccess
                 }
-                onClick={handleRateCategoryDown}
+                onClick={handleVoteCategoryDown}
               >
-                {rateCategoryDownLoading
+                {voteCategoryDownLoading
                   ? "Wysyłanie oceny..."
-                  : rateCategoryDown
+                  : voteCategoryDown
                   ? "Oceniono"
                   : "Oceń jako nieprzydatne"}
               </SecondaryButton>
               <Button
-                onClick={handleRateCategoryUp}
+                onClick={handleVoteCategoryUp}
                 disabled={
-                  rateCategoryUpLoading || rateCategoryUp || rateCategorySuccess
+                  voteCategoryUpLoading || voteCategoryUp || voteCategorySuccess
                 }
               >
-                {rateCategoryUpLoading
+                {voteCategoryUpLoading
                   ? "Wysyłanie oceny..."
-                  : rateCategoryUp
+                  : voteCategoryUp
                   ? "Oceniono"
                   : "Oceń jako przydatne"}
               </Button>
@@ -171,9 +171,9 @@ export default function SuggestedCategoryDetails() {
       )}
       <RequestError content={detailsError} />
       <RequestError content={userVotedError} />
-      <RequestError content={rateCategoryError} />
-      {rateCategorySuccess && (
-        <p className="py-6 text-green-500">{rateCategorySuccess}</p>
+      <RequestError content={voteCategoryError} />
+      {voteCategorySuccess && (
+        <p className="py-6 text-green-500">{voteCategorySuccess}</p>
       )}
     </ContainerSection>
   );

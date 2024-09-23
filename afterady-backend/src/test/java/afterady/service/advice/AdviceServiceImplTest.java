@@ -127,7 +127,7 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldIncreaseAdviceRating() {
+    public void shouldVoteAdvice() {
         // arrange
         Advice advice = new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1));
         when(adviceRepository.findById(eq(UUID_1)))
@@ -135,7 +135,7 @@ public class AdviceServiceImplTest {
         when(adviceRepository.save(advice)).thenReturn(advice);
 
         // act
-        Optional<Advice> maybeUpdatedAdvice = adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL);
+        Optional<Advice> maybeUpdatedAdvice = adviceService.voteAdvice(UUID_1, TEST_EMAIL);
 
         // assert
         assertTrue(maybeUpdatedAdvice.isPresent());
@@ -149,7 +149,7 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldGetListOfUserVotedAdvices() {
+    public void shouldGetListOfVotedAdvices() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
@@ -161,7 +161,7 @@ public class AdviceServiceImplTest {
                 ), new Document()));
 
         // act
-        List<UserVotedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedAdvices(TEST_EMAIL);
+        List<VotedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedAdvices(TEST_EMAIL);
 
         // assert
         assertEquals(5, userVotedAdvices.size());
@@ -284,7 +284,7 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldRateSuggestedAdviceUp() {
+    public void shouldVoteSuggestedAdviceUp() {
         // arrange
         SuggestedAdvice suggestedAdvice = new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, generateTestVotes(1), emptySet());
         when(suggestedAdviceRepository.findById(eq(UUID_1)))
@@ -292,7 +292,7 @@ public class AdviceServiceImplTest {
         when(suggestedAdviceRepository.save(suggestedAdvice)).thenReturn(suggestedAdvice);
 
         // act
-        Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, true);
+        Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, true);
 
         // assert
         assertTrue(maybeUpdatedAdvice.isPresent());
@@ -306,7 +306,7 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldRateSuggestedAdviceDown() {
+    public void shouldVoteSuggestedAdviceDown() {
         // arrange
         SuggestedAdvice suggestedAdvice = new SuggestedAdvice(UUID_1, "name", HOME, "content", 1L, emptySet(), generateTestVotes(1));
         when(suggestedAdviceRepository.findById(eq(UUID_1)))
@@ -314,7 +314,7 @@ public class AdviceServiceImplTest {
         when(suggestedAdviceRepository.save(suggestedAdvice)).thenReturn(suggestedAdvice);
 
         // act
-        Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, false);
+        Optional<SuggestedAdvice> maybeUpdatedAdvice = adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, false);
 
         // assert
         assertTrue(maybeUpdatedAdvice.isPresent());
@@ -328,7 +328,7 @@ public class AdviceServiceImplTest {
     }
 
     @Test
-    public void shouldGetListOfUserVotedSuggestedAdvices() {
+    public void shouldGetListOfVotedSuggestedAdvices() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_ADVICE_COLLECTION), eq(SuggestedAdvice.class)))
                 .thenReturn(new AggregationResults<>(List.of(

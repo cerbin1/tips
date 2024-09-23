@@ -36,7 +36,7 @@ describe("AdviceDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false));
+      .mockResolvedValueOnce(votedAdviceResponse(false));
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
@@ -53,9 +53,9 @@ describe("AdviceDetails", () => {
     expect(screen.getByText("Treść")).toBeInTheDocument();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toBeInTheDocument();
-    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
+    const voteButton = screen.getByRole("button");
+    expect(voteButton).toBeInTheDocument();
+    expect(voteButton).toHaveTextContent("Oceń jako przydatne");
     assertFetchAdviceDetailsRequestsExecuted();
   });
 
@@ -63,7 +63,7 @@ describe("AdviceDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false));
+      .mockResolvedValueOnce(votedAdviceResponse(false));
 
     renderWithAuth(<AdviceDetails />);
 
@@ -104,7 +104,7 @@ describe("AdviceDetails", () => {
     );
   });
 
-  test("should display error when fetching user rated advice info response is not ok", async () => {
+  test("should display error when fetching user voted advice info response is not ok", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
     await act(async () => renderWithAuth(<AdviceDetails />));
@@ -124,7 +124,7 @@ describe("AdviceDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false));
+      .mockResolvedValueOnce(votedAdviceResponse(false));
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
@@ -138,7 +138,7 @@ describe("AdviceDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false))
+      .mockResolvedValueOnce(votedAdviceResponse(false))
       .mockResolvedValueOnce({ ok: false });
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
@@ -147,15 +147,15 @@ describe("AdviceDetails", () => {
 
     const error = screen.getByText("Nie udało się ocenić porady!");
     expect(error).toBeInTheDocument();
-    assertAdviceRatedRequestExecuted();
+    assertAdviceVotedRequestExecuted();
   });
 
   test("should block button and change text when rating advice", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false))
-      .mockResolvedValueOnce(ratedAdviceDetailsResponse());
+      .mockResolvedValueOnce(votedAdviceResponse(false))
+      .mockResolvedValueOnce(votedAdviceDetailsResponse());
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -170,47 +170,47 @@ describe("AdviceDetails", () => {
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
     expect(screen.getByText("6")).toBeInTheDocument();
-    assertAdviceRatedRequestExecuted();
+    assertAdviceVotedRequestExecuted();
   });
 
-  test("should button be enabled when user did not rate advice", async () => {
+  test("should button be enabled when user did not vote advice", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false));
+      .mockResolvedValueOnce(votedAdviceResponse(false));
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toHaveTextContent("Oceń jako przydatne");
-    expect(rateButton).toBeEnabled();
+    const voteButton = screen.getByRole("button");
+    expect(voteButton).toHaveTextContent("Oceń jako przydatne");
+    expect(voteButton).toBeEnabled();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     assertFetchAdviceDetailsRequestsExecuted();
   });
 
-  test("should button be disabled and have changed text when user rated advice", async () => {
+  test("should button be disabled and have changed text when user voted advice", async () => {
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce(ratedAdviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(true));
+      .mockResolvedValueOnce(votedAdviceDetailsResponse())
+      .mockResolvedValueOnce(votedAdviceResponse(true));
 
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
 
-    const rateButton = screen.getByRole("button");
-    expect(rateButton).toHaveTextContent("Oceniono");
-    expect(rateButton).toBeDisabled();
+    const voteButton = screen.getByRole("button");
+    expect(voteButton).toHaveTextContent("Oceniono");
+    expect(voteButton).toBeDisabled();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("6")).toBeInTheDocument();
     assertFetchAdviceDetailsRequestsExecuted();
   });
 
-  test("should successfully rate advice and display info", async () => {
+  test("should successfully vote advice and display info", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(adviceDetailsResponse())
-      .mockResolvedValueOnce(ratedAdviceResponse(false))
-      .mockResolvedValueOnce(ratedAdviceDetailsResponse());
+      .mockResolvedValueOnce(votedAdviceResponse(false))
+      .mockResolvedValueOnce(votedAdviceDetailsResponse());
     await act(async () => renderWithRouterAndAuth(<AdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -219,11 +219,11 @@ describe("AdviceDetails", () => {
     await userEvent.click(screen.getByRole("button"));
 
     expect(screen.getByText("6")).toBeInTheDocument();
-    const rateSuccess = screen.getByText("Oceniono poradę.");
-    expect(rateSuccess).toBeInTheDocument();
-    expect(rateSuccess).toHaveClass("py-6 text-green-500");
+    const voteSuccess = screen.getByText("Oceniono poradę.");
+    expect(voteSuccess).toBeInTheDocument();
+    expect(voteSuccess).toHaveClass("py-6 text-green-500");
     expect(screen.getByText("Oceniono")).toBeDisabled();
-    assertAdviceRatedRequestExecuted();
+    assertAdviceVotedRequestExecuted();
   });
 });
 
@@ -233,7 +233,7 @@ function assertFetchAdviceDetailsRequestsExecuted() {
     "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
   );
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate/check?userEmail=test@email",
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/vote/check?userEmail=test@email",
     {
       headers: {
         Authorization: "Bearer token",
@@ -243,10 +243,10 @@ function assertFetchAdviceDetailsRequestsExecuted() {
   );
 }
 
-function assertAdviceRatedRequestExecuted() {
+function assertAdviceVotedRequestExecuted() {
   expect(globalThis.fetch).toBeCalledTimes(3);
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate",
+    "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/vote",
     {
       method: "POST",
       headers: {
@@ -272,7 +272,7 @@ function adviceDetailsResponse() {
   };
 }
 
-function ratedAdviceDetailsResponse() {
+function votedAdviceDetailsResponse() {
   return {
     ok: true,
     json: () =>
@@ -286,9 +286,9 @@ function ratedAdviceDetailsResponse() {
   };
 }
 
-function ratedAdviceResponse(isRated) {
+function votedAdviceResponse(isVoted) {
   return {
     ok: true,
-    json: () => Promise.resolve({ rated: isRated }),
+    json: () => Promise.resolve({ voted: isVoted }),
   };
 }

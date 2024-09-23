@@ -2,18 +2,18 @@ export function getAdviceDetailsUrl(adviceId) {
   return import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId;
 }
 
-export function getUserRatedAdviceInfoUrl(adviceId, email) {
+export function getUserVotedAdviceInfoUrl(adviceId, email) {
   return (
     import.meta.env.VITE_BACKEND_URL +
     "advices/" +
     adviceId +
-    "/rate/check?userEmail=" +
+    "/vote/check?userEmail=" +
     email
   );
 }
 
-export function rateAdviceUrl(adviceId) {
-  return import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId + "/rate";
+export function voteAdviceUrl(adviceId) {
+  return import.meta.env.VITE_BACKEND_URL + "advices/" + adviceId + "/vote";
 }
 
 export function getRandomAdviceUrl() {
@@ -28,13 +28,13 @@ export function createSuggestedAdviceUrl() {
   return import.meta.env.VITE_BACKEND_URL + "advices/suggested";
 }
 
-export function rateSuggestedAdviceUrl(id, rateType) {
+export function voteSuggestedAdviceUrl(id, voteType) {
   return (
     import.meta.env.VITE_BACKEND_URL +
     "advices/suggested/" +
     id +
-    "/rate?rateType=" +
-    rateType
+    "/vote?voteType=" +
+    voteType
   );
 }
 
@@ -42,12 +42,12 @@ export function getSuggestedAdviceDetailsUrl(id) {
   return import.meta.env.VITE_BACKEND_URL + "advices/suggested/" + id;
 }
 
-export function getUserRatedSuggestedAdviceInfoUrl(id, email) {
+export function getUserVotedSuggestedAdviceInfoUrl(id, email) {
   return (
     import.meta.env.VITE_BACKEND_URL +
     "advices/suggested/" +
     id +
-    "/rate/check?userEmail=" +
+    "/vote/check?userEmail=" +
     email
   );
 }
@@ -72,13 +72,13 @@ export function createSuggestedCategoryUrl() {
   return import.meta.env.VITE_BACKEND_URL + "categories";
 }
 
-export function rateSuggestedCategoryUrl(id, rateType) {
+export function voteSuggestedCategoryUrl(id, voteType) {
   return (
     import.meta.env.VITE_BACKEND_URL +
     "categories/suggested/" +
     id +
-    "/rate?rateType=" +
-    rateType
+    "/vote?voteType=" +
+    voteType
   );
 }
 
@@ -86,12 +86,12 @@ export function getSuggestedCategoryDetailsUrl(id) {
   return import.meta.env.VITE_BACKEND_URL + "categories/suggested/" + id;
 }
 
-export function getUserRatedSuggestedCategoryInfoUrl(id, email) {
+export function getUserVotedSuggestedCategoryInfoUrl(id, email) {
   return (
     import.meta.env.VITE_BACKEND_URL +
     "categories/suggested/" +
     id +
-    "/rate/check?userEmail=" +
+    "/vote/check?userEmail=" +
     email
   );
 }
@@ -122,16 +122,16 @@ export function resetPasswordUrl(email) {
   );
 }
 
-export function getUserRatedAdvicesUrl(email) {
+export function getUserVotedAdvicesUrl(email) {
   return (
-    import.meta.env.VITE_BACKEND_URL + "users/advices/rated?userEmail=" + email
+    import.meta.env.VITE_BACKEND_URL + "users/advices/voted?userEmail=" + email
   );
 }
 
-export function getUserRatedSuggestedAdvicesUrl(email) {
+export function getUserVotedSuggestedAdvicesUrl(email) {
   return (
     import.meta.env.VITE_BACKEND_URL +
-    "users/advices/suggested/rated?userEmail=" +
+    "users/advices/suggested/voted?userEmail=" +
     email
   );
 }
@@ -144,10 +144,10 @@ export function getUserSuggestedCategoriesUrl() {
   return import.meta.env.VITE_BACKEND_URL + "users/categories/suggested";
 }
 
-export function getUserRatedSuggestedCategoriesUrl(email) {
+export function getUserVotedSuggestedCategoriesUrl(email) {
   return (
     import.meta.env.VITE_BACKEND_URL +
-    "users/categories/suggested/rated?userEmail=" +
+    "users/categories/suggested/voted?userEmail=" +
     email
   );
 }

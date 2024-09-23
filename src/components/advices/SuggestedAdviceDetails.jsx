@@ -9,8 +9,8 @@ import RequestError from "../common/RequestError";
 import SecondaryButton from "../common/SecondaryButton";
 import {
   getSuggestedAdviceDetailsUrl,
-  getUserRatedSuggestedAdviceInfoUrl,
-  rateSuggestedAdviceUrl,
+  getUserVotedSuggestedAdviceInfoUrl,
+  voteSuggestedAdviceUrl,
 } from "../../util/endpoints";
 
 export default function SuggestedAdviceDetails() {
@@ -21,48 +21,48 @@ export default function SuggestedAdviceDetails() {
     useState();
   const [userVoted, setUserVoted] = useState();
   const [userVotedError, setUserVotedError] = useState();
-  const [rateAdviceError, setRateAdviceError] = useState();
-  const [rateAdviceUpLoading, setRateAdviceUpLoading] = useState(false);
-  const [rateAdviceUp, setRateAdviceUp] = useState(false);
-  const [rateAdviceSuccess, setRateAdviceSuccess] = useState();
-  const [rateAdviceDownLoading, setRateAdviceDownLoading] = useState(false);
-  const [rateAdviceDown, setRateAdviceDown] = useState(false);
+  const [voteAdviceError, setVoteAdviceError] = useState();
+  const [voteAdviceUpLoading, setVoteAdviceUpLoading] = useState(false);
+  const [voteAdviceUp, setVoteAdviceUp] = useState(false);
+  const [voteAdviceSuccess, setVoteAdviceSuccess] = useState();
+  const [voteAdviceDownLoading, setVoteAdviceDownLoading] = useState(false);
+  const [voteAdviceDown, setVoteAdviceDown] = useState(false);
   const { token } = useAuth();
   const { id } = useParams();
 
-  async function handleRateAdviceUp() {
-    setRateAdviceError();
-    setRateAdviceUpLoading(true);
-    const response = await sendRateAdviceRequest(true);
+  async function handleVoteAdviceUp() {
+    setVoteAdviceError();
+    setVoteAdviceUpLoading(true);
+    const response = await sendVoteAdviceRequest(true);
     if (response.ok) {
-      setRateAdviceUp(true);
+      setVoteAdviceUp(true);
       const advice = await response.json();
       setSuggestedAdviceDetails(advice);
-      setRateAdviceSuccess("Ocena podwyższona pomyślnie.");
+      setVoteAdviceSuccess("Ocena podwyższona pomyślnie.");
     } else {
-      setRateAdviceError("Nie udało się ocenić porady!");
+      setVoteAdviceError("Nie udało się ocenić porady!");
     }
-    setRateAdviceUpLoading(false);
+    setVoteAdviceUpLoading(false);
   }
 
-  async function handleRateAdviceDown() {
-    setRateAdviceError();
-    setRateAdviceDownLoading(true);
-    const response = await sendRateAdviceRequest(false);
+  async function handleVoteAdviceDown() {
+    setVoteAdviceError();
+    setVoteAdviceDownLoading(true);
+    const response = await sendVoteAdviceRequest(false);
     if (response.ok) {
-      setRateAdviceDown(true);
+      setVoteAdviceDown(true);
       const advice = await response.json();
       setSuggestedAdviceDetails(advice);
-      setRateAdviceSuccess("Ocena obniżona pomyślnie.");
+      setVoteAdviceSuccess("Ocena obniżona pomyślnie.");
     } else {
-      setRateAdviceError("Nie udało się ocenić porady!");
+      setVoteAdviceError("Nie udało się ocenić porady!");
     }
-    setRateAdviceDownLoading(false);
+    setVoteAdviceDownLoading(false);
   }
 
-  async function sendRateAdviceRequest(rateType) {
+  async function sendVoteAdviceRequest(voteType) {
     try {
-      const response = await fetch(rateSuggestedAdviceUrl(id, rateType), {
+      const response = await fetch(voteSuggestedAdviceUrl(id, voteType), {
         method: "POST",
         body: getUserEmail(),
         headers: {
@@ -72,7 +72,7 @@ export default function SuggestedAdviceDetails() {
       });
       return response;
     } catch (error) {
-      setRateAdviceError("Nie udało się ocenić porady!");
+      setVoteAdviceError("Nie udało się ocenić porady!");
     }
   }
 
@@ -96,10 +96,10 @@ export default function SuggestedAdviceDetails() {
       }
     }
 
-    async function fetchUserRatedAdvice() {
+    async function fetchUserVotedAdvice() {
       setUserVotedError();
       const response = await fetch(
-        getUserRatedSuggestedAdviceInfoUrl(id, getUserEmail()),
+        getUserVotedSuggestedAdviceInfoUrl(id, getUserEmail()),
         {
           headers: {
             "Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default function SuggestedAdviceDetails() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        setUserVoted(responseData.rated);
+        setUserVoted(responseData.voted);
       } else {
         setUserVotedError("Nie udało się pobrać informacji o głosowaniu!");
       }
@@ -118,7 +118,7 @@ export default function SuggestedAdviceDetails() {
     async function fetchDetails() {
       setSuggestedAdviceDetailsLoading(true);
       await fetchSuggestedAdviceDetails();
-      await fetchUserRatedAdvice();
+      await fetchUserVotedAdvice();
       setSuggestedAdviceDetailsLoading(false);
     }
 
@@ -151,25 +151,25 @@ export default function SuggestedAdviceDetails() {
             <div className="flex gap-4">
               <SecondaryButton
                 disabled={
-                  rateAdviceDownLoading || rateAdviceDown || rateAdviceSuccess
+                  voteAdviceDownLoading || voteAdviceDown || voteAdviceSuccess
                 }
-                onClick={handleRateAdviceDown}
+                onClick={handleVoteAdviceDown}
               >
-                {rateAdviceDownLoading
+                {voteAdviceDownLoading
                   ? "Wysyłanie oceny..."
-                  : rateAdviceDown
+                  : voteAdviceDown
                   ? "Oceniono"
                   : "Oceń jako nieprzydatne"}
               </SecondaryButton>
               <Button
-                onClick={handleRateAdviceUp}
+                onClick={handleVoteAdviceUp}
                 disabled={
-                  rateAdviceUpLoading || rateAdviceUp || rateAdviceSuccess
+                  voteAdviceUpLoading || voteAdviceUp || voteAdviceSuccess
                 }
               >
-                {rateAdviceUpLoading
+                {voteAdviceUpLoading
                   ? "Wysyłanie oceny..."
-                  : rateAdviceUp
+                  : voteAdviceUp
                   ? "Oceniono"
                   : "Oceń jako przydatne"}
               </Button>
@@ -180,9 +180,9 @@ export default function SuggestedAdviceDetails() {
       )}
       <RequestError content={suggestedAdviceDetailsError} />
       <RequestError content={userVotedError} />
-      <RequestError content={rateAdviceError} />
-      {rateAdviceSuccess && (
-        <p className="py-6 text-green-500">{rateAdviceSuccess}</p>
+      <RequestError content={voteAdviceError} />
+      {voteAdviceSuccess && (
+        <p className="py-6 text-green-500">{voteAdviceSuccess}</p>
       )}
     </ContainerSection>
   );

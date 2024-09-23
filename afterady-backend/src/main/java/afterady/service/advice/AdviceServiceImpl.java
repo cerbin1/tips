@@ -45,8 +45,8 @@ public class AdviceServiceImpl implements AdviceService {
 
     @Override
     public List<AdviceDetailsDto> getTopTenAdvices() {
-        ProjectionOperation projectStage = project("name", "category", "content", "userEmailVotes")
-                .andExpression("size(userEmailVotes)").as("rating");
+        ProjectionOperation projectStage = project("name", "category", "content", "votes")
+                .andExpression("size(votes)").as("rating");
         SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "rating"));
         Aggregation aggregation = newAggregation(
                 projectStage,
@@ -63,7 +63,7 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail) {
+    public Optional<Advice> voteAdvice(UUID adviceId, String userEmail) {
         Optional<Advice> maybeAdvice = adviceRepository.findById(adviceId);
         if (maybeAdvice.isPresent()) {
             Advice advice = maybeAdvice.get();
@@ -75,8 +75,8 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail) {
-        MatchOperation matchStage = match(Criteria.where("userEmailVotes").in(userEmail));
+    public List<VotedAdviceDetailsDto> getUserVotedAdvices(String userEmail) {
+        MatchOperation matchStage = match(Criteria.where("votes").in(userEmail));
         ProjectionOperation projectStage = project("name", "category", "content");
         SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "name"));
         Aggregation aggregation = newAggregation(
@@ -114,11 +114,11 @@ public class AdviceServiceImpl implements AdviceService {
     }
 
     @Override
-    public Optional<SuggestedAdvice> rateSuggestedAdvice(UUID id, String userEmail, boolean rateUp) {
+    public Optional<SuggestedAdvice> voteSuggestedAdvice(UUID id, String userEmail, boolean voteUp) {
         Optional<SuggestedAdvice> maybeAdvice = suggestedAdviceRepository.findById(id);
         if (maybeAdvice.isPresent()) {
             SuggestedAdvice suggestedAdvice = maybeAdvice.get();
-            if (rateUp) {
+            if (voteUp) {
                 suggestedAdvice.addUserVoteUp(userEmail);
             } else {
                 suggestedAdvice.addUserVoteDown(userEmail);
@@ -132,10 +132,10 @@ public class AdviceServiceImpl implements AdviceService {
     public List<SuggestedAdviceDetailsDto> getUserVotedSuggestedAdvices(String userEmail) {
         MatchOperation matchStage = match(new Criteria()
                 .orOperator(
-                        Criteria.where("userEmailVotesUp").in(userEmail),
-                        Criteria.where("userEmailVotesDown").in(userEmail))
+                        Criteria.where("votesUp").in(userEmail),
+                        Criteria.where("votesDown").in(userEmail))
         );
-        ProjectionOperation projectStage = project("name", "category", "content", "userEmailVotesUp", "userEmailVotesDown");
+        ProjectionOperation projectStage = project("name", "category", "content", "votesUp", "votesDown");
         SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "name"));
         Aggregation aggregation = newAggregation(
                 matchStage,

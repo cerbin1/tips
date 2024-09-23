@@ -117,10 +117,10 @@ describe("Profile", () => {
     );
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/rated?userEmail=test@test"
+      "backend/users/advices/voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/suggested/rated?userEmail=test@test"
+      "backend/users/advices/suggested/voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
@@ -138,11 +138,11 @@ describe("Profile", () => {
       }
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/categories/suggested/rated?userEmail=test@test"
+      "backend/users/categories/suggested/voted?userEmail=test@test"
     );
   });
 
-  test("should display info when there are no rated advices", async () => {
+  test("should display info when there are no voted advices", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -157,11 +157,11 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/rated?userEmail=test@test"
+      "backend/users/advices/voted?userEmail=test@test"
     );
   });
 
-  test("should display info when fetching rated suggested advices fails", async () => {
+  test("should display info when fetching voted suggested advices fails", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -175,11 +175,11 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/suggested/rated?userEmail=test@test"
+      "backend/users/advices/suggested/voted?userEmail=test@test"
     );
   });
 
-  test("should display info when there are no rated suggested advices", async () => {
+  test("should display info when there are no voted suggested advices", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -196,11 +196,11 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/suggested/rated?userEmail=test@test"
+      "backend/users/advices/suggested/voted?userEmail=test@test"
     );
   });
 
-  test("should display info when fetching rated advices fails", async () => {
+  test("should display info when fetching voted advices fails", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -212,7 +212,7 @@ describe("Profile", () => {
     const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/rated?userEmail=test@test"
+      "backend/users/advices/voted?userEmail=test@test"
     );
   });
 
@@ -297,10 +297,10 @@ describe("Profile", () => {
     ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/rated?userEmail=test@test"
+      "backend/users/advices/voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/advices/suggested/rated?userEmail=test@test"
+      "backend/users/advices/suggested/voted?userEmail=test@test"
     );
     expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
@@ -318,7 +318,7 @@ describe("Profile", () => {
       }
     );
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/categories/suggested/rated?userEmail=test@test"
+      "backend/users/categories/suggested/voted?userEmail=test@test"
     );
   });
 
@@ -428,7 +428,7 @@ describe("Profile", () => {
     );
   });
 
-  test("should display info when there are no rated suggested categories", async () => {
+  test("should display info when there are no voted suggested categories", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: true,
@@ -445,11 +445,11 @@ describe("Profile", () => {
     expect(emptyList).toBeInTheDocument();
     expect(emptyList).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/categories/suggested/rated?userEmail=test@test"
+      "backend/users/categories/suggested/voted?userEmail=test@test"
     );
   });
 
-  test("should display info when fetching rated categories fails", async () => {
+  test("should display info when fetching voted categories fails", async () => {
     globalThis.fetch = vi.fn(() =>
       Promise.resolve({
         ok: false,
@@ -463,7 +463,7 @@ describe("Profile", () => {
     );
     expect(error).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
-      "backend/users/categories/suggested/rated?userEmail=test@test"
+      "backend/users/categories/suggested/voted?userEmail=test@test"
     );
   });
 });

@@ -11,9 +11,9 @@ import TableRow from "../common/table/TableRow";
 import TableData from "../common/table/TableData";
 import TableDataLink from "../common/table/TableDataLink";
 import {
-  getUserRatedAdvicesUrl,
-  getUserRatedSuggestedAdvicesUrl,
-  getUserRatedSuggestedCategoriesUrl,
+  getUserVotedAdvicesUrl,
+  getUserVotedSuggestedAdvicesUrl,
+  getUserVotedSuggestedCategoriesUrl,
   getUserSuggestedAdvicesUrl,
   getUserSuggestedCategoriesUrl,
 } from "../../util/endpoints";
@@ -45,7 +45,7 @@ export default function Profile() {
     async function fetchUserVotedAdvices() {
       setVotedAdvicesLoading(true);
       try {
-        const response = await fetch(getUserRatedAdvicesUrl(getUserEmail()));
+        const response = await fetch(getUserVotedAdvicesUrl(getUserEmail()));
         if (response.ok) {
           const responseData = await response.json();
           setVotedAdvices(responseData);
@@ -65,7 +65,7 @@ export default function Profile() {
       setVotedSuggestedAdvicesLoading(true);
       try {
         const response = await fetch(
-          getUserRatedSuggestedAdvicesUrl(getUserEmail())
+          getUserVotedSuggestedAdvicesUrl(getUserEmail())
         );
         if (response.ok) {
           const responseData = await response.json();
@@ -138,7 +138,7 @@ export default function Profile() {
       setVotedSuggestedCategoriesLoading(true);
       try {
         const response = await fetch(
-          getUserRatedSuggestedCategoriesUrl(getUserEmail())
+          getUserVotedSuggestedCategoriesUrl(getUserEmail())
         );
         if (response.ok) {
           const responseData = await response.json();

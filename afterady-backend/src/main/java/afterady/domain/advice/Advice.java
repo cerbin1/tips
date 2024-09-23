@@ -2,7 +2,7 @@ package afterady.domain.advice;
 
 import afterady.domain.advice.category.AdviceCategory;
 import afterady.service.advice.AdviceDetailsDto;
-import afterady.service.advice.UserVotedAdviceDetailsDto;
+import afterady.service.advice.VotedAdviceDetailsDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -25,21 +25,21 @@ public class Advice {
     private String name;
     private AdviceCategory category;
     private String content;
-    private Set<String> userEmailVotes;
+    private Set<String> votes;
 
     public void addUserVote(String userEmail) {
-        userEmailVotes.add(userEmail);
+        votes.add(userEmail);
     }
 
     public AdviceDetailsDto toAdviceDetailsDto() {
         return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, getRating());
     }
 
-    public UserVotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {
-        return new UserVotedAdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content);
+    public VotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {
+        return new VotedAdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content);
     }
 
     public Integer getRating() {
-        return userEmailVotes.size();
+        return votes.size();
     }
 }

@@ -25,11 +25,11 @@ public final class SuggestedAdvice {
     private final AdviceCategory category;
     private final String content;
     private final Long creatorId;
-    private Set<String> userEmailVotesUp;
-    private Set<String> userEmailVotesDown;
+    private Set<String> votesUp;
+    private Set<String> votesDown;
 
     public Integer getRating() {
-        return userEmailVotesUp.size() - userEmailVotesDown.size();
+        return votesUp.size() - votesDown.size();
     }
 
     public SuggestedAdviceDetailsDto toSuggestedAdviceDetailsDto() {
@@ -37,14 +37,14 @@ public final class SuggestedAdvice {
     }
 
     public void addUserVoteUp(String userEmail) {
-        userEmailVotesUp.add(userEmail);
+        votesUp.add(userEmail);
     }
 
     public void addUserVoteDown(String userEmail) {
-        userEmailVotesDown.add(userEmail);
+        votesDown.add(userEmail);
     }
 
     public boolean userVoted(String userEmail) {
-        return userEmailVotesUp.contains(userEmail) || userEmailVotesDown.contains(userEmail);
+        return votesUp.contains(userEmail) || votesDown.contains(userEmail);
     }
 }

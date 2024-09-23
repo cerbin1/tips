@@ -18,9 +18,9 @@ public interface AdviceService {
 
     Optional<Advice> getAdviceById(UUID id);
 
-    Optional<Advice> increaseAdviceRating(UUID adviceId, String userEmail);
+    Optional<Advice> voteAdvice(UUID adviceId, String userEmail);
 
-    List<UserVotedAdviceDetailsDto> getUserVotedAdvices(String userEmail);
+    List<VotedAdviceDetailsDto> getUserVotedAdvices(String userEmail);
 
     int getAdvicesCountByCategory(AdviceCategory category);
 
@@ -32,7 +32,7 @@ public interface AdviceService {
 
     Optional<SuggestedAdvice> getSuggestedAdviceById(UUID id);
 
-    Optional<SuggestedAdvice> rateSuggestedAdvice(UUID id, String userEmail, boolean rateUp);
+    Optional<SuggestedAdvice> voteSuggestedAdvice(UUID id, String userEmail, boolean voteUp);
 
     List<SuggestedAdviceDetailsDto> getUserVotedSuggestedAdvices(String userEmail);
 }

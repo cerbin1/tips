@@ -26,13 +26,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<SuggestedCategoryDetailsDto> getCategoriesVotedByUser(String userEmail) {
+    public List<SuggestedCategoryDetailsDto> getUserVotedCategories(String userEmail) {
         MatchOperation matchStage = match(new Criteria()
                 .orOperator(
-                        Criteria.where("userEmailVotesUp").in(userEmail),
-                        Criteria.where("userEmailVotesDown").in(userEmail))
+                        Criteria.where("votesUp").in(userEmail),
+                        Criteria.where("votesDown").in(userEmail))
         );
-        ProjectionOperation projectStage = project("id", "name", "userEmailVotesUp", "userEmailVotesDown");
+        ProjectionOperation projectStage = project("id", "name", "votesUp", "votesDown");
         SortOperation sortStage = sort(Sort.by(Sort.Direction.DESC, "name"));
         Aggregation aggregation = newAggregation(
                 matchStage,
@@ -49,11 +49,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<SuggestedCategory> rateSuggestedCategory(UUID id, String userEmail, boolean rateUp) {
+    public Optional<SuggestedCategory> voteSuggestedCategory(UUID id, String userEmail, boolean voteUp) {
         Optional<SuggestedCategory> maybeSuggestedCategory = suggestedCategoryRepository.findById(id);
         if (maybeSuggestedCategory.isPresent()) {
             SuggestedCategory suggestedCategory = maybeSuggestedCategory.get();
-            if (rateUp) {
+            if (voteUp) {
                 suggestedCategory.addUserVoteUp(userEmail);
             } else {
                 suggestedCategory.addUserVoteDown(userEmail);

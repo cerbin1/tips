@@ -32,7 +32,7 @@ describe("SuggestedCategoryDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false));
+      .mockResolvedValueOnce(votedCategoryResponse(false));
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
 
     expect(
@@ -45,12 +45,12 @@ describe("SuggestedCategoryDetails", () => {
     expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
     const buttons = screen.getAllByRole("button");
     expect(buttons).toHaveLength(2);
-    const rateDownButton = buttons[0];
-    expect(rateDownButton).toBeInTheDocument();
-    expect(rateDownButton).toHaveTextContent("Oceń jako nieprzydatne");
-    const rateUpButton = buttons[1];
-    expect(rateUpButton).toBeInTheDocument();
-    expect(rateUpButton).toHaveTextContent("Oceń jako przydatne");
+    const voteDownButton = buttons[0];
+    expect(voteDownButton).toBeInTheDocument();
+    expect(voteDownButton).toHaveTextContent("Oceń jako nieprzydatne");
+    const voteUpButton = buttons[1];
+    expect(voteUpButton).toBeInTheDocument();
+    expect(voteUpButton).toHaveTextContent("Oceń jako przydatne");
     assertFetchCategoryDetailsRequestsExecuted();
   });
 
@@ -58,7 +58,7 @@ describe("SuggestedCategoryDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false));
+      .mockResolvedValueOnce(votedCategoryResponse(false));
 
     renderWithAuth(<SuggestedCategoryDetails />);
 
@@ -93,7 +93,7 @@ describe("SuggestedCategoryDetails", () => {
     assertFetchCategoryDetailsRequestsExecuted();
   });
 
-  test("should display error when fetching user rated category info response is not ok", async () => {
+  test("should display error when fetching user voted category info response is not ok", async () => {
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: false }));
 
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
@@ -109,7 +109,7 @@ describe("SuggestedCategoryDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false));
+      .mockResolvedValueOnce(votedCategoryResponse(false));
 
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
 
@@ -123,7 +123,7 @@ describe("SuggestedCategoryDetails", () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
+      .mockResolvedValueOnce(votedCategoryResponse(false))
       .mockResolvedValueOnce({ ok: false });
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
@@ -134,14 +134,14 @@ describe("SuggestedCategoryDetails", () => {
     expect(
       screen.getByText("Nie udało się ocenić kategorii!")
     ).toBeInTheDocument();
-    assertCategoryRatedRequestExecuted(true);
+    assertCategoryVotedRequestExecuted(true);
   });
 
   test("should display error when rating category down fails", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
+      .mockResolvedValueOnce(votedCategoryResponse(false))
       .mockResolvedValueOnce({ ok: false });
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
@@ -152,15 +152,15 @@ describe("SuggestedCategoryDetails", () => {
     expect(
       screen.getByText("Nie udało się ocenić kategorii!")
     ).toBeInTheDocument();
-    assertCategoryRatedRequestExecuted(false);
+    assertCategoryVotedRequestExecuted(false);
   });
 
   test("should block button and change text when rating category up", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
-      .mockResolvedValueOnce(ratedUpResponse());
+      .mockResolvedValueOnce(votedCategoryResponse(false))
+      .mockResolvedValueOnce(votedUpResponse());
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -175,15 +175,15 @@ describe("SuggestedCategoryDetails", () => {
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
     expect(screen.getByText("6")).toBeInTheDocument();
-    assertCategoryRatedRequestExecuted(true);
+    assertCategoryVotedRequestExecuted(true);
   });
 
   test("should block button and change text when rating category down", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
-      .mockResolvedValueOnce(ratedDownResponse());
+      .mockResolvedValueOnce(votedCategoryResponse(false))
+      .mockResolvedValueOnce(votedDownResponse());
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -198,31 +198,31 @@ describe("SuggestedCategoryDetails", () => {
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
     expect(screen.getByText("4")).toBeInTheDocument();
-    assertCategoryRatedRequestExecuted(false);
+    assertCategoryVotedRequestExecuted(false);
   });
 
-  test("should buttons be visible and enabled when user did not rate category", async () => {
+  test("should buttons be visible and enabled when user did not vote category", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false));
+      .mockResolvedValueOnce(votedCategoryResponse(false));
 
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
 
-    const rateUpButton = screen.getByText("Oceń jako przydatne");
-    expect(rateUpButton).toBeEnabled();
-    const rateDownButton = screen.getByText("Oceń jako nieprzydatne");
-    expect(rateDownButton).toBeEnabled();
+    const voteUpButton = screen.getByText("Oceń jako przydatne");
+    expect(voteUpButton).toBeEnabled();
+    const voteDownButton = screen.getByText("Oceń jako nieprzydatne");
+    expect(voteDownButton).toBeEnabled();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toBeInTheDocument();
     assertFetchCategoryDetailsRequestsExecuted();
   });
 
-  test("should buttons be hidden and display info when user rated category up", async () => {
+  test("should buttons be hidden and display info when user voted category up", async () => {
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce(ratedUpResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(true));
+      .mockResolvedValueOnce(votedUpResponse())
+      .mockResolvedValueOnce(votedCategoryResponse(true));
 
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
 
@@ -233,11 +233,11 @@ describe("SuggestedCategoryDetails", () => {
     assertFetchCategoryDetailsRequestsExecuted();
   });
 
-  test("should buttons be hidden and display info when user rated category down", async () => {
+  test("should buttons be hidden and display info when user voted category down", async () => {
     globalThis.fetch = vi
       .fn()
-      .mockResolvedValueOnce(ratedDownResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(true));
+      .mockResolvedValueOnce(votedDownResponse())
+      .mockResolvedValueOnce(votedCategoryResponse(true));
 
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
 
@@ -248,12 +248,12 @@ describe("SuggestedCategoryDetails", () => {
     assertFetchCategoryDetailsRequestsExecuted();
   });
 
-  test("should successfully rate category up and display info", async () => {
+  test("should successfully vote category up and display info", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
-      .mockResolvedValueOnce(ratedUpResponse());
+      .mockResolvedValueOnce(votedCategoryResponse(false))
+      .mockResolvedValueOnce(votedUpResponse());
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -262,19 +262,19 @@ describe("SuggestedCategoryDetails", () => {
     await userEvent.click(screen.getByText("Oceń jako przydatne"));
 
     expect(screen.getByText("6")).toBeInTheDocument();
-    const rateSuccess = screen.getByText("Ocena podwyższona pomyślnie.");
-    expect(rateSuccess).toBeInTheDocument();
-    expect(rateSuccess).toHaveClass("py-6 text-green-500");
+    const voteSuccess = screen.getByText("Ocena podwyższona pomyślnie.");
+    expect(voteSuccess).toBeInTheDocument();
+    expect(voteSuccess).toHaveClass("py-6 text-green-500");
     expect(screen.getByText("Oceniono")).toBeDisabled();
-    assertCategoryRatedRequestExecuted(true);
+    assertCategoryVotedRequestExecuted(true);
   });
 
-  test("should successfully rate category down and display info", async () => {
+  test("should successfully vote category down and display info", async () => {
     globalThis.fetch = vi
       .fn()
       .mockResolvedValueOnce(suggestedCategoryDetailsResponse())
-      .mockResolvedValueOnce(ratedCategoryResponse(false))
-      .mockResolvedValueOnce(ratedDownResponse());
+      .mockResolvedValueOnce(votedCategoryResponse(false))
+      .mockResolvedValueOnce(votedDownResponse());
     await act(async () => renderWithAuth(<SuggestedCategoryDetails />));
     assertFetchCategoryDetailsRequestsExecuted();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
@@ -283,11 +283,11 @@ describe("SuggestedCategoryDetails", () => {
     await userEvent.click(screen.getByText("Oceń jako nieprzydatne"));
 
     expect(screen.getByText("4")).toBeInTheDocument();
-    const rateSuccess = screen.getByText("Ocena obniżona pomyślnie.");
-    expect(rateSuccess).toBeInTheDocument();
-    expect(rateSuccess).toHaveClass("py-6 text-green-500");
+    const voteSuccess = screen.getByText("Ocena obniżona pomyślnie.");
+    expect(voteSuccess).toBeInTheDocument();
+    expect(voteSuccess).toHaveClass("py-6 text-green-500");
     expect(screen.getByText("Oceniono")).toBeDisabled();
-    assertCategoryRatedRequestExecuted(false);
+    assertCategoryVotedRequestExecuted(false);
   });
 });
 
@@ -309,7 +309,7 @@ function assertFetchCategoryDetailsRequestsExecuted() {
     "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
   );
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate/check?userEmail=test@email",
+    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/vote/check?userEmail=test@email",
     {
       headers: {
         Authorization: "Bearer token",
@@ -319,18 +319,18 @@ function assertFetchCategoryDetailsRequestsExecuted() {
   );
 }
 
-function ratedCategoryResponse(isRated) {
+function votedCategoryResponse(isVoted) {
   return {
     ok: true,
-    json: () => Promise.resolve({ rated: isRated }),
+    json: () => Promise.resolve({ voted: isVoted }),
   };
 }
 
-function assertCategoryRatedRequestExecuted(rateType) {
+function assertCategoryVotedRequestExecuted(voteType) {
   expect(globalThis.fetch).toBeCalledTimes(3);
   expect(globalThis.fetch).toBeCalledWith(
-    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/rate?rateType=" +
-      rateType,
+    "backend/categories/suggested/63b4072b-b8c8-4f9a-acf4-76d0948adc6e/vote?voteType=" +
+      voteType,
     {
       method: "POST",
       headers: {
@@ -342,7 +342,7 @@ function assertCategoryRatedRequestExecuted(rateType) {
   );
 }
 
-function ratedUpResponse() {
+function votedUpResponse() {
   return {
     ok: true,
     json: () =>
@@ -353,7 +353,7 @@ function ratedUpResponse() {
   };
 }
 
-function ratedDownResponse() {
+function votedDownResponse() {
   return {
     ok: true,
     json: () =>

@@ -8,17 +8,17 @@ import RequestError from "../common/RequestError";
 import Loader from "../common/Loader";
 import {
   getAdviceDetailsUrl,
-  getUserRatedAdviceInfoUrl,
-  rateAdviceUrl,
+  getUserVotedAdviceInfoUrl,
+  voteAdviceUrl,
 } from "../../util/endpoints";
 
 export default function AdviceDetails() {
   const [adviceDetails, setAdviceDetails] = useState();
   const [adviceDetailsloading, setAdviceDetailsloading] = useState(false);
   const [adviceDetailsError, setAdviceDetailsError] = useState();
-  const [rateAdviceLoading, setRateAdviceLoading] = useState(false);
-  const [rateAdviceError, setRateAdviceError] = useState();
-  const [rateAdviceSuccess, setRateAdviceSuccess] = useState();
+  const [voteAdviceLoading, setVoteAdviceLoading] = useState(false);
+  const [voteAdviceError, setVoteAdviceError] = useState();
+  const [voteAdviceSuccess, setVoteAdviceSuccess] = useState();
   const [userVoted, setUserVoted] = useState(false);
   const [userVotedError, setUserVotedError] = useState();
   const { adviceId } = useParams();
@@ -45,10 +45,10 @@ export default function AdviceDetails() {
       }
     }
 
-    async function fetchUserRatedAdvice() {
+    async function fetchUserVotedAdvice() {
       setUserVotedError();
       const response = await fetch(
-        getUserRatedAdviceInfoUrl(adviceId, getUserEmail()),
+        getUserVotedAdviceInfoUrl(adviceId, getUserEmail()),
         {
           headers: {
             "Content-Type": "application/json",
@@ -58,7 +58,7 @@ export default function AdviceDetails() {
       );
       if (response.ok) {
         const responseData = await response.json();
-        setUserVoted(responseData.rated);
+        setUserVoted(responseData.voted);
       } else {
         setUserVotedError("Nie udało się pobrać informacji o głosowaniu!");
       }
@@ -66,18 +66,18 @@ export default function AdviceDetails() {
     async function fetchAdviceDetails() {
       setAdviceDetailsloading(true);
       await fetchAdvice();
-      await fetchUserRatedAdvice();
+      await fetchUserVotedAdvice();
       setAdviceDetailsloading(false);
     }
     fetchAdviceDetails();
   }, [adviceId]);
 
-  function handleRateAdvice() {
-    setRateAdviceError();
-    setRateAdviceLoading(true);
+  function handleVoteAdvice() {
+    setVoteAdviceError();
+    setVoteAdviceLoading(true);
     async function sendRequest() {
       try {
-        const response = await fetch(rateAdviceUrl(adviceId), {
+        const response = await fetch(voteAdviceUrl(adviceId), {
           method: "POST",
           body: getUserEmail(),
           headers: {
@@ -88,15 +88,15 @@ export default function AdviceDetails() {
         if (response.ok) {
           const advice = await response.json();
           setAdviceDetails(advice);
-          setRateAdviceSuccess("Oceniono poradę.");
+          setVoteAdviceSuccess("Oceniono poradę.");
           setUserVoted(true);
         } else {
-          setRateAdviceError("Nie udało się ocenić porady!");
+          setVoteAdviceError("Nie udało się ocenić porady!");
         }
       } catch (error) {
-        setRateAdviceError("Nie udało się ocenić porady!");
+        setVoteAdviceError("Nie udało się ocenić porady!");
       }
-      setRateAdviceLoading(false);
+      setVoteAdviceLoading(false);
     }
     sendRequest();
   }
@@ -123,10 +123,10 @@ export default function AdviceDetails() {
           </div>
           {token && (
             <Button
-              disabled={rateAdviceLoading || rateAdviceSuccess || userVoted}
-              onClick={handleRateAdvice}
+              disabled={voteAdviceLoading || voteAdviceSuccess || userVoted}
+              onClick={handleVoteAdvice}
             >
-              {rateAdviceLoading
+              {voteAdviceLoading
                 ? "Wysyłanie oceny..."
                 : userVoted
                 ? "Oceniono"
@@ -137,12 +137,12 @@ export default function AdviceDetails() {
         </>
       )}
 
-      {rateAdviceSuccess && (
-        <p className="py-6 text-green-500">{rateAdviceSuccess}</p>
+      {voteAdviceSuccess && (
+        <p className="py-6 text-green-500">{voteAdviceSuccess}</p>
       )}
 
       <RequestError content={adviceDetailsError} />
-      <RequestError content={rateAdviceError} />
+      <RequestError content={voteAdviceError} />
       <RequestError content={userVotedError} />
     </ContainerSection>
   );

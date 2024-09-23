@@ -6,7 +6,7 @@ import afterady.security.auth.AuthUtil;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.SuggestedAdviceDetailsDto;
-import afterady.service.advice.UserVotedAdviceDetailsDto;
+import afterady.service.advice.VotedAdviceDetailsDto;
 import afterady.service.captcha.CaptchaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -52,29 +52,29 @@ public class AdviceController {
         return ResponseEntity.ok(maybeAdvice.get().toAdviceDetailsDto());
     }
 
-    @PostMapping("/advices/{adviceId}/rate")
-    public ResponseEntity<?> rateAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail) {
+    @PostMapping("/advices/{adviceId}/vote")
+    public ResponseEntity<?> voteAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail) {
         Optional<Advice> maybeAdvice = adviceService.getAdviceById(adviceId);
         if (maybeAdvice.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
         }
-        Optional<Advice> updatedAdvice = adviceService.increaseAdviceRating(adviceId, userEmail);
+        Optional<Advice> updatedAdvice = adviceService.voteAdvice(adviceId, userEmail);
         if (updatedAdvice.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not vote advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
         } else {
             return new ResponseEntity<>(updatedAdvice.get().toAdviceDetailsDto(), OK);
         }
     }
 
-    @GetMapping("/advices/{adviceId}/rate/check")
-    public ResponseEntity<UserRatingResultResponse> checkUserRatedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
+    @GetMapping("/advices/{adviceId}/vote/check")
+    public ResponseEntity<UserVotedCheckResponse> checkUserVotedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
         Optional<Advice> adviceById = adviceService.getAdviceById(adviceId);
         if (adviceById.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         Advice advice = adviceById.get();
-        boolean userRatedAdvice = advice.getUserEmailVotes().contains(userEmail);
-        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+        boolean userVotedAdvice = advice.getVotes().contains(userEmail);
+        return new ResponseEntity<>(new UserVotedCheckResponse(userVotedAdvice), OK);
     }
 
     @PostMapping("/advices/suggested")
@@ -127,33 +127,33 @@ public class AdviceController {
         return ResponseEntity.ok(maybeAdvice.get().toSuggestedAdviceDetailsDto());
     }
 
-    @PostMapping("/advices/suggested/{adviceId}/rate")
-    public ResponseEntity<?> rateSuggestedAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail, @RequestParam boolean rateType) {
+    @PostMapping("/advices/suggested/{adviceId}/vote")
+    public ResponseEntity<?> voteSuggestedAdvice(@PathVariable UUID adviceId, @RequestBody String userEmail, @RequestParam boolean voteType) {
         Optional<SuggestedAdvice> maybeAdvice = adviceService.getSuggestedAdviceById(adviceId);
         if (maybeAdvice.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Advice with id %s not found!", adviceId.toString())), NOT_FOUND);
         }
-        Optional<SuggestedAdvice> updatedAdvice = adviceService.rateSuggestedAdvice(adviceId, userEmail, rateType);
+        Optional<SuggestedAdvice> updatedAdvice = adviceService.voteSuggestedAdvice(adviceId, userEmail, voteType);
         if (updatedAdvice.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not vote advice with id %s", adviceId.toString())), INTERNAL_SERVER_ERROR);
         } else {
             return new ResponseEntity<>(updatedAdvice.get().toSuggestedAdviceDetailsDto(), OK);
         }
     }
 
-    @GetMapping("/advices/suggested/{adviceId}/rate/check")
-    public ResponseEntity<UserRatingResultResponse> checkUserRatedSuggestedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
+    @GetMapping("/advices/suggested/{adviceId}/vote/check")
+    public ResponseEntity<UserVotedCheckResponse> checkUserVotedSuggestedAdvice(@RequestParam String userEmail, @PathVariable UUID adviceId) {
         Optional<SuggestedAdvice> adviceById = adviceService.getSuggestedAdviceById(adviceId);
         if (adviceById.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         SuggestedAdvice suggestedAdvice = adviceById.get();
-        boolean userRatedAdvice = suggestedAdvice.userVoted(userEmail);
-        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+        boolean userVotedAdvice = suggestedAdvice.userVoted(userEmail);
+        return new ResponseEntity<>(new UserVotedCheckResponse(userVotedAdvice), OK);
     }
 
-    @GetMapping("/users/advices/rated")
-    public ResponseEntity<List<UserVotedAdviceDetailsDto>> getUserVotedAdvices(@RequestParam String userEmail) {
+    @GetMapping("/users/advices/voted")
+    public ResponseEntity<List<VotedAdviceDetailsDto>> getUserVotedAdvices(@RequestParam String userEmail) {
         return ResponseEntity.ok(adviceService.getUserVotedAdvices(userEmail));
     }
 
@@ -162,7 +162,7 @@ public class AdviceController {
         return ResponseEntity.ok(adviceService.getUserSuggestedAdvices(authUtil.getLoggedUserId()));
     }
 
-    @GetMapping("/users/advices/suggested/rated")
+    @GetMapping("/users/advices/suggested/voted")
     public ResponseEntity<List<SuggestedAdviceDetailsDto>> getUserVotedSuggestedAdvices(@RequestParam String userEmail) {
         return ResponseEntity.ok(adviceService.getUserVotedSuggestedAdvices(userEmail));
     }

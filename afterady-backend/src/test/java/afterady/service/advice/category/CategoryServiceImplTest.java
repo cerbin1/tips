@@ -40,7 +40,7 @@ public class CategoryServiceImplTest {
     }
 
     @Test
-    public void shouldGetListOfSuggestedCategoriesVotedByUser() {
+    public void shouldGetListOfVotedSuggestedCategories() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_CATEGORY_COLLECTION), eq(SuggestedCategory.class)))
                 .thenReturn(new AggregationResults<>(List.of(
@@ -52,7 +52,7 @@ public class CategoryServiceImplTest {
                 ), new Document()));
 
         // act
-        List<SuggestedCategoryDetailsDto> userVotedCategories = categoryService.getCategoriesVotedByUser(TEST_EMAIL);
+        List<SuggestedCategoryDetailsDto> userVotedCategories = categoryService.getUserVotedCategories(TEST_EMAIL);
 
         // assert
         assertEquals(5, userVotedCategories.size());
@@ -80,14 +80,14 @@ public class CategoryServiceImplTest {
     }
 
     @Test
-    public void shouldRateSuggestedCategoryUp() {
+    public void shouldVoteSuggestedCategoryUp() {
         // arrange
         SuggestedCategory suggestedCategory = new SuggestedCategory(UUID_1, "name", 1L, generateTestVotes(1), emptySet());
         when(suggestedCategoryRepository.findById(eq(UUID_1))).thenReturn(Optional.of(suggestedCategory));
         when(suggestedCategoryRepository.save(suggestedCategory)).thenReturn(suggestedCategory);
 
         // act
-        Optional<SuggestedCategory> maybeUpdatedCategory = categoryService.rateSuggestedCategory(UUID_1, TEST_EMAIL, true);
+        Optional<SuggestedCategory> maybeUpdatedCategory = categoryService.voteSuggestedCategory(UUID_1, TEST_EMAIL, true);
 
         // assert
         assertTrue(maybeUpdatedCategory.isPresent());
@@ -101,14 +101,14 @@ public class CategoryServiceImplTest {
     }
 
     @Test
-    public void shouldRateSuggestedCategoryDown() {
+    public void shouldVoteSuggestedCategoryDown() {
         // arrange
         SuggestedCategory suggestedCategory = new SuggestedCategory(UUID_1, "name", 1L, emptySet(), generateTestVotes(1));
         when(suggestedCategoryRepository.findById(eq(UUID_1))).thenReturn(Optional.of(suggestedCategory));
         when(suggestedCategoryRepository.save(suggestedCategory)).thenReturn(suggestedCategory);
 
         // act
-        Optional<SuggestedCategory> maybeUpdatedCategory = categoryService.rateSuggestedCategory(UUID_1, TEST_EMAIL, false);
+        Optional<SuggestedCategory> maybeUpdatedCategory = categoryService.voteSuggestedCategory(UUID_1, TEST_EMAIL, false);
 
         // assert
         assertTrue(maybeUpdatedCategory.isPresent());

@@ -12,7 +12,7 @@ import afterady.service.activation_link.UserActivatorService;
 import afterady.service.advice.AdviceDetailsDto;
 import afterady.service.advice.AdviceService;
 import afterady.service.advice.SuggestedAdviceDetailsDto;
-import afterady.service.advice.UserVotedAdviceDetailsDto;
+import afterady.service.advice.VotedAdviceDetailsDto;
 import afterady.service.advice.category.CategoryService;
 import afterady.service.captcha.CaptchaService;
 import afterady.service.password_reset.ResetPasswordService;
@@ -349,25 +349,25 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldReturn404WhenRatingAdviceThatDoesNotExist() throws Exception {
+    public void shouldReturn404WhenVoteAdviceThatDoesNotExist() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(post("/advices/" + UUID_1 + "/rate").content(TEST_EMAIL)
+        mvc.perform(post("/advices/" + UUID_1 + "/vote").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
     }
 
     @Test
-    public void shouldRateAdvice() throws Exception {
+    public void shouldVoteAdvice() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
-        when(adviceService.increaseAdviceRating(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(2))));
+        when(adviceService.voteAdvice(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(2))));
 
         // act & assert
-        mvc.perform(post("/advices/" + UUID_1 + "/rate").content(TEST_EMAIL)
+        mvc.perform(post("/advices/" + UUID_1 + "/vote").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("name")))
@@ -378,57 +378,57 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldReturn400WhenGettingUserAdviceRateInfoAndAdviceNotExist() throws Exception {
+    public void shouldReturn400WhenGettingUserAdviceVoteInfoAndAdviceNotExist() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    public void shouldReturnFalseWhenUserNotRatedAdvice() throws Exception {
+    public void shouldReturnFalseWhenUserNotVotedAdvice() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rated", is(false)));
+                .andExpect(jsonPath("$.voted", is(false)));
     }
 
     @Test
-    public void shouldReturnTrueWhenUserRatedAdvice() throws Exception {
+    public void shouldReturnTrueWhenUserVotedAdvice() throws Exception {
         // arrange
         when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", Set.of(TEST_EMAIL))));
 
         // act & assert
-        mvc.perform(get("/advices/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rated", is(true)));
+                .andExpect(jsonPath("$.voted", is(true)));
     }
 
     @Test
-    public void shouldReturnEmptyUserVotedAdvices() throws Exception {
+    public void shouldReturnEmptyVotedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(emptyList());
 
         // act & assert
-        mvc.perform(get("/users/advices/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/voted?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
     @Test
-    public void shouldReturnListOfUserVotedAdvices() throws Exception {
+    public void shouldReturnListOfVotedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(List.of(
-                new UserVotedAdviceDetailsDto(UUID_1, "name", "HOME", "Dom", "content"),
-                new UserVotedAdviceDetailsDto(UUID_2, "name 2", "HEALTH", "Zdrowie", "content")));
+                new VotedAdviceDetailsDto(UUID_1, "name", "HOME", "Dom", "content"),
+                new VotedAdviceDetailsDto(UUID_2, "name 2", "HEALTH", "Zdrowie", "content")));
 
         // act & assert
-        mvc.perform(get("/users/advices/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/voted?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryName\":\"HOME\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\"},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryName\":\"HEALTH\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\"}]"));
@@ -519,25 +519,25 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldReturn404WhenRatingSuggestedAdviceThatDoesNotExist() throws Exception {
+    public void shouldReturn404WhenVoteSuggestedAdviceThatDoesNotExist() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/vote?voteType=true").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", is("Advice with id 63b4072b-b8c8-4f9a-acf4-76d0948adc6e not found!")));
     }
 
     @Test
-    public void shouldRateSuggestedAdviceUp() throws Exception {
+    public void shouldVoteSuggestedAdviceUp() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
-        when(adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), emptySet())));
+        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, true)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(2), emptySet())));
 
         // act & assert
-        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=true").content(TEST_EMAIL)
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/vote?voteType=true").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("name")))
@@ -545,18 +545,18 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.content", is("content")))
                 .andExpect(jsonPath("$.rating", is(2)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
-        verify(adviceService, times(1)).rateSuggestedAdvice(UUID_1, TEST_EMAIL, true);
+        verify(adviceService, times(1)).voteSuggestedAdvice(UUID_1, TEST_EMAIL, true);
         verifyNoMoreInteractions(adviceService);
     }
 
     @Test
-    public void shouldRateSuggestedAdviceDown() throws Exception {
+    public void shouldVoteSuggestedAdviceDown() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(1))));
-        when(adviceService.rateSuggestedAdvice(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(2))));
+        when(adviceService.voteSuggestedAdvice(UUID_1, TEST_EMAIL, false)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, emptySet(), generateTestVotes(2))));
 
         // act & assert
-        mvc.perform(post("/advices/suggested/" + UUID_1 + "/rate?rateType=false").content(TEST_EMAIL)
+        mvc.perform(post("/advices/suggested/" + UUID_1 + "/vote?voteType=false").content(TEST_EMAIL)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is("name")))
@@ -564,50 +564,50 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.content", is("content")))
                 .andExpect(jsonPath("$.rating", is(-2)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
-        verify(adviceService, times(1)).rateSuggestedAdvice(UUID_1, TEST_EMAIL, false);
+        verify(adviceService, times(1)).voteSuggestedAdvice(UUID_1, TEST_EMAIL, false);
         verifyNoMoreInteractions(adviceService);
     }
 
     @Test
-    public void shouldReturn400WhenGettingUserSuggestedAdviceRateInfoAndAdviceNotExist() throws Exception {
+    public void shouldReturn400WhenGettingUserSuggestedAdviceVoteInfoAndAdviceNotExist() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.empty());
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isBadRequest());
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verifyNoMoreInteractions(adviceService);
     }
 
     @Test
-    public void shouldReturnFalseWhenUserNotRatedSuggestedAdvice() throws Exception {
+    public void shouldReturnFalseWhenUserNotVotedSuggestedAdvice() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, generateTestVotes(1), emptySet())));
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rated", is(false)));
+                .andExpect(jsonPath("$.voted", is(false)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verifyNoMoreInteractions(adviceService);
     }
 
     @Test
-    public void shouldReturnTrueWhenUserRatedSuggestedAdvice() throws Exception {
+    public void shouldReturnTrueWhenUserVotedSuggestedAdvice() throws Exception {
         // arrange
         when(adviceService.getSuggestedAdviceById(UUID_1)).thenReturn(Optional.of(new SuggestedAdvice(UUID_1, "name", AdviceCategory.HOME, "content", 1L, Set.of(TEST_EMAIL), emptySet())));
 
         // act & assert
-        mvc.perform(get("/advices/suggested/" + UUID_1 + "/rate/check?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/advices/suggested/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.rated", is(true)));
+                .andExpect(jsonPath("$.voted", is(true)));
         verify(adviceService, times(1)).getSuggestedAdviceById(UUID_1);
         verifyNoMoreInteractions(adviceService);
     }
 
     @Test
-    public void shouldReturnEmptyUserVotedSuggestedAdvices() throws Exception {
+    public void shouldReturnEmptyListOfVotedSuggestedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL)).thenReturn(emptyList());
 
@@ -618,14 +618,14 @@ class AdviceControllerIT {
     }
 
     @Test
-    public void shouldReturnListOfUserVotedSuggestedAdvices() throws Exception {
+    public void shouldReturnListOfVotedSuggestedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL)).thenReturn(List.of(
                 new SuggestedAdviceDetailsDto(UUID_1, "name", "Dom", "content", 5),
                 new SuggestedAdviceDetailsDto(UUID_2, "name 2", "Zdrowie", "content", -5)));
 
         // act & assert
-        mvc.perform(get("/users/advices/suggested/rated?userEmail=" + TEST_EMAIL))
+        mvc.perform(get("/users/advices/suggested/voted?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\",\"rating\":-5}]"));

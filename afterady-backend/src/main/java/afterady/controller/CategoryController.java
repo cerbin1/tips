@@ -114,29 +114,29 @@ public class CategoryController {
         return ResponseEntity.ok(maybeCategory.get().toSuggestedCategoryDetailsDto());
     }
 
-    @PostMapping("/categories/suggested/{categoryId}/rate")
-    public ResponseEntity<?> rateSuggestedCategory(@PathVariable UUID categoryId, @RequestBody String userEmail, @RequestParam boolean rateType) {
+    @PostMapping("/categories/suggested/{categoryId}/vote")
+    public ResponseEntity<?> voteSuggestedCategory(@PathVariable UUID categoryId, @RequestBody String userEmail, @RequestParam boolean voteType) {
         Optional<SuggestedCategory> maybeCategory = categoryService.getSuggestedCategoryDetails(categoryId);
         if (maybeCategory.isEmpty()) {
             return new ResponseEntity<>(new MessageResponse(String.format("Suggested category with id %s not found!", categoryId.toString())), NOT_FOUND);
         }
-        Optional<SuggestedCategory> updatedCategory = categoryService.rateSuggestedCategory(categoryId, userEmail, rateType);
+        Optional<SuggestedCategory> updatedCategory = categoryService.voteSuggestedCategory(categoryId, userEmail, voteType);
         if (updatedCategory.isEmpty()) {
-            return new ResponseEntity<>(new MessageResponse(String.format("Could not rate category with id %s", categoryId.toString())), INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(new MessageResponse(String.format("Could not vote category with id %s", categoryId.toString())), INTERNAL_SERVER_ERROR);
         } else {
             return new ResponseEntity<>(updatedCategory.get().toSuggestedCategoryDetailsDto(), OK);
         }
     }
 
-    @GetMapping("/categories/suggested/{categoryId}/rate/check")
-    public ResponseEntity<UserRatingResultResponse> checkUserRatedSuggestedCategory(@RequestParam String userEmail, @PathVariable UUID categoryId) {
+    @GetMapping("/categories/suggested/{categoryId}/vote/check")
+    public ResponseEntity<UserVotedCheckResponse> checkUserVotedSuggestedCategory(@RequestParam String userEmail, @PathVariable UUID categoryId) {
         Optional<SuggestedCategory> maybeSuggestedCategory = categoryService.getSuggestedCategoryDetails(categoryId);
         if (maybeSuggestedCategory.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
         SuggestedCategory suggestedCategory = maybeSuggestedCategory.get();
-        boolean userRatedAdvice = suggestedCategory.userVoted(userEmail);
-        return new ResponseEntity<>(new UserRatingResultResponse(userRatedAdvice), OK);
+        boolean userVoted = suggestedCategory.userVoted(userEmail);
+        return new ResponseEntity<>(new UserVotedCheckResponse(userVoted), OK);
     }
 
     @GetMapping("/users/categories/suggested")
@@ -145,9 +145,9 @@ public class CategoryController {
         return ResponseEntity.ok(suggestedCategoryRepository.findByCreatorId(creatorId));
     }
 
-    @GetMapping("/users/categories/suggested/rated")
+    @GetMapping("/users/categories/suggested/voted")
     public ResponseEntity<List<SuggestedCategoryDetailsDto>> getUserVotedSuggestedCategories(@RequestParam String userEmail) {
-        return ResponseEntity.ok(categoryService.getCategoriesVotedByUser(userEmail));
+        return ResponseEntity.ok(categoryService.getUserVotedCategories(userEmail));
     }
 
     record MessageResponse(String message) {
