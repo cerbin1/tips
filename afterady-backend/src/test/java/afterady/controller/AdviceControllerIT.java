@@ -3,7 +3,6 @@ package afterady.controller;
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.SuggestedAdvice;
 import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
@@ -40,11 +39,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static afterady.TestUtils.*;
-import static afterady.domain.advice.category.AdviceCategory.HEALTH;
-import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static afterady.service.advice.Fixtures.*;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.emptySet;
 import static java.util.UUID.randomUUID;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -273,12 +269,12 @@ class AdviceControllerIT {
     @Test
     public void shouldGetRandomAdvice() throws Exception {
         // arrange
-        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto(UUID_1, "name", "Health", "Zdrowie", "content", 1));
+        when(adviceService.getRandomAdvice()).thenReturn(new AdviceDetailsDto(UUID_1, "name", "Health", "Zdrowie", "content", "source", 1));
 
         // act & assert
         mvc.perform(get("/advices/random"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"name\":\"name\", \"categoryName\":\"Health\", \"categoryDisplayName\":\"Zdrowie\", \"content\":\"content\"}"));
+                .andExpect(content().json("{\"name\":\"name\", \"categoryName\":\"Health\", \"categoryDisplayName\":\"Zdrowie\", \"content\":\"content\", \"source\":\"source\"}"));
     }
 
     @Test
@@ -295,16 +291,16 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnAdvicesRanking() throws Exception {
         // arrange
-        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "Dom", "content 1", 10),
-                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "Dom", "content 2", 9),
-                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "Dom", "content 3", 8),
-                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "Dom", "content 4", 7),
-                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "Dom", "content 5", 6),
-                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "Dom", "content 6", 5),
-                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "Dom", "content 7", 4),
-                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "Dom", "content 8", 3),
-                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "Dom", "content 9", 2),
-                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "Dom", "content 10", 1)
+        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "Dom", "content 1", "source", 10),
+                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "Dom", "content 2", "source", 9),
+                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "Dom", "content 3", "source", 8),
+                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "Dom", "content 4", "source", 7),
+                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "Dom", "content 5", "source", 6),
+                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "Dom", "content 6", "source", 5),
+                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "Dom", "content 7", "source", 4),
+                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "Dom", "content 8", "source", 3),
+                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "Dom", "content 9", "source", 2),
+                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "Dom", "content 10", "source", 1)
         ));
 
         // act & assert
@@ -336,7 +332,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))
@@ -346,6 +342,7 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.categoryName", is("HOME")))
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.source", is("source")))
                 .andExpect(jsonPath("$.rating", is(1)));
     }
 
@@ -364,8 +361,8 @@ class AdviceControllerIT {
     @Test
     public void shouldVoteAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
-        when(adviceService.voteAdvice(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(2))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
+        when(adviceService.voteAdvice(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(2))));
 
         // act & assert
         mvc.perform(post("/advices/" + UUID_1 + "/vote").content(TEST_EMAIL)
@@ -375,6 +372,7 @@ class AdviceControllerIT {
                 .andExpect(jsonPath("$.categoryName", is("HOME")))
                 .andExpect(jsonPath("$.categoryDisplayName", is("Dom")))
                 .andExpect(jsonPath("$.content", is("content")))
+                .andExpect(jsonPath("$.source", is("source")))
                 .andExpect(jsonPath("$.rating", is(2)));
     }
 
@@ -391,7 +389,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnFalseWhenUserNotVotedAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
@@ -402,7 +400,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnTrueWhenUserVotedAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", Set.of(TEST_EMAIL))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", Set.of(TEST_EMAIL))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
@@ -604,13 +602,13 @@ class AdviceControllerIT {
     public void shouldReturnListOfVotedSuggestedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedSuggestedAdvices(TEST_EMAIL)).thenReturn(List.of(
-                new SuggestedAdviceDetailsDto(UUID_1, "name", "Dom", "content", 5),
-                new SuggestedAdviceDetailsDto(UUID_2, "name 2", "Zdrowie", "content", -5)));
+                new SuggestedAdviceDetailsDto(UUID_1, "name", "Dom", "content", "source", 5),
+                new SuggestedAdviceDetailsDto(UUID_2, "name 2", "Zdrowie", "content 2", "source 2", -5)));
 
         // act & assert
         mvc.perform(get("/users/advices/suggested/voted?userEmail=" + TEST_EMAIL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content\",\"rating\":-5}]"));
+                .andExpect(content().json("[{\"id\":\"63b4072b-b8c8-4f9a-acf4-76d0948adc6e\",\"name\":\"name\",\"categoryDisplayName\":\"Dom\",\"content\":\"content\",\"source\":\"source\",\"rating\":5},{\"id\":\"d4645e88-0d23-4946-a75d-694fc475ceba\",\"name\":\"name 2\",\"categoryDisplayName\":\"Zdrowie\",\"content\":\"content 2\",\"source\":\"source 2\",\"rating\":-5}]"));
     }
 }

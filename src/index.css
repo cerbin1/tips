@@ -24,6 +24,11 @@ h2 {
   font-size: 1.5rem;
   cursor: default;
 }
+
+h3 {
+  font-size: 1.3rem;
+  cursor: default;
+}
 /* Global end */
 
 /* Commons start */

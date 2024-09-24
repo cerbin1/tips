@@ -25,6 +25,7 @@ public class Advice {
     private String name;
     private AdviceCategory category;
     private String content;
+    private String source;
     private Set<String> votes;
 
     public void addUserVote(String userEmail) {
@@ -32,7 +33,7 @@ public class Advice {
     }
 
     public AdviceDetailsDto toAdviceDetailsDto() {
-        return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, getRating());
+        return new AdviceDetailsDto(id, name, category.name(), category.getDisplayName(), content, source, getRating());
     }
 
     public VotedAdviceDetailsDto toUserVotedAdviceDetailsDto() {

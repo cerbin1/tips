@@ -21,6 +21,7 @@ export default function AdviceDetails() {
   const [voteAdviceSuccess, setVoteAdviceSuccess] = useState();
   const [userVoted, setUserVoted] = useState(false);
   const [userVotedError, setUserVotedError] = useState();
+  const [showSource, setShowSource] = useState(false);
   const { adviceId } = useParams();
   const { token } = useAuth();
 
@@ -113,6 +114,19 @@ export default function AdviceDetails() {
               {adviceDetails.categoryDisplayName}
             </p>
           </h2>
+          {adviceDetails.source && (
+            <div className="py-6">
+              <h3>Źródło:</h3>
+
+              <p
+                className="text-sky-500 cursor-pointer"
+                onClick={() => setShowSource(true)}
+              >
+                Pokaż źródło
+              </p>
+              {showSource && adviceDetails.source}
+            </div>
+          )}
 
           <p className="border border-sky-500 rounded py-6 px-6">
             {adviceDetails.content}

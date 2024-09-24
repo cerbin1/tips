@@ -170,11 +170,11 @@ class CategoryControllerIT {
         // arrange
         when(categoryRepository.findById(UUID_1)).thenReturn(Optional.of(new Category(UUID_1, HOME, "description")));
         when(adviceService.getAdvicesBy(HOME)).thenReturn(Stream.of(
-                new Advice(UUID_1, "name 1", HOME, "content 1", generateTestVotes(5)),
-                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
-                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
-                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
-                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))).map(Advice::toAdviceDetailsDto).toList());
+                new Advice(UUID_1, "name 1", HOME, "content 1", "source", generateTestVotes(5)),
+                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(4)),
+                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", generateTestVotes(3)),
+                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", generateTestVotes(2)),
+                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", generateTestVotes(1))).map(Advice::toAdviceDetailsDto).toList());
 
         // act & assert
         mvc.perform(get("/categories/" + UUID_1))

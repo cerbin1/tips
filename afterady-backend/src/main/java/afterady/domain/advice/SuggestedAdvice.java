@@ -34,7 +34,7 @@ public final class SuggestedAdvice {
     }
 
     public SuggestedAdviceDetailsDto toSuggestedAdviceDetailsDto() {
-        return new SuggestedAdviceDetailsDto(id, name, category.getDisplayName(), content, getRating());
+        return new SuggestedAdviceDetailsDto(id, name, category.getDisplayName(), content, source, getRating());
     }
 
     public void addUserVoteUp(String userEmail) {

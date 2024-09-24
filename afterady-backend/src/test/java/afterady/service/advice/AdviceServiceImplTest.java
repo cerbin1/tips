@@ -59,7 +59,7 @@ public class AdviceServiceImplTest {
     public void shouldGetRandomAdvice() {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
-                .thenReturn(new AggregationResults<>(List.of(new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1))), new Document()));
+                .thenReturn(new AggregationResults<>(List.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1))), new Document()));
         // act
         AdviceDetailsDto advice = adviceService.getRandomAdvice();
 
@@ -69,6 +69,7 @@ public class AdviceServiceImplTest {
         assertEquals("HOME", advice.categoryName());
         assertEquals("Dom", advice.categoryDisplayName());
         assertEquals("content", advice.content());
+        assertEquals("source", advice.source());
         assertEquals(1, advice.rating());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
@@ -80,11 +81,11 @@ public class AdviceServiceImplTest {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
-                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", generateTestVotes(5)),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(5)),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(4)),
+                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", generateTestVotes(3)),
+                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", generateTestVotes(2)),
+                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", generateTestVotes(1))
                 ), new Document()));
 
         // act
@@ -107,7 +108,7 @@ public class AdviceServiceImplTest {
     public void shouldGetAdviceById() {
         // arrange
         when(adviceRepository.findById(eq(UUID_1)))
-                .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1))));
+                .thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1))));
 
         // act
         Optional<Advice> maybeAdvice = adviceService.getAdviceById(UUID_1);
@@ -120,6 +121,7 @@ public class AdviceServiceImplTest {
         assertEquals("Dom", adviceDetails.getCategory().getDisplayName());
         assertEquals("HOME", adviceDetails.getCategory().name());
         assertEquals("content", adviceDetails.getContent());
+        assertEquals("source", adviceDetails.getSource());
         assertEquals(1, adviceDetails.getRating());
         verify(adviceRepository, times(1)).findById(eq(UUID_1));
         verifyNoMoreInteractions(adviceRepository);
@@ -129,7 +131,7 @@ public class AdviceServiceImplTest {
     @Test
     public void shouldVoteAdvice() {
         // arrange
-        Advice advice = new Advice(UUID_1, "name", HOME, "content", generateTestVotes(1));
+        Advice advice = new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1));
         when(adviceRepository.findById(eq(UUID_1)))
                 .thenReturn(Optional.of(advice));
         when(adviceRepository.save(advice)).thenReturn(advice);
@@ -153,11 +155,11 @@ public class AdviceServiceImplTest {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
-                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", Set.of(TEST_EMAIL))
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", Set.of(TEST_EMAIL)),
+                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", Set.of(TEST_EMAIL))
                 ), new Document()));
 
         // act
@@ -189,11 +191,11 @@ public class AdviceServiceImplTest {
     public void shouldGetCategoryAdvices() {
         // arrange
         when(adviceRepository.findByCategory(HOME)).thenReturn(List.of(
-                new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", generateTestVotes(5)),
-                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", generateTestVotes(4)),
-                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", generateTestVotes(3)),
-                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", generateTestVotes(2)),
-                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", generateTestVotes(1))
+                new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(5)),
+                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(4)),
+                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", generateTestVotes(3)),
+                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", generateTestVotes(2)),
+                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", generateTestVotes(1))
         ));
 
         // act

@@ -49,6 +49,12 @@ describe("SuggestedAdviceDetails", () => {
     expect(screen.getByText("Treść")).toBeInTheDocument();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
+    const sourceHeading = screen.getByText("Źródło:");
+    expect(sourceHeading).toHaveRole("heading", { level: 3 });
+    const showSourceButton = screen.getByText("Pokaż źródło");
+    expect(showSourceButton).toBeInTheDocument();
+    expect(showSourceButton).toHaveClass("text-sky-500 cursor-pointer");
+    expect(screen.queryByText("Źródło porady")).toBeNull();
     const buttons = screen.getAllByRole("button");
     expect(buttons).toHaveLength(2);
     const voteDownButton = buttons[0];
@@ -295,6 +301,21 @@ describe("SuggestedAdviceDetails", () => {
     expect(screen.getByText("Oceniono")).toBeDisabled();
     assertAdviceVotedRequestExecuted(false);
   });
+
+  test("should show source on button click", async () => {
+    globalThis.fetch = vi
+      .fn()
+      .mockResolvedValueOnce(suggestedAdviceDetailsResponse())
+      .mockResolvedValueOnce(votedAdviceResponse(false));
+    await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
+    assertFetchAdviceDetailsRequestsExecuted();
+    const showSourceButton = screen.getByText("Pokaż źródło");
+    expect(screen.queryByText("Źródło porady")).toBeNull();
+
+    await userEvent.click(showSourceButton);
+
+    expect(screen.getByText("Źródło porady")).toBeInTheDocument();
+  });
 });
 
 function assertFetchAdviceDetailsRequestsExecuted() {
@@ -321,6 +342,7 @@ function suggestedAdviceDetailsResponse() {
         name: "Nazwa porady",
         categoryDisplayName: "Zdrowie",
         content: "Treść",
+        source: "Źródło porady",
         rating: 5,
       }),
   };

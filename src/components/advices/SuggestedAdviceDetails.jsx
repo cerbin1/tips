@@ -27,6 +27,7 @@ export default function SuggestedAdviceDetails() {
   const [voteAdviceSuccess, setVoteAdviceSuccess] = useState();
   const [voteAdviceDownLoading, setVoteAdviceDownLoading] = useState(false);
   const [voteAdviceDown, setVoteAdviceDown] = useState(false);
+  const [showSource, setShowSource] = useState(false);
   const { token } = useAuth();
   const { id } = useParams();
 
@@ -145,6 +146,19 @@ export default function SuggestedAdviceDetails() {
               {suggestedAdviceDetails.rating}
             </p>
           </div>
+          {suggestedAdviceDetails.source && (
+            <div className="py-6">
+              <h3>Źródło:</h3>
+
+              <p
+                className="text-sky-500 cursor-pointer"
+                onClick={() => setShowSource(true)}
+              >
+                Pokaż źródło
+              </p>
+              {showSource && suggestedAdviceDetails.source}
+            </div>
+          )}
 
           {token && userVoted && <p>Oceniono poradę.</p>}
           {token && !userVoted && (
