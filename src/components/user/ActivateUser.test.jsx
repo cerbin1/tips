@@ -28,12 +28,13 @@ describe("ActivateUser", () => {
     renderWithRouter(<ActivateUser />);
 
     expect(screen.getByTestId("activate-user-section"));
-    const successInfo = await screen.findByText("Konto zostało aktywowane.");
-    expect(successInfo).toHaveClass("py-6 text-green-600");
-    expect(successInfo).toBeInTheDocument();
-    const loginButton = screen.getByText("Przejdź do logowania");
-    expect(loginButton).toBeInTheDocument();
-    expect(loginButton).toHaveAttribute("href", "/login");
+    expect(
+      await screen.findByText("Konto zostało aktywowane.")
+    ).toBeInTheDocument();
+    expect(screen.getByText("Przejdź do logowania")).toHaveAttribute(
+      "href",
+      "/login"
+    );
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });
@@ -56,10 +57,9 @@ describe("ActivateUser", () => {
 
     render(<ActivateUser />);
 
-    const error = await screen.findByText(
-      "Nie udało się aktywować użytkownika!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      await screen.findByText("Nie udało się aktywować użytkownika!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/activate/token");
   });

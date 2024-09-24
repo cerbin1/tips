@@ -9,15 +9,11 @@ describe("TableHeader", () => {
       </table>
     );
 
-    const tableHeader = screen.getByRole("rowgroup");
-    expect(tableHeader).toBeInTheDocument();
-    expect(tableHeader).toHaveClass("cursor-default");
+    expect(screen.getByRole("rowgroup")).toHaveClass("cursor-default");
     expect(screen.getByRole("row")).toBeInTheDocument();
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
     headers.forEach((header) => {
-      const headerElement = screen.getByText(header);
-      expect(headerElement).toBeInTheDocument();
-      expect(headerElement).toHaveClass(
+      expect(screen.getByText(header)).toHaveClass(
         "py-3 px-6 border border-slate-300 bg-slate-400"
       );
     });

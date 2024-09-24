@@ -36,9 +36,9 @@ describe("CategoriesStatistics", () => {
     await act(async () => renderWithRouter(<CategoriesStatistics />));
 
     expect(screen.getByTestId("categories-section")).toBeInTheDocument();
-    const title = screen.getByRole("heading", { level: 1 });
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("Kategorie Porad");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Kategorie Porad"
+    );
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
@@ -96,8 +96,9 @@ describe("CategoriesStatistics", () => {
 
     await act(async () => renderWithRouter(<CategoriesStatistics />));
 
-    const error = screen.getByText("Nie udało się wyświetlić kategorii!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wyświetlić kategorii!")
+    ).toBeInTheDocument();
     expect(screen.queryByRole("table")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/categories/statistics");

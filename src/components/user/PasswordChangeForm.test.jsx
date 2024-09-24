@@ -34,16 +34,12 @@ describe("PasswordChangeForm", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Zmiana hasła"
     );
-    const form = screen.getByRole("form");
-    expect(form).toBeInTheDocument();
-    expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
+    expect(screen.getByRole("form")).toHaveClass("flex flex-col gap-4 w-1/3");
     expect(screen.getAllByRole("button")).toHaveLength(1);
     const password = screen.getByLabelText("Nowe hasło");
-    expect(password).toBeInTheDocument();
     expect(password).toHaveAttribute("type", "password");
     expect(password).toBeRequired();
     const submitButton = screen.getByRole("button");
-    expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveAttribute("type", "submit");
     expect(submitButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
@@ -84,10 +80,11 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText(
-      "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
+      )
+    ).toBeInTheDocument();
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
@@ -98,8 +95,9 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Nie udało się zmienić hasła!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się zmienić hasła!")
+    ).toBeInTheDocument();
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 
@@ -116,8 +114,9 @@ describe("PasswordChangeForm", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Nie udało się zmienić hasła! Link wygasł.");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się zmienić hasła! Link wygasł.")
+    ).toBeInTheDocument();
     expectChangeRequestWasSentWithPassword("password", globalThis);
   });
 

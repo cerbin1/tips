@@ -15,9 +15,9 @@ describe("TableRow", () => {
       </table>
     );
 
-    const row = screen.getByRole("row");
-    expect(row).toBeInTheDocument();
-    expect(row).toHaveClass("hover:bg-slate-200 even:bg-slate-100");
+    expect(screen.getByRole("row")).toHaveClass(
+      "hover:bg-slate-200 even:bg-slate-100"
+    );
     expect(screen.getAllByRole("cell")).toHaveLength(4);
   });
 });

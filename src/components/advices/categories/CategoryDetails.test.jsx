@@ -63,9 +63,7 @@ describe("CategoryDetails", () => {
     await act(async () => renderWithRouter(<CategoryDetails />));
 
     expect(screen.getByTestId("category-details-section")).toBeInTheDocument();
-    const categoryName = screen.getByRole("heading", { level: 1 });
-    expect(categoryName).toBeInTheDocument();
-    expect(categoryName).toHaveTextContent("Dom");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Dom");
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getByText("Opis")).toBeInTheDocument();
     expect(screen.getByText("Liczba wszystkich porad: 3")).toBeInTheDocument();

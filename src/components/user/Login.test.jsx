@@ -21,28 +21,22 @@ describe("Login", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Login"
     );
-    const form = screen.getByRole("form");
-    expect(form).toBeInTheDocument();
-    expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
+    expect(screen.getByRole("form")).toHaveClass("flex flex-col gap-4 w-1/3");
     expect(screen.getAllByRole("textbox")).toHaveLength(1);
     expect(screen.getAllByRole("button")).toHaveLength(1);
     const emailInput = screen.getByLabelText("Adres e-mail");
-    expect(emailInput).toBeInTheDocument();
     expect(emailInput).toHaveAttribute("type", "email");
     expect(emailInput).toBeRequired();
     const passwordInput = screen.getByLabelText("Hasło");
-    expect(passwordInput).toBeInTheDocument();
     expect(passwordInput).toHaveAttribute("type", "password");
     expect(passwordInput).toBeRequired();
     const loginButton = screen.getByRole("button");
-    expect(loginButton).toBeInTheDocument();
     expect(loginButton).toHaveTextContent("Zaloguj");
     expect(loginButton).toHaveAttribute("type", "submit");
     expect(loginButton).toHaveClass(
       "px-6 py-3 bg-sky-400 text-white text-lg rounded hover:bg-sky-500 transition-colors duration-300"
     );
     const passwordResetButton = screen.getByText("Zresetuj hasło");
-    expect(passwordResetButton).toBeInTheDocument();
     expect(passwordResetButton).toHaveAttribute("href", "/user/password-reset");
     expect(passwordResetButton).toHaveClass(
       "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
@@ -53,7 +47,6 @@ describe("Login", () => {
   test("should not send form when email is empty", async () => {
     renderWithRouterAndAuth(<Login />);
     const loginButton = screen.getByText("Zaloguj");
-    expect(loginButton).toBeInTheDocument();
     expect(loginButton).not.toBeDisabled();
 
     await userEvent.click(loginButton);
@@ -67,7 +60,6 @@ describe("Login", () => {
       target: { value: "   " },
     });
     const loginButton = screen.getByText("Zaloguj");
-    expect(loginButton).toBeInTheDocument();
     expect(loginButton).not.toBeDisabled();
 
     await userEvent.click(loginButton);
@@ -81,7 +73,6 @@ describe("Login", () => {
       target: { value: "test@email" },
     });
     const loginButton = screen.getByText("Zaloguj");
-    expect(loginButton).toBeInTheDocument();
     expect(loginButton).not.toBeDisabled();
 
     await userEvent.click(loginButton);
@@ -102,8 +93,9 @@ describe("Login", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    const error = screen.getByText("Podano nieprawidłowe dane logowania!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Podano nieprawidłowe dane logowania!")
+    ).toBeInTheDocument();
     expectLoginAuthRequestSent();
   });
 
@@ -118,8 +110,7 @@ describe("Login", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    const error = screen.getByText("Nie udało się zalogować!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Nie udało się zalogować!")).toBeInTheDocument();
     expectLoginAuthRequestSent();
   });
 
@@ -145,13 +136,11 @@ describe("Login", () => {
 
     await waitFor(() => {
       const loggingButton = screen.getByRole("button");
-      expect(loggingButton).toBeInTheDocument();
       expect(loggingButton).toHaveTextContent("Logowanie...");
       expect(loggingButton).toBeDisabled();
     });
     expect(screen.queryByText("Logowanie...")).toBeNull();
     loginButton = screen.getByRole("button");
-    expect(loginButton).toBeInTheDocument();
     expect(loginButton).not.toBeDisabled();
     expectLoginAuthRequestSent(globalThis);
   });

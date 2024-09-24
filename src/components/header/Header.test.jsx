@@ -11,31 +11,26 @@ describe("Header", () => {
 
     renderWithRouterAndAuth(<Header />);
 
-    const header = screen.getByRole("banner");
-    expect(header).toBeInTheDocument();
-    expect(header).toHaveClass(
+    expect(screen.getByRole("banner")).toHaveClass(
       "flex justify-between items-center px-4 border-b border-cyan-100"
     );
     expect(screen.getByText("Afterady")).toBeInTheDocument();
-    const navbar = screen.getByRole("navigation");
-    expect(navbar).toBeInTheDocument();
-    expect(navbar).toHaveClass("py-4");
+    expect(screen.getByRole("navigation")).toHaveClass("py-4");
     expect(screen.getAllByRole("link")).toHaveLength(6);
-    const randomAdviceLink = screen.getByText("Losowa porada");
-    expect(randomAdviceLink).toBeInTheDocument();
-    expect(randomAdviceLink).toHaveAttribute("href", "/random");
-    const categoriesLink = screen.getByText("Kategorie");
-    expect(categoriesLink).toBeInTheDocument();
-    expect(categoriesLink).toHaveAttribute("href", "/categories");
-    const rankingLink = screen.getByText("Ranking");
-    expect(rankingLink).toBeInTheDocument();
-    expect(rankingLink).toHaveAttribute("href", "/ranking");
-    const loginUserLink = screen.getByText("Login");
-    expect(loginUserLink).toBeInTheDocument();
-    expect(loginUserLink).toHaveAttribute("href", "/user/login");
-    const registerUserLink = screen.getByText("Rejestracja");
-    expect(registerUserLink).toBeInTheDocument();
-    expect(registerUserLink).toHaveAttribute("href", "/user/register");
+    expect(screen.getByText("Losowa porada")).toHaveAttribute(
+      "href",
+      "/random"
+    );
+    expect(screen.getByText("Kategorie")).toHaveAttribute(
+      "href",
+      "/categories"
+    );
+    expect(screen.getByText("Ranking")).toHaveAttribute("href", "/ranking");
+    expect(screen.getByText("Login")).toHaveAttribute("href", "/user/login");
+    expect(screen.getByText("Rejestracja")).toHaveAttribute(
+      "href",
+      "/user/register"
+    );
     expect(screen.getAllByRole("img")).toHaveLength(2);
     expect(screen.getByTitle("User")).toBeInTheDocument();
   });
@@ -45,38 +40,29 @@ describe("Header", () => {
 
     renderWithRouterAndAuth(<Header />);
 
-    const header = screen.getByRole("banner");
-    expect(header).toBeInTheDocument();
-    expect(header).toHaveClass(
+    expect(screen.getByRole("banner")).toHaveClass(
       "flex justify-between items-center px-4 border-b border-cyan-100"
     );
     expect(screen.getByText("Afterady")).toBeInTheDocument();
-    const navbar = screen.getByRole("navigation");
-    expect(navbar).toBeInTheDocument();
-    expect(navbar).toHaveClass("py-4");
+    expect(screen.getByRole("navigation")).toHaveClass("py-4");
     expect(screen.getAllByRole("link")).toHaveLength(8);
 
-    const randomAdviceLink = screen.getByText("Losowa porada");
-    expect(randomAdviceLink).toBeInTheDocument();
-    expect(randomAdviceLink).toHaveAttribute("href", "/random");
-    const categoriesLink = screen.getByText("Kategorie");
-    expect(categoriesLink).toBeInTheDocument();
-    expect(categoriesLink).toHaveAttribute("href", "/categories");
-    const rankingLink = screen.getByText("Ranking");
-    expect(rankingLink).toBeInTheDocument();
-    expect(rankingLink).toHaveAttribute("href", "/ranking");
-    const suggestLink = screen.getByText("Zaproponuj");
-    expect(suggestLink).toBeInTheDocument();
-    expect(suggestLink).toHaveAttribute("href", "/suggest");
-    const suggestionsLink = screen.getByText("Propozycje");
-    expect(suggestionsLink).toBeInTheDocument();
-    expect(suggestionsLink).toHaveAttribute("href", "/suggestions");
-    const userProfileLink = screen.getByText("Profil");
-    expect(userProfileLink).toBeInTheDocument();
-    expect(userProfileLink).toHaveAttribute("href", "/user/profile");
-    const logoutButton = screen.getByText("Wyloguj");
-    expect(logoutButton).toBeInTheDocument();
-    expect(logoutButton).toHaveClass("px-2");
+    expect(screen.getByText("Losowa porada")).toHaveAttribute(
+      "href",
+      "/random"
+    );
+    expect(screen.getByText("Kategorie")).toHaveAttribute(
+      "href",
+      "/categories"
+    );
+    expect(screen.getByText("Ranking")).toHaveAttribute("href", "/ranking");
+    expect(screen.getByText("Zaproponuj")).toHaveAttribute("href", "/suggest");
+    expect(screen.getByText("Propozycje")).toHaveAttribute(
+      "href",
+      "/suggestions"
+    );
+    expect(screen.getByText("Profil")).toHaveAttribute("href", "/user/profile");
+    expect(screen.getByText("Wyloguj")).toHaveClass("px-2");
     expect(screen.getAllByRole("img")).toHaveLength(2);
     expect(screen.getByTitle("User")).toBeInTheDocument();
   });

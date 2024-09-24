@@ -18,8 +18,7 @@ describe("TableBody", () => {
       </table>
     );
 
-    const tableBody = screen.getByRole("rowgroup");
-    expect(tableBody).toBeInTheDocument();
+    expect(screen.getByRole("rowgroup")).toBeInTheDocument();
     expect(screen.getByRole("row")).toBeInTheDocument();
     const cells = screen.getAllByRole("cell");
     expect(cells).toHaveLength(3);

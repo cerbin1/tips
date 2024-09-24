@@ -47,21 +47,17 @@ describe("AdviceDetails", () => {
     const categorySection = screen.getByRole("heading", { level: 2 });
     expect(categorySection).toHaveTextContent("Kategoria:");
     expect(categorySection).toHaveClass("py-6 cursor-default");
-    const categoryName = screen.getByText("Zdrowie");
-    expect(categoryName).toBeInTheDocument();
-    expect(categoryName).toHaveClass("text-sky-500 text-lg ");
+    expect(screen.getByText("Zdrowie")).toHaveClass("text-sky-500 text-lg ");
     const sourceHeading = screen.getByText("Źródło:");
     expect(sourceHeading).toHaveRole("heading", { level: 3 });
-    const showSourceButton = screen.getByText("Pokaż źródło");
-    expect(showSourceButton).toBeInTheDocument();
-    expect(showSourceButton).toHaveClass("text-sky-500 cursor-pointer");
+    expect(screen.getByText("Pokaż źródło")).toHaveClass(
+      "text-sky-500 cursor-pointer"
+    );
     expect(screen.queryByText("Źródło porady")).toBeNull();
     expect(screen.getByText("Treść")).toBeInTheDocument();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
-    const voteButton = screen.getByRole("button");
-    expect(voteButton).toBeInTheDocument();
-    expect(voteButton).toHaveTextContent("Oceń jako przydatne");
+    expect(screen.getByRole("button")).toHaveTextContent("Oceń jako przydatne");
     assertFetchAdviceDetailsRequestsExecuted();
   });
 
@@ -89,8 +85,7 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
-    const error = screen.getByText("Nie znaleziono porady!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Nie znaleziono porady!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -102,8 +97,9 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wyświetlić porady!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -115,10 +111,9 @@ describe("AdviceDetails", () => {
 
     await act(async () => renderWithAuth(<AdviceDetails />));
 
-    const error = screen.getByText(
-      "Nie udało się pobrać informacji o głosowaniu!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać informacji o głosowaniu!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(2);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/advices/63b4072b-b8c8-4f9a-acf4-76d0948adc6e"
@@ -151,8 +146,9 @@ describe("AdviceDetails", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    const error = screen.getByText("Nie udało się ocenić porady!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się ocenić porady!")
+    ).toBeInTheDocument();
     assertAdviceVotedRequestExecuted();
   });
 
@@ -176,6 +172,7 @@ describe("AdviceDetails", () => {
     });
     expect(screen.getByText("Oceniono")).toBeDisabled();
     expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.queryByText("5")).toBeNull();
     assertAdviceVotedRequestExecuted();
   });
 
@@ -224,11 +221,12 @@ describe("AdviceDetails", () => {
 
     await userEvent.click(screen.getByRole("button"));
 
-    expect(screen.getByText("6")).toBeInTheDocument();
-    const voteSuccess = screen.getByText("Oceniono poradę.");
-    expect(voteSuccess).toBeInTheDocument();
-    expect(voteSuccess).toHaveClass("py-6 text-green-500");
+    expect(screen.getByText("Oceniono poradę.")).toHaveClass(
+      "py-6 text-green-500"
+    );
     expect(screen.getByText("Oceniono")).toBeDisabled();
+    expect(screen.getByText("6")).toBeInTheDocument();
+    expect(screen.queryByText("5")).toBeNull();
     assertAdviceVotedRequestExecuted();
   });
 

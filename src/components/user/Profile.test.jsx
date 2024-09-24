@@ -153,9 +153,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    const emptyList = screen.getByText("Nie oceniłeś jeszcze żadnej porady.");
-    expect(emptyList).toBeInTheDocument();
-    expect(emptyList).toHaveClass("py-3");
+    expect(screen.getByText("Nie oceniłeś jeszcze żadnej porady.")).toHaveClass(
+      "py-3"
+    );
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/advices/voted?userEmail=test@test"
     );
@@ -170,10 +170,9 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    const error = screen.getByText(
-      "Nie udało się pobrać ocenionych proponowanych porad!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać ocenionych proponowanych porad!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/advices/suggested/voted?userEmail=test@test"
     );
@@ -190,11 +189,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    const emptyList = screen.getByText(
-      "Nie oceniłeś jeszcze żadnej proponowanej porady."
-    );
-    expect(emptyList).toBeInTheDocument();
-    expect(emptyList).toHaveClass("py-3");
+    expect(
+      screen.getByText("Nie oceniłeś jeszcze żadnej proponowanej porady.")
+    ).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/advices/suggested/voted?userEmail=test@test"
     );
@@ -209,8 +206,9 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    const error = screen.getByText("Nie udało się pobrać ocenionych porad!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać ocenionych porad!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/advices/voted?userEmail=test@test"
     );
@@ -339,11 +337,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    const emptyList = screen.getByText(
-      "Nie zaproponowałeś jeszcze żadnej porady."
-    );
-    expect(emptyList).toBeInTheDocument();
-    expect(emptyList).toHaveClass("py-3");
+    expect(
+      screen.getByText("Nie zaproponowałeś jeszcze żadnej porady.")
+    ).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -359,8 +355,9 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    const error = screen.getByText("Nie udało się pobrać proponowanych porad!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać proponowanych porad!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith("backend/users/advices/suggested", {
       headers: {
         "Content-Type": "application/json",
@@ -389,11 +386,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    const emptyList = screen.getByText(
-      "Nie zaproponowałeś jeszcze żadnej kategorii."
-    );
-    expect(emptyList).toBeInTheDocument();
-    expect(emptyList).toHaveClass("py-3");
+    expect(
+      screen.getByText("Nie zaproponowałeś jeszcze żadnej kategorii.")
+    ).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/categories/suggested",
       {
@@ -412,10 +407,9 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    const error = screen.getByText(
-      "Nie udało się pobrać proponowanych kategorii!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać proponowanych kategorii!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(5);
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/categories/suggested",
@@ -439,11 +433,9 @@ describe("Profile", () => {
     await act(async () => renderWithAuth(<Profile />));
 
     expect(screen.queryByRole("table")).toBeNull();
-    const emptyList = screen.getByText(
-      "Nie oceniłeś jeszcze żadnej proponowanej kategorii."
-    );
-    expect(emptyList).toBeInTheDocument();
-    expect(emptyList).toHaveClass("py-3");
+    expect(
+      screen.getByText("Nie oceniłeś jeszcze żadnej proponowanej kategorii.")
+    ).toHaveClass("py-3");
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/categories/suggested/voted?userEmail=test@test"
     );
@@ -458,10 +450,11 @@ describe("Profile", () => {
 
     await act(async () => renderWithAuth(<Profile />));
 
-    const error = screen.getByText(
-      "Nie udało się pobrać ocenionych proponowanych kategorii!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Nie udało się pobrać ocenionych proponowanych kategorii!"
+      )
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledWith(
       "backend/users/categories/suggested/voted?userEmail=test@test"
     );

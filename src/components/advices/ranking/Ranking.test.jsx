@@ -93,9 +93,9 @@ describe("Ranking", () => {
     await act(async () => renderWithRouter(<Ranking />));
 
     expect(screen.getByTestId("ranking-section")).toBeInTheDocument();
-    const title = screen.getByRole("heading", { level: 1 });
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("Top 10 porad");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Top 10 porad"
+    );
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
@@ -166,8 +166,9 @@ describe("Ranking", () => {
 
     await act(async () => renderWithRouter(<Ranking />));
 
-    const error = screen.getByText("Nie udało się wyświetlić rankingu!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wyświetlić rankingu!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/ranking");
   });

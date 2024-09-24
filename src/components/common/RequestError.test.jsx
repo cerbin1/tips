@@ -5,7 +5,6 @@ describe("RequestError", () => {
     render(<RequestError content="error message" />);
 
     const error = screen.getByRole("paragraph");
-    expect(error).toBeInTheDocument();
     expect(error).toHaveClass(
       "py-3 my-3 px-12 text-red-600 border border-red-300 border-dashed rounded"
     );

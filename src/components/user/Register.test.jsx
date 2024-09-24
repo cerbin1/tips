@@ -19,27 +19,21 @@ describe("Register", () => {
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
       "Rejestracja"
     );
-    const form = screen.getByRole("form");
-    expect(form).toBeInTheDocument();
-    expect(form).toHaveClass("flex flex-col gap-4 w-1/3");
+    expect(screen.getByRole("form")).toHaveClass("flex flex-col gap-4 w-1/3");
     const emailInput = screen.getByLabelText("Adres e-mail");
-    expect(emailInput).toBeInTheDocument();
     expect(emailInput).toHaveAttribute("type", "email");
     expect(emailInput).toHaveAttribute("id", "email");
     expect(emailInput).toBeRequired();
     const usernameInput = screen.getByLabelText("Nazwa użytkownika");
-    expect(usernameInput).toBeInTheDocument();
     expect(usernameInput).toHaveAttribute("type", "text");
     expect(usernameInput).toHaveAttribute("id", "username");
     expect(usernameInput).toBeRequired();
     const passwordInput = screen.getByLabelText("Hasło");
-    expect(passwordInput).toBeInTheDocument();
     expect(passwordInput).toHaveAttribute("type", "password");
     expect(passwordInput).toHaveAttribute("id", "password");
     expect(passwordInput).toHaveAttribute("minLength", "8");
     expect(passwordInput).toBeRequired();
     const repeatPasswordInput = screen.getByLabelText("Powtórz hasło");
-    expect(repeatPasswordInput).toBeInTheDocument();
     expect(repeatPasswordInput).toHaveAttribute("type", "password");
     expect(repeatPasswordInput).toHaveAttribute("id", "password-repeat");
     expect(repeatPasswordInput).toHaveAttribute("minLength", "8");
@@ -47,14 +41,12 @@ describe("Register", () => {
     expect(screen.getAllByRole("textbox")).toHaveLength(2);
     expect(screen.getAllByRole("button")).toHaveLength(2);
     const resetButton = screen.getByText("Wyczyść formularz");
-    expect(resetButton).toBeInTheDocument();
     expect(resetButton).toHaveAttribute("type", "reset");
     expect(resetButton).toBeEnabled();
     expect(resetButton).toHaveClass(
       "px-6 py-3 bg-slate-400 text-white text-lg rounded hover:bg-slate-500 transition-colors duration-300"
     );
     const submitButton = screen.getByText("Wyślij");
-    expect(submitButton).toBeInTheDocument();
     expect(submitButton).toHaveAttribute("type", "submit");
     expect(submitButton).toBeEnabled();
     expect(submitButton).toHaveClass(
@@ -133,8 +125,9 @@ describe("Register", () => {
 
     await userEvent.click(submitButton);
 
-    const error = screen.getByText("Nazwa użytkownika nie może być pusta!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nazwa użytkownika nie może być pusta!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -157,8 +150,7 @@ describe("Register", () => {
 
     await userEvent.click(submitButton);
 
-    const error = screen.getByText("Hasła muszą się zgadzać!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Hasła muszą się zgadzać!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -168,8 +160,9 @@ describe("Register", () => {
     mockResponseAs422WithError("Error: Username is already in use.");
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Nazwa użytkownika jest zajęta!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nazwa użytkownika jest zajęta!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -192,8 +185,7 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Email jest zajęty!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Email jest zajęty!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -216,8 +208,7 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Email jest niepoprawny!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Email jest niepoprawny!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -240,10 +231,11 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText(
-      "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Hasło jest niepoprawne. Pole musi mieć conajmniej 8 znaków, przynajmniej jedną cyfrę, literę i znak specjalny."
+      )
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -266,8 +258,7 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Hasła musza być takie same!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Hasła musza być takie same!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -290,8 +281,9 @@ describe("Register", () => {
 
     await userEvent.click(screen.getByText("Wyślij"));
 
-    const error = screen.getByText("Nie udało się utworzyć użytkownika!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się utworzyć użytkownika!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       method: "POST",
@@ -327,15 +319,15 @@ describe("Register", () => {
       screen.getByText("Link wygaśnie po 15 minutach.")
     ).toBeInTheDocument();
     const resendLinkButton = screen.getByText("Kliknij tutaj");
-    expect(resendLinkButton).toBeInTheDocument();
     expect(resendLinkButton).toHaveRole("button");
     expect(resendLinkButton).toHaveClass("text-blue-to-dark underline");
     expect(
       screen.getByText("jeśli chcesz wysłać ponownie link.")
     ).toBeInTheDocument();
-    const loginButton = screen.getByText("Przejdź do logowania");
-    expect(loginButton).toBeInTheDocument();
-    expect(loginButton).toHaveAttribute("href", "/login");
+    expect(screen.getByText("Przejdź do logowania")).toHaveAttribute(
+      "href",
+      "/login"
+    );
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/auth/register", {
       body: JSON.stringify({
@@ -355,14 +347,14 @@ describe("Register", () => {
     renderWithRouter(<Register />);
     await fillAndSubmitForm();
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");
-    expect(resendActivationLinkButton).toBeInTheDocument();
     expect(resendActivationLinkButton).toBeEnabled();
     globalThis.fetch = vi.fn().mockResolvedValueOnce({ ok: false });
 
     await userEvent.click(resendActivationLinkButton);
 
-    const error = screen.getByText("Nie udało się ponownie wysłać linka!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się ponownie wysłać linka!")
+    ).toBeInTheDocument();
     expect(screen.queryByText("Kliknij tutaj")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith(
@@ -380,7 +372,6 @@ describe("Register", () => {
     renderWithRouter(<Register />);
     await fillAndSubmitForm();
     const resendActivationLinkButton = screen.getByText("Kliknij tutaj");
-    expect(resendActivationLinkButton).toBeInTheDocument();
     globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true }));
 
     await userEvent.click(resendActivationLinkButton);

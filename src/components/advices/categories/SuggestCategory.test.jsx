@@ -38,21 +38,18 @@ describe("SuggestCategory", () => {
   test("should render component", async () => {
     await act(async () => renderWithAuth(<SuggestCategory />));
 
-    const title = screen.getByRole("heading", { level: 1 });
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("Zaproponuj kategorię");
-    const form = screen.getByRole("form");
-    expect(form).toBeInTheDocument();
-    expect(form).toHaveClass("flex flex-col gap-4 text-lg w-1/3");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Zaproponuj kategorię"
+    );
+    expect(screen.getByRole("form")).toHaveClass(
+      "flex flex-col gap-4 text-lg w-1/3"
+    );
     expect(screen.getByText("Nazwa kategorii")).toBeInTheDocument();
     expect(screen.getByRole("button")).toBeInTheDocument();
-    const captcha = screen.getByTestId("captcha");
-    expect(captcha).toBeInTheDocument();
-    expect(captcha).toHaveTextContent("Mock Captcha");
+    expect(screen.getByTestId("captcha")).toHaveTextContent("Mock Captcha");
     expect(screen.getAllByRole("textbox")).toHaveLength(1);
     expect(screen.getAllByRole("button")).toHaveLength(1);
     const nameInput = screen.getByLabelText("Nazwa kategorii");
-    expect(nameInput).toBeInTheDocument();
     expect(nameInput).toBeRequired();
     expect(nameInput).toHaveAttribute("id", "name");
     expect(nameInput).toHaveAttribute("name", "name");
@@ -79,8 +76,7 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Nazwa jest zbyt długa!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Nazwa jest zbyt długa!")).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -90,8 +86,9 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Captcha nie została rozwiązana poprawnie!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(0);
   });
 
@@ -123,8 +120,9 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Nie udało się wysłać propozycji!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wysłać propozycji!")
+    ).toBeInTheDocument();
     assertSubmitFormRequestExecuted();
   });
 
@@ -144,8 +142,9 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Wystąpił problem z walidacją Captcha!")
+    ).toBeInTheDocument();
     assertSubmitFormRequestExecuted();
   });
 
@@ -164,10 +163,9 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText(
-      "Nie udało się zapisć propozycji. Walidacja nieudana."
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się zapisć propozycji. Walidacja nieudana.")
+    ).toBeInTheDocument();
     assertSubmitFormRequestExecuted();
   });
 
@@ -182,9 +180,9 @@ describe("SuggestCategory", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const success = screen.getByText("Propozycja została wysłana!");
-    expect(success).toBeInTheDocument();
-    expect(success).toHaveClass("py-6 text-green-500");
+    expect(screen.getByText("Propozycja została wysłana!")).toHaveClass(
+      "py-6 text-green-500"
+    );
     expect(screen.queryByRole("form")).toBeNull();
     expect(screen.getByRole("button")).toHaveTextContent(
       "Zaproponuj kolejną kategorię"
@@ -225,7 +223,6 @@ describe("SuggestCategory", () => {
       }),
     });
     const success = screen.getByText("Propozycja została wysłana!");
-    expect(success).toBeInTheDocument();
     expect(success).toHaveClass("py-6 text-green-500");
     expect(screen.queryByRole("form")).toBeNull();
     const newCategoryButton = screen.getByText("Zaproponuj kolejną kategorię");

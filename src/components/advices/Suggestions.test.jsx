@@ -46,12 +46,12 @@ describe("Suggestions", () => {
     await act(async () => renderWithRouter(<Suggestions />));
 
     expect(screen.getByTestId("suggestions")).toBeInTheDocument();
-    const title = screen.getByRole("heading", { level: 1 });
-    expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("Propozycje porad");
-    const changeTypeButton = screen.getByText("Przejdź do kategorii");
-    expect(changeTypeButton).toBeInTheDocument();
-    expect(changeTypeButton).toHaveClass("text-blue-to-light cursor-pointer");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(
+      "Propozycje porad"
+    );
+    expect(screen.getByText("Przejdź do kategorii")).toHaveClass(
+      "text-blue-to-light cursor-pointer"
+    );
     expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getAllByRole("rowgroup")).toHaveLength(2);
     expect(screen.getAllByRole("columnheader")).toHaveLength(4);
@@ -139,10 +139,9 @@ describe("Suggestions", () => {
 
     await act(async () => renderWithRouter(<Suggestions />));
 
-    const error = screen.getByText(
-      "Nie udało się wyświetlić proponowanych porad!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wyświetlić proponowanych porad!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/suggested");
   });
@@ -276,10 +275,9 @@ describe("Suggestions", () => {
       expect(screen.queryByRole("status")).toBeNull();
     });
 
-    const error = screen.getByText(
-      "Nie udało się wyświetlić proponowanych kategorii!"
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wyświetlić proponowanych kategorii!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/categories/suggested");
   });

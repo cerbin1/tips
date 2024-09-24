@@ -59,27 +59,24 @@ describe("SuggestAdvice", () => {
     await act(async () => renderWithAuth(<SuggestAdvice />));
 
     expect(screen.getByText("Zaproponuj poradę")).toBeInTheDocument();
-    const form = screen.getByRole("form");
-    expect(form).toBeInTheDocument();
-    expect(form).toHaveClass("flex flex-col gap-4 text-lg w-1/3");
+    expect(screen.getByRole("form")).toHaveClass(
+      "flex flex-col gap-4 text-lg w-1/3"
+    );
     expect(screen.getAllByRole("textbox")).toHaveLength(3);
     expect(screen.getAllByRole("combobox")).toHaveLength(1);
     expect(screen.getByRole("combobox")).toHaveLength(3);
     expect(screen.getAllByRole("button")).toHaveLength(1);
     const nameInput = screen.getByLabelText("Nazwa porady");
-    expect(nameInput).toBeInTheDocument();
     expect(nameInput).toBeRequired();
     expect(nameInput).toHaveAttribute("id", "name");
     expect(nameInput).toHaveAttribute("name", "name");
     expect(nameInput).toHaveAttribute("maxLength", "30");
     const categoryInput = screen.getByLabelText("Kategoria");
-    expect(categoryInput).toBeInTheDocument();
     expect(categoryInput).toBeRequired();
     expect(categoryInput).toHaveClass("bg-slate-200 rounded py-2");
     expect(categoryInput).toHaveAttribute("id", "category");
     expect(categoryInput).toHaveAttribute("name", "category");
     const categoryOptions = screen.getByRole("combobox");
-    expect(categoryOptions).toBeInTheDocument();
     expect(categoryOptions).toHaveLength(3);
     expect(categoryOptions[0]).toHaveValue("CATEGORY_1");
     expect(categoryOptions[1]).toHaveValue("CATEGORY_2");
@@ -88,22 +85,16 @@ describe("SuggestAdvice", () => {
     expect(categoryOptions[1]).toHaveTextContent("category 2");
     expect(categoryOptions[2]).toHaveTextContent("category 3");
     const contentInput = screen.getByLabelText("Treść");
-    expect(contentInput).toBeInTheDocument();
     expect(contentInput).toBeRequired();
     expect(contentInput).toHaveAttribute("id", "content");
     expect(contentInput).toHaveAttribute("name", "content");
     expect(contentInput).toHaveAttribute("maxLength", "1000");
     const sourceInput = screen.getByLabelText("Źródło");
-    expect(sourceInput).toBeInTheDocument();
     expect(sourceInput).toHaveAttribute("id", "source");
     expect(sourceInput).toHaveAttribute("name", "source");
     expect(sourceInput).toHaveAttribute("maxLength", "200");
-    const submitButton = screen.getByRole("button");
-    expect(submitButton).toBeInTheDocument();
-    expect(submitButton).toHaveTextContent("Wyślij propozycję");
-    const captcha = screen.getByTestId("captcha");
-    expect(captcha).toBeInTheDocument();
-    expect(captcha).toHaveTextContent("Mock Captcha");
+    expect(screen.getByRole("button")).toHaveTextContent("Wyślij propozycję");
+    expect(screen.getByTestId("captcha")).toHaveTextContent("Mock Captcha");
     assertFetchCategoriesRequestExecuted();
   });
 
@@ -132,8 +123,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Nazwa jest zbyt długa!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Nazwa jest zbyt długa!")).toBeInTheDocument();
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     assertFetchCategoriesRequestExecuted();
   });
@@ -176,8 +166,7 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Treść jest zbyt długa!");
-    expect(error).toBeInTheDocument();
+    expect(screen.getByText("Treść jest zbyt długa!")).toBeInTheDocument();
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     assertFetchCategoriesRequestExecuted();
   });
@@ -189,8 +178,9 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Captcha nie została rozwiązana poprawnie!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Captcha nie została rozwiązana poprawnie!")
+    ).toBeInTheDocument();
     expect(screen.queryByText("Propozycja została wysłana!")).toBeNull();
     expect(globalThis.fetch).toBeCalledTimes(1);
   });
@@ -211,8 +201,9 @@ describe("SuggestAdvice", () => {
 
     await act(async () => renderWithAuth(<SuggestAdvice />));
 
-    const error = screen.getByText("Nie udało się pobrać kategorii!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się pobrać kategorii!")
+    ).toBeInTheDocument();
     assertFetchCategoriesRequestExecuted();
   });
 
@@ -242,8 +233,9 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Nie udało się wysłać propozycji!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się wysłać propozycji!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });
@@ -264,8 +256,9 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText("Wystąpił problem z walidacją Captcha!");
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Wystąpił problem z walidacją Captcha!")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });
@@ -285,10 +278,9 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const error = screen.getByText(
-      "Nie udało się zapisć propozycji. Walidacja nieudana."
-    );
-    expect(error).toBeInTheDocument();
+    expect(
+      screen.getByText("Nie udało się zapisć propozycji. Walidacja nieudana.")
+    ).toBeInTheDocument();
     expect(globalThis.fetch).toBeCalledTimes(1);
     assertSubmitFormRequestIsExecuted();
   });
@@ -302,13 +294,13 @@ describe("SuggestAdvice", () => {
 
     await userEvent.click(screen.getByText("Wyślij propozycję"));
 
-    const success = screen.getByText("Propozycja została wysłana!");
-    expect(success).toBeInTheDocument();
-    expect(success).toHaveClass("py-6 text-green-500");
+    expect(screen.getByText("Propozycja została wysłana!")).toHaveClass(
+      "py-6 text-green-500"
+    );
     expect(screen.queryByRole("form")).toBeNull();
-    const newAdviceButton = screen.getByRole("button");
-    expect(newAdviceButton).toBeInTheDocument();
-    expect(newAdviceButton).toHaveTextContent("Zaproponuj kolejną poradę");
+    expect(screen.getByRole("button")).toHaveTextContent(
+      "Zaproponuj kolejną poradę"
+    );
     expect(globalThis.fetch).toBeCalledTimes(2);
     assertSubmitFormRequestIsExecuted();
   });
@@ -324,10 +316,8 @@ describe("SuggestAdvice", () => {
     assertSubmitFormRequestIsExecuted();
     expect(screen.queryByRole("form")).toBeNull();
     const success = screen.getByText("Propozycja została wysłana!");
-    expect(success).toBeInTheDocument();
     expect(success).toHaveClass("py-6 text-green-500");
     const newAdviceButton = screen.getByText("Zaproponuj kolejną poradę");
-    expect(newAdviceButton).toBeInTheDocument();
 
     await userEvent.click(newAdviceButton);
 

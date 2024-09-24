@@ -17,19 +17,14 @@ describe("RandomAdvice", () => {
     await act(async () => renderWithRouter(<RandomAdvice />));
 
     expect(screen.getByTestId("random-advice-section")).toBeInTheDocument();
-    const adviceName = screen.getByRole("heading", { level: 1 });
-    expect(adviceName).toBeInTheDocument();
-    expect(adviceName).toHaveTextContent("Woda");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Woda");
     const adviceContent = screen.getByRole("paragraph");
     expect(adviceContent).toHaveTextContent("Pij dużo wody");
     expect(adviceContent).toHaveClass(
       "border border-sky-500 rounded py-6 px-6"
     );
-    const submitButton = screen.getByRole("button");
-    expect(submitButton).toBeInTheDocument();
-    expect(submitButton).toHaveTextContent("Wylosuj nową poradę");
+    expect(screen.getByRole("button")).toHaveTextContent("Wylosuj nową poradę");
     const adviceDetailsLink = screen.getByRole("link");
-    expect(adviceDetailsLink).toBeInTheDocument();
     expect(adviceDetailsLink).toHaveAttribute(
       "href",
       "/advices/264bdbc8-e6a7-44d8-9407-9d878ce27800"
@@ -102,11 +97,10 @@ describe("RandomAdvice", () => {
     await act(async () => render(<RandomAdvice />));
 
     expect(screen.queryByRole("heading")).toBeNull();
-    const error = screen.getByText("Nie udało się wyświetlić porady!");
-    expect(error).toBeInTheDocument();
-    const button = screen.getByRole("button");
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent("Spróbuj ponownie");
+    expect(
+      screen.getByText("Nie udało się wyświetlić porady!")
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveTextContent("Spróbuj ponownie");
     expect(globalThis.fetch).toBeCalledTimes(1);
     expect(globalThis.fetch).toBeCalledWith("backend/advices/random");
   });

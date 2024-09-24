@@ -6,10 +6,9 @@ describe("Suggest", () => {
     renderWithAuth(<Suggest />);
 
     expect(screen.getByTestId("suggest-section")).toBeInTheDocument();
-    const changeSuggestionTypeButton = screen.getByText(
-      "Przejdź do propozycji kategorii"
-    );
-    expect(changeSuggestionTypeButton).toBeInTheDocument();
+    expect(
+      screen.getByText("Przejdź do propozycji kategorii")
+    ).toBeInTheDocument();
     expect(screen.getByText("Zaproponuj poradę")).toBeInTheDocument();
   });
 

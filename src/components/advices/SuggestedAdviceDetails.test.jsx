@@ -43,25 +43,21 @@ describe("SuggestedAdviceDetails", () => {
     const categorySection = screen.getByRole("heading", { level: 2 });
     expect(categorySection).toHaveTextContent("Kategoria:");
     expect(categorySection).toHaveClass("py-6 cursor-default");
-    const categoryName = screen.getByText("Zdrowie");
-    expect(categoryName).toBeInTheDocument();
-    expect(categoryName).toHaveClass("text-sky-500 text-lg ");
+    expect(screen.getByText("Zdrowie")).toHaveClass("text-sky-500 text-lg ");
     expect(screen.getByText("Treść")).toBeInTheDocument();
     expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
     expect(screen.getByText("5")).toHaveClass("text-sky-500 text-lg");
     const sourceHeading = screen.getByText("Źródło:");
     expect(sourceHeading).toHaveRole("heading", { level: 3 });
-    const showSourceButton = screen.getByText("Pokaż źródło");
-    expect(showSourceButton).toBeInTheDocument();
-    expect(showSourceButton).toHaveClass("text-sky-500 cursor-pointer");
+    expect(screen.getByText("Pokaż źródło")).toHaveClass(
+      "text-sky-500 cursor-pointer"
+    );
     expect(screen.queryByText("Źródło porady")).toBeNull();
     const buttons = screen.getAllByRole("button");
     expect(buttons).toHaveLength(2);
     const voteDownButton = buttons[0];
-    expect(voteDownButton).toBeInTheDocument();
     expect(voteDownButton).toHaveTextContent("Oceń jako nieprzydatne");
     const voteUpButton = buttons[1];
-    expect(voteUpButton).toBeInTheDocument();
     expect(voteUpButton).toHaveTextContent("Oceń jako przydatne");
     assertFetchAdviceDetailsRequestsExecuted();
   });
@@ -175,9 +171,7 @@ describe("SuggestedAdviceDetails", () => {
       .mockResolvedValueOnce(votedUpResponse());
     await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-    expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
+    assertAdviceNotVoted();
 
     userEvent.click(screen.getByText("Oceń jako przydatne"));
 
@@ -198,9 +192,7 @@ describe("SuggestedAdviceDetails", () => {
       .mockResolvedValueOnce(votedDownResponse());
     await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
-    expect(screen.getByText("Oceń jako nieprzydatne")).toBeEnabled();
+    assertAdviceNotVoted();
 
     userEvent.click(screen.getByText("Oceń jako nieprzydatne"));
 
@@ -221,12 +213,7 @@ describe("SuggestedAdviceDetails", () => {
 
     await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
 
-    const voteUpButton = screen.getByText("Oceń jako przydatne");
-    expect(voteUpButton).toBeEnabled();
-    const voteDownButton = screen.getByText("Oceń jako nieprzydatne");
-    expect(voteDownButton).toBeEnabled();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    assertAdviceNotVoted();
     assertFetchAdviceDetailsRequestsExecuted();
   });
 
@@ -268,15 +255,14 @@ describe("SuggestedAdviceDetails", () => {
       .mockResolvedValueOnce(votedUpResponse());
     await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    assertAdviceNotVoted();
 
     await userEvent.click(screen.getByText("Oceń jako przydatne"));
 
     expect(screen.getByText("6")).toBeInTheDocument();
-    const voteSuccess = screen.getByText("Ocena podwyższona pomyślnie.");
-    expect(voteSuccess).toBeInTheDocument();
-    expect(voteSuccess).toHaveClass("py-6 text-green-500");
+    expect(screen.getByText("Ocena podwyższona pomyślnie.")).toHaveClass(
+      "py-6 text-green-500"
+    );
     expect(screen.getByText("Oceniono")).toBeDisabled();
     assertAdviceVotedRequestExecuted(true);
   });
@@ -289,15 +275,14 @@ describe("SuggestedAdviceDetails", () => {
       .mockResolvedValueOnce(votedDownResponse());
     await act(async () => renderWithAuth(<SuggestedAdviceDetails />));
     assertFetchAdviceDetailsRequestsExecuted();
-    expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    assertAdviceNotVoted();
 
     await userEvent.click(screen.getByText("Oceń jako nieprzydatne"));
 
     expect(screen.getByText("4")).toBeInTheDocument();
-    const voteSuccess = screen.getByText("Ocena obniżona pomyślnie.");
-    expect(voteSuccess).toBeInTheDocument();
-    expect(voteSuccess).toHaveClass("py-6 text-green-500");
+    expect(screen.getByText("Ocena obniżona pomyślnie.")).toHaveClass(
+      "py-6 text-green-500"
+    );
     expect(screen.getByText("Oceniono")).toBeDisabled();
     assertAdviceVotedRequestExecuted(false);
   });
@@ -397,4 +382,11 @@ function votedDownResponse() {
         rating: 4,
       }),
   };
+}
+
+function assertAdviceNotVoted() {
+  expect(screen.getByText("Ocena przydatności:")).toBeInTheDocument();
+  expect(screen.getByText("5")).toBeInTheDocument();
+  expect(screen.getByText("Oceń jako nieprzydatne")).toBeEnabled();
+  expect(screen.getByText("Oceń jako przydatne")).toBeEnabled();
 }

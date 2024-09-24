@@ -14,7 +14,6 @@ describe("TableData", () => {
 
     const content = screen.getByRole("cell");
     expect(content).toHaveTextContent("test");
-    expect(content).toBeInTheDocument();
     expect(content).toHaveClass("py-3 px-6 border border-slate-400");
   });
 });
