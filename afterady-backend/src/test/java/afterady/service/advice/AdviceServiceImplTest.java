@@ -81,24 +81,25 @@ public class AdviceServiceImplTest {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
-                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(5)),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(4)),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", generateTestVotes(3)),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", generateTestVotes(2)),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", generateTestVotes(1))
+                        new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(1)),
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(2))
                 ), new Document()));
 
         // act
         List<AdviceDetailsDto> topAdvices = adviceService.getTopTenAdvices();
 
         // assert
-        assertEquals(5, topAdvices.size());
+        assertEquals(2, topAdvices.size());
         AdviceDetailsDto first = topAdvices.get(0);
-        AdviceDetailsDto last = topAdvices.get(4);
         assertEquals("name 1", first.name());
-        assertEquals(5, first.rating());
-        assertEquals("name 5", last.name());
-        assertEquals(1, last.rating());
+        assertEquals("content 1", first.content());
+        assertEquals("source", first.source());
+        assertEquals(1, first.rating());
+        AdviceDetailsDto second = topAdvices.get(1);
+        assertEquals("name 2", second.name());
+        assertEquals("content 2", second.content());
+        assertEquals("source", second.source());
+        assertEquals(2, second.rating());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(adviceRepository);
         verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
@@ -156,17 +157,14 @@ public class AdviceServiceImplTest {
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class)))
                 .thenReturn(new AggregationResults<>(List.of(
                         new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", Set.of(TEST_EMAIL)),
-                        new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", Set.of(TEST_EMAIL))
+                        new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", Set.of(TEST_EMAIL))
                 ), new Document()));
 
         // act
         List<VotedAdviceDetailsDto> userVotedAdvices = adviceService.getUserVotedAdvices(TEST_EMAIL);
 
         // assert
-        assertEquals(5, userVotedAdvices.size());
+        assertEquals(2, userVotedAdvices.size());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(ADVICE_COLLECTION), eq(Advice.class));
         verifyNoMoreInteractions(mongoTemplate);
         verifyNoInteractions(suggestedAdviceRepository, adviceRepository);
@@ -191,20 +189,17 @@ public class AdviceServiceImplTest {
     public void shouldGetCategoryAdvices() {
         // arrange
         when(adviceRepository.findByCategory(HOME)).thenReturn(List.of(
-                new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(5)),
-                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(4)),
-                new Advice(UUID.randomUUID(), "name 3", HOME, "content 3", "source", generateTestVotes(3)),
-                new Advice(UUID.randomUUID(), "name 4", HOME, "content 4", "source", generateTestVotes(2)),
-                new Advice(UUID.randomUUID(), "name 5", HOME, "content 5", "source", generateTestVotes(1))
+                new Advice(UUID.randomUUID(), "name 1", HOME, "content 1", "source", generateTestVotes(1)),
+                new Advice(UUID.randomUUID(), "name 2", HOME, "content 2", "source", generateTestVotes(2))
         ));
 
         // act
         List<AdviceDetailsDto> categoryAdvices = adviceService.getAdvicesBy(HOME);
 
         // assert
-        assertEquals(5, categoryAdvices.size());
+        assertEquals(2, categoryAdvices.size());
         assertEquals("name 1", categoryAdvices.get(0).name());
-        assertEquals("name 5", categoryAdvices.get(4).name());
+        assertEquals("name 2", categoryAdvices.get(1).name());
         verify(adviceRepository, times(1)).findByCategory(HOME);
         verifyNoMoreInteractions(adviceRepository);
         verifyNoInteractions(suggestedAdviceRepository, mongoTemplate);

@@ -44,18 +44,15 @@ public class CategoryServiceImplTest {
         // arrange
         when(mongoTemplate.aggregate(any(Aggregation.class), eq(SUGGESTED_CATEGORY_COLLECTION), eq(SuggestedCategory.class)))
                 .thenReturn(new AggregationResults<>(List.of(
-                        new SuggestedCategory(UUID.randomUUID(), "name 1", 1L, generateTestVotes(5), generateTestVotes(5)),
-                        new SuggestedCategory(UUID.randomUUID(), "name 2", 1L, generateTestVotes(4), generateTestVotes(4)),
-                        new SuggestedCategory(UUID.randomUUID(), "name 3", 1L, generateTestVotes(3), generateTestVotes(3)),
-                        new SuggestedCategory(UUID.randomUUID(), "name 4", 1L, generateTestVotes(2), generateTestVotes(2)),
-                        new SuggestedCategory(UUID.randomUUID(), "name 5", 1L, generateTestVotes(1), generateTestVotes(1))
+                        new SuggestedCategory(UUID.randomUUID(), "name 1", 1L, generateTestVotes(1), generateTestVotes(1)),
+                        new SuggestedCategory(UUID.randomUUID(), "name 2", 1L, generateTestVotes(2), generateTestVotes(2))
                 ), new Document()));
 
         // act
         List<SuggestedCategoryDetailsDto> userVotedCategories = categoryService.getUserVotedCategories(TEST_EMAIL);
 
         // assert
-        assertEquals(5, userVotedCategories.size());
+        assertEquals(2, userVotedCategories.size());
         verify(mongoTemplate, times(1)).aggregate(any(Aggregation.class), eq(SUGGESTED_CATEGORY_COLLECTION), eq(SuggestedCategory.class));
         verifyNoMoreInteractions(mongoTemplate);
     }

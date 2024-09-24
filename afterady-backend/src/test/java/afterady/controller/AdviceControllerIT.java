@@ -3,7 +3,6 @@ package afterady.controller;
 import afterady.config.db.MongoDbConfig;
 import afterady.config.db.TestDataInitializer;
 import afterady.domain.advice.Advice;
-import afterady.domain.advice.category.AdviceCategory;
 import afterady.domain.repository.*;
 import afterady.messages.activation_link.TriggerSendingActivationLinkSender;
 import afterady.security.auth.AuthUtil;
@@ -39,6 +38,8 @@ import java.util.Set;
 import java.util.UUID;
 
 import static afterady.TestUtils.*;
+import static afterady.domain.advice.category.AdviceCategory.HEALTH;
+import static afterady.domain.advice.category.AdviceCategory.HOME;
 import static afterady.service.advice.Fixtures.*;
 import static java.util.Collections.emptyList;
 import static java.util.UUID.randomUUID;
@@ -262,7 +263,7 @@ class AdviceControllerIT {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(authUtil, times(1)).getLoggedUserId();
-        verify(adviceService).createSuggestedAdvice(ArgumentMatchers.any(UUID.class), eq("name"), eq(AdviceCategory.HOME), eq("content"), eq("source"), eq(1L));
+        verify(adviceService).createSuggestedAdvice(ArgumentMatchers.any(UUID.class), eq("name"), eq(HOME), eq("content"), eq("source"), eq(1L));
         verifyNoMoreInteractions(authUtil, adviceService);
     }
 
@@ -291,16 +292,8 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnAdvicesRanking() throws Exception {
         // arrange
-        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", "HOME", "Dom", "content 1", "source", 10),
-                new AdviceDetailsDto(randomUUID(), "name 2", "HOME", "Dom", "content 2", "source", 9),
-                new AdviceDetailsDto(randomUUID(), "name 3", "HOME", "Dom", "content 3", "source", 8),
-                new AdviceDetailsDto(randomUUID(), "name 4", "HOME", "Dom", "content 4", "source", 7),
-                new AdviceDetailsDto(randomUUID(), "name 5", "HOME", "Dom", "content 5", "source", 6),
-                new AdviceDetailsDto(randomUUID(), "name 6", "HOME", "Dom", "content 6", "source", 5),
-                new AdviceDetailsDto(randomUUID(), "name 7", "HOME", "Dom", "content 7", "source", 4),
-                new AdviceDetailsDto(randomUUID(), "name 8", "HOME", "Dom", "content 8", "source", 3),
-                new AdviceDetailsDto(randomUUID(), "name 9", "HOME", "Dom", "content 9", "source", 2),
-                new AdviceDetailsDto(randomUUID(), "name 10", "HOME", "Dom", "content 10", "source", 1)
+        when(adviceService.getTopTenAdvices()).thenReturn(List.of(new AdviceDetailsDto(randomUUID(), "name 1", HOME.name(), HOME.getDisplayName(), "content 1", "source", 10),
+                new AdviceDetailsDto(randomUUID(), "name 2", HEALTH.name(), HEALTH.getDisplayName(), "content 2", "source", 1)
         ));
 
         // act & assert
@@ -309,13 +302,17 @@ class AdviceControllerIT {
                 .andReturn().getResponse().getContentAsString();
         List<AdviceDetailsDto> ranking = new ObjectMapper().readValue(responseContent, new TypeReference<>() {
         });
-        assertEquals(10, ranking.size());
+        assertEquals(2, ranking.size());
         AdviceDetailsDto first = ranking.get(0);
-        AdviceDetailsDto last = ranking.get(9);
         assertEquals("name 1", first.name());
+        assertEquals("content 1", first.content());
+        assertEquals("source", first.source());
         assertEquals(10, first.rating());
-        assertEquals("name 10", last.name());
-        assertEquals(1, last.rating());
+        AdviceDetailsDto second = ranking.get(1);
+        assertEquals("name 2", second.name());
+        assertEquals("content 2", second.content());
+        assertEquals("source", second.source());
+        assertEquals(1, second.rating());
     }
 
     @Test
@@ -332,7 +329,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnAdviceById() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1))
@@ -361,8 +358,8 @@ class AdviceControllerIT {
     @Test
     public void shouldVoteAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
-        when(adviceService.voteAdvice(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(2))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1))));
+        when(adviceService.voteAdvice(UUID_1, TEST_EMAIL)).thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(2))));
 
         // act & assert
         mvc.perform(post("/advices/" + UUID_1 + "/vote").content(TEST_EMAIL)
@@ -389,7 +386,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnFalseWhenUserNotVotedAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", generateTestVotes(1))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", generateTestVotes(1))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
@@ -400,7 +397,7 @@ class AdviceControllerIT {
     @Test
     public void shouldReturnTrueWhenUserVotedAdvice() throws Exception {
         // arrange
-        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", AdviceCategory.HOME, "content", "source", Set.of(TEST_EMAIL))));
+        when(adviceService.getAdviceById(UUID_1)).thenReturn(Optional.of(new Advice(UUID_1, "name", HOME, "content", "source", Set.of(TEST_EMAIL))));
 
         // act & assert
         mvc.perform(get("/advices/" + UUID_1 + "/vote/check?userEmail=" + TEST_EMAIL))
@@ -423,8 +420,8 @@ class AdviceControllerIT {
     public void shouldReturnListOfVotedAdvices() throws Exception {
         // arrange
         when(adviceService.getUserVotedAdvices(TEST_EMAIL)).thenReturn(List.of(
-                new VotedAdviceDetailsDto(UUID_1, "name", "HOME", "Dom", "content"),
-                new VotedAdviceDetailsDto(UUID_2, "name 2", "HEALTH", "Zdrowie", "content")));
+                new VotedAdviceDetailsDto(UUID_1, "name", HOME.name(), HOME.getDisplayName(), "content"),
+                new VotedAdviceDetailsDto(UUID_2, "name 2", HEALTH.name(), HEALTH.getDisplayName(), "content")));
 
         // act & assert
         mvc.perform(get("/users/advices/voted?userEmail=" + TEST_EMAIL))
